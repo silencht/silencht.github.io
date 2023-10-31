@@ -1,0 +1,169 @@
+<%- partial('common/head') %>
+<body>
+    <div id="container">
+        <%- partial('common/header') %>
+        
+        <div class="outer">
+            <% if (theme.customize.sidebar === "left") { %>
+                <%- partial('common/sidebar') %>
+                <section id="main"><%- body %></section>
+            <% } else if (theme.customize.sidebar === "right") { %>
+                <section id="main"><%- body %></section>
+                <%- partial('common/sidebar') %>
+            <% } else { %>
+                <section id="main"><%- body %></section>
+            <% } %>
+        </div>
+
+        <%- partial('common/footer', null, {cache: !config.relative_link}) %>
+        <%- partial('common/scripts') %>
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

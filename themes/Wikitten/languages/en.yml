@@ -1,0 +1,32 @@
+index:
+    home: 'home'
+    search: 'Search'
+    archive: 'timeline'
+    category: 'category'
+    uncategorized: 'uncategorized'
+    tag: 'tag'
+nav:
+    next: 'Next'
+    prev: 'Prev'
+    older: 'Older'
+    newer: 'Newer'
+widget:
+    recents: 'recent'
+    archives: 'timeline'
+    categories: 'categories'
+    links: 'links'
+    tags: 'tags'
+    tag_cloud: 'tag cloud'
+article:
+    more: 'Read More'
+    comments: 'Comments'
+    share: 'Share'
+    catalogue: 'Catalogue'
+insight:
+    hint: 'Type something...'
+    posts: 'Posts'
+    pages: 'Pages'
+    categories: 'Categories'
+    tags: 'Tags'
+    untitled: '(Untitled)'
+
