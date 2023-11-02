@@ -258,7 +258,7 @@ $y=yh+yp=k \cdot e^{-\frac{p}{m}x }+\frac{q}{p}$
 
 **几何表示**：
 
-![74b65317cd7fa6baaed6c6cba662e83a_1440w](https://silencht.oss-cn-beijing.aliyuncs.com/img/3相量法20200410173815.png)
+![](https://silencht.oss-cn-beijing.aliyuncs.com/img/3相量法20200410173815.png)
 
 **3.  复数的运算：**【图片来源：《电路原理》P390-392】
 
@@ -275,7 +275,14 @@ $y=yh+yp=k \cdot e^{-\frac{p}{m}x }+\frac{q}{p}$
 - **两个复数之和A+B由通常向量加法的平行四边形法则给出**
 - **两个复数的乘法：AB之长是A之长与B之长的乘积，AB的幅角是A与B的幅角之和**
 
-**4.  欧拉公式的猜想式推导（非严格）：**设$f（x）=cosx+jsinx   $                                           有：$f（x）f（y）=f（x+y）$，猜知：$f（x）$为指数函数，                                                    设：$f（x）=e^{kx} =cosx+jsinx $（其中k为常数，j为虚数单位），                                          两边求导，得：$k\cdot e^{kx} =-sinx+jcosx=j^{2} sinx+jcosx=j[cosx+jsinx]$，其中[]中便是$e^{kx}$ ，即：$k\cdot e^{kx} =j\cdot e^{kx} $，消去$e^{kx} $（其不为0），则$k=j$。                                        因此我们有：$e^{jx} =cosx+jsinx$
+**4.  欧拉公式的猜想式推导（非严格）：** 设$f(x)=\cos x+j\sin x$,有：$f(x)f(y)=f(x+y)$，
+猜知：$f(x)$为指数函数，设：
+$f(x)=e^{kx} =\cos x+j\sin x$（其中k为常数，j为虚数单位）
+两边求导，得: $k\cdot e^{kx} =-\sin x+j\cos x=j^{2}\sin x+j\cos x=j[\cos x+j\sin x]$，
+其中[]中便是$e^{kx}$,即：$k\cdot e^{kx} =j\cdot e^{kx}$，
+消去$e^{kx}$（其不为0）,
+则$k=j$,
+因此我们有：$e^{jx} =\cos x+j\sin x$
 
 **5.**
 
