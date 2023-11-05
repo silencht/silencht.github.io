@@ -27,8 +27,7 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang #自动侦测页面语言
 skip_render:
-  - README.md
-  - '_posts/**/embed_page/**'
+    - 'pdfjs/**/*'
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
@@ -39,11 +38,12 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-#当资源文件管理功能打开后，Hexo将会在你每一次通过 hexo new [layout] <title> 命令
-#创建新文章时自动创建一个文件夹。这个资源文件夹将会有与这个文章文件一样的名字。
-#将所有与你的文章有关的资源放在这个关联文件夹中之后，你可以通过相对路径来引用它们，
-#这样你就得到了一个更简单而且方便得多的工作流。
+# 当资源文件管理功能打开后，Hexo将会在你每一次通过 hexo new [layout] <title> 命令
+# 创建新文章时自动创建一个文件夹。这个资源文件夹将会有与这个文章文件一样的名字。
+# 将所有与你的文章有关的资源放在这个关联文件夹中之后，你可以通过相对路径来引用它们，
+# 这样你就得到了一个更简单而且方便得多的工作流。
 post_asset_folder: true
+asset_folder: categories
 relative_link: false
 future: true
 highlight:
@@ -126,7 +126,8 @@ jsonContent:
 sitemap:
   path: sitemap.xml #
 
-#自动向你的链接添加 nofollow 属性，以确保搜索引擎不会对这些链接产生过多的关注
+# 自动向你的链接添加 nofollow 属性，以确保搜索引擎不会对这些链接产生过多的关注
+  ## exclude是要排除该属性在外的链接
 nofollow:
   enable: true 
   exclude:
@@ -138,12 +139,32 @@ math:
   engine: mathjax
   per_page: false
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
+
+# 部署规则
+# 当执行 hexo deploy 时，Hexo 会将 public 目录中的文件和目录推送至 _config.yml 中指定的远端仓库和分支中，并且完全覆盖该分支下的已有内容
+# Docs: https://hexo.io/docs/one-command-deployment or https://hexo.io/zh-cn/docs/one-command-deployment
 deploy:
-  type: git
-  repository: https://github.com/silencht/silencht.github.io
-  branch: gh-pages
+  ## 部署网站文件，发布到read分支
+  - type: git
+    repo: https://github.com/silencht/silencht.github.io
+    branch: read
+  ## 部署博客内容源文件，发布到write分支
+  - type: git
+    repo: https://github.com/silencht/silencht.github.io
+    branch: write
+    ### 额外要发布的目录（根目录（/）通常表示整个 Hexo 项目的主目录或根目录 --from chatgpt）
+    extend_dirs: /
+    ### ignore_hidden 是一个布尔或对象类型的属性，用于指定是否忽略隐藏文件的发布。
+    ### 如果 ignore_hidden 是布尔值，将适用于所有目录。当设置为 true 时，Hexo 将忽略所有隐藏文件，不会将它们包含在发布的内容中。
+    ### 如果 ignore_hidden 是对象，可以针对不同的目录进行配置。其中，您可以使用以下键来指定需要设置的目录：  
+      #### public：用于指定是否忽略发布目录中的隐藏文件。
+      #### [extend directory]：用于指定扩展目录中是否忽略隐藏文件。
+    ignore_hidden: false
+    ### ignore_pattern 用于指定在部署过程中要忽略的文件或目录的匹配模式。
+    ### 如果 ignore_pattern 是正则表达式，它将应用于所有目录。可以使用正则表达式来指定要忽略的文件或目录的模式。
+    ### 如果 ignore_pattern 是对象，可以根据特定的目录设置忽略模式
+    ignore_pattern:
+        public: .
 
 
 

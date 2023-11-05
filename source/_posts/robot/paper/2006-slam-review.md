@@ -194,5 +194,7 @@ $$
 本文描述了SLAM问题，解决SLAM问题的基本方法，并总结了方法的关键实现和演示。虽然还有许多实际问题需要克服，特别是在更复杂的户外环境中。一般的SLAM方法现在是机器人技术的一个被充分理解和确立的一部分。本教程的第二部分将总结最近解决SLAM中一些剩余问题的工作，包括；计算、特征表示和数据关联。
 
 ### 7、PDF原文
-{% pdf /pdf/robot/2006-Simultaneous-Localisation-and-Mapping-PartI.pdf %}
 
+<div>
+  <iframe src="/pdfjs/web/viewer.html?file=/pdf/robot/2006-Simultaneous-Localisation-and-Mapping-PartI.pdf" width="100%" height="3500px" frameborder="0"></iframe>
+</div>

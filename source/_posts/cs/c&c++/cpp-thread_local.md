@@ -109,9 +109,9 @@ int main()
 多线程已经成为现代程序应用中不可缺少的技术环节，但是在C++11标准出现之前，C++语言标准对多线程的支持是不完善的，无法创建线程局部存储对象就是其中的一个缺陷。幸好C++11的推出挽救了这种尴尬的局面。
 
 
-
-> - [摘改自《深入理解C++11：C++11新特性解析与应用》](https://weread.qq.com/web/bookDetail/596325a059346c59642f910)
-> - [摘改自《现代C++语言特性解析》](https://weread.qq.com/web/bookDetail/22d32dd0726fa07122d86db)
+## 参考文献
+ - [摘改自《深入理解C++11：C++11新特性解析与应用》](https://weread.qq.com/web/bookDetail/596325a059346c59642f910)
+ - [摘改自《现代C++语言特性解析》](https://weread.qq.com/web/bookDetail/22d32dd0726fa07122d86db)
 
 
 
