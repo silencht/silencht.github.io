@@ -100,6 +100,27 @@
     </script>
 
     <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
         #hideCatalog {
             cursor: pointer;
             text-align: center;

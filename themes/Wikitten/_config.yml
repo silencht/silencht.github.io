@@ -51,7 +51,7 @@ history_control: # make you wiki has history version control in page
     server_link: https://github.com # recommend use GitHub https://github.com
     user: silencht
     repertory: silencht.github.io
-    branch: master
+    branch: write
 
 # Comment
 comment:
