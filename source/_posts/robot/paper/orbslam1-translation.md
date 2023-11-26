@@ -273,7 +273,7 @@ Forster等人在论文[22]中提出了介于直接法和基于特征点法之间
 
 ### PDF原文
 <div>
-  <iframe src="/pdfjs/web/viewer.html?file=/pdf/robot/ORB-SLAM1.pdf" width="100%" height="3500px" frameborder="0"></iframe>
+  <iframe src="/pdfjs/web/viewer.html?file=/pdf/robot/ORB-SLAM1.pdf" width="100%" height="1280px" frameborder="0"></iframe>
 </div>
 
 

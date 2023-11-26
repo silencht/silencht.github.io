@@ -165,7 +165,7 @@ ORB-SLAM2沿用了单目ORB-SLAM中介绍的策略：频繁插入关键帧，之
 
 ### PDF原文
 <div>
-  <iframe src="/pdfjs/web/viewer.html?file=/pdf/robot/ORB-SLAM2.pdf" width="100%" height="3500px" frameborder="0"></iframe>
+  <iframe src="/pdfjs/web/viewer.html?file=/pdf/robot/ORB-SLAM2.pdf" width="100%" height="1280px" frameborder="0"></iframe>
 </div>
 
 
