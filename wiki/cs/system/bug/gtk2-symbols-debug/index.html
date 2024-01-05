@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>gtk2-symbols-debug | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="gtk2-symbols-debug">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="GTK+ 2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is not supported 1、环境描述  操作系统：ubuntu18.04.5 LTS （AMD64） 相关软件：ORB-SLAM2、ROS-melodic（OpenCV：3.2.0 installed）、OpenCV：3.4.15（手动编译，编">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gtk2-symbols-debug">
+<meta property="og:url" content="https://silencht.github.io/wiki/cs/system/bug/gtk2-symbols-debug/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="GTK+ 2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is not supported 1、环境描述  操作系统：ubuntu18.04.5 LTS （AMD64） 相关软件：ORB-SLAM2、ROS-melodic（OpenCV：3.2.0 installed）、OpenCV：3.4.15（手动编译，编">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-cs/system/bug/gtk2-symbols-debug" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/cs/">cs</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/cs/system/">system</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/cs/system/bug/">bug</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/cs/system/bug/gtk2-symbols-debug/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/cs/system/bug/gtk2-symbols-debug.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/cs/system/bug/gtk2-symbols-debug.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/cs/system/bug/gtk2-symbols-debug.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            gtk2-symbols-debug
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gtk-2.x-symbols-detected.-using-gtk-2.x-and-gtk-3-in-the-same-process-is-not-supported"><span class="toc-number">1.</span> <span class="toc-text">GTK+
+2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is
+not supported</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1、环境描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.</span> <span class="toc-text">2、命令行错误信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%92%E6%9F%A5%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">3、排查过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#stackoverflow%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1、stackoverflow相关问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8ldd%E5%91%BD%E4%BB%A4%E6%8E%92%E6%9F%A5"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2、利用ldd命令排查</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#gtk%E5%BA%93"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">1、GTK库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8ldd%E5%91%BD%E4%BB%A4%E6%8E%92%E6%9F%A5%E5%BA%93%E4%BE%9D%E8%B5%96"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">2、使用ldd命令排查库依赖</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">4、解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E5%8D%B8%E8%BD%BD%E8%BF%99%E4%BF%A9ros%E5%8A%9F%E8%83%BD%E5%8C%85"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1、单独卸载这俩ROS功能包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E5%8D%B8%E8%BD%BDros%E8%87%AA%E5%B8%A6%E7%9A%84opencv%E6%88%91%E4%BD%BF%E7%94%A8%E7%9A%84"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2、直接卸载ros自带的OpenCV（我使用的）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-dpkg---get-selections-grep-opencv-%E6%8C%87%E4%BB%A4%E6%9F%A5%E6%89%BE%E6%89%80%E6%9C%89opencv%E7%9B%B8%E5%85%B3%E5%8C%85"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">1、使用
+dpkg --get-selections | grep opencv
+指令查找所有opencv相关包</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%8E%E8%BE%93%E5%87%BA%E4%B8%AD%E7%9C%8B%E5%88%B0-libopencv-core3.2amd64-install"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">2、从输出中看到
+libopencv-core3.2:amd64 install</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BE%93%E5%AE%8C%E6%8C%87%E4%BB%A4%E5%90%8E%E4%BC%9A%E5%87%BA%E7%8E%B0%E5%A6%82%E4%B8%8B%E7%B1%BB%E4%BC%BC%E8%BE%93%E5%87%BA"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">3、输完指令后会出现如下类似输出</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BDros%E5%AF%B9%E5%BA%94%E5%8A%9F%E8%83%BD%E5%8C%85"><span class="toc-number">1.4.2.4.</span> <span class="toc-text">4、下载ros对应功能包</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD"><span class="toc-number">1.5.</span> <span class="toc-text">5、后续</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84"><span class="toc-number">1.6.</span> <span class="toc-text">6、附</span></a></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <h2 id="gtk-2.x-symbols-detected.-using-gtk-2.x-and-gtk-3-in-the-same-process-is-not-supported">GTK+
+2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is
+not supported</h2>
+<h3 id="环境描述">1、环境描述</h3>
+<ul>
+<li>操作系统：ubuntu18.04.5 LTS （AMD64）</li>
+<li>相关软件：ORB-SLAM2、ROS-melodic（OpenCV：3.2.0
+installed）、OpenCV：3.4.15（手动编译，编译时CMake添加参数：-DWITH_GTK_2_X=ON）</li>
+<li>ROS使用包（与错误相关）：opencv_bridge、image_geometry</li>
+<li>编译指令：catkin_make</li>
+<li>注：实际这里的orbslam2是经过修改且加了很多其他功能的</li>
+</ul>
+<h3 id="命令行错误信息">2、命令行错误信息</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ld: warning: libopencv_calib3d.so.3.2, needed by /home/silencht/slam-nav-add/src/semantic_slam_nav_ros/lib/libslam_semantic_nav_ros.so, may conflict with libopencv_calib3d.so.3.4</span><br><span class="line">/usr/bin/ld: warning: libopencv_features2d.so.3.2, needed by /home/silencht/slam-nav-add/src/semantic_slam_nav_ros/lib/libslam_semantic_nav_ros.so, may conflict with libopencv_features2d.so.3.4</span><br><span class="line">/usr/bin/ld: warning: libopencv_highgui.so.3.2, needed by /home/silencht/slam-nav-add/src/semantic_slam_nav_ros/lib/libslam_semantic_nav_ros.so, may conflict with libopencv_highgui.so.3.4</span><br><span class="line">/usr/bin/ld: warning: libopencv_core.so.3.2, needed by /home/silencht/slam-nav-add/src/semantic_slam_nav_ros/lib/libslam_semantic_nav_ros.so, may conflict with libopencv_core.so.3.4</span><br><span class="line">/usr/bin/ld: warning: libopencv_ml.so.3.4, needed by /home/silencht/slam-nav-add/src/semantic_slam_nav_ros/lib/libslam_semantic_nav_ros.so, may conflict with libopencv_ml.so.3.2</span><br><span class="line">/usr/bin/ld: warning: libopencv_imgcodecs.so.3.2, needed by /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.3.2.0, may conflict with libopencv_imgcodecs.so.3.4</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Display:1072): Gtk-ERROR **: 18:03:31.545: GTK+ 2.x symbols detected. Using GTK+ 2.x and GTK+ 3 <span class="keyword">in</span> the same process is not supported</span><br></pre></td></tr></table></figure>
+<h3 id="排查过程">3、排查过程</h3>
+<p>该问题陆续困扰我很久，简要说一下正确解决路线：</p>
+<h4 id="stackoverflow相关问题">3.1、<a target="_blank" rel="external nofollow noopener noreferrer" href="https://stackoverflow.com/questions/42534129/">stackoverflow相关问题</a></h4>
+<p>通过回答可得知，程序中有多个库用了不同版本的GTK库，因此造成了冲突。因此，首先要排查到底是哪些库的使用与GTK相关。</p>
+<p>回答介绍了<strong>一个查看动态库依赖的命令</strong>：<code>ldd</code>
+（list dynamic dependencies）</p>
+<p><strong>作用</strong>：列出程序或动态库的依赖关系。</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/ldd.html"><strong>例如</strong></a>
+查看 test 程序运行所依赖的库:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/opt/app/todeav1/test<span class="variable">$ldd</span> <span class="built_in">test</span></span><br><span class="line">libstdc++.so.6 =&gt; /usr/lib64/libstdc++.so.6 (0x00000039a7e00000)</span><br><span class="line">libm.so.6 =&gt; /lib64/libm.so.6 (0x0000003996400000)</span><br><span class="line">libgcc_s.so.1 =&gt; /lib64/libgcc_s.so.1 (0x00000039a5600000)</span><br><span class="line">libc.so.6 =&gt; not found</span><br><span class="line"><span class="comment">#第一列：程序需要依赖什么库</span></span><br><span class="line"><span class="comment">#第二列: 程序所需库在系统中的路径位置</span></span><br><span class="line"><span class="comment">#第三列：即括号中的数，为库加载的开始地址</span></span><br><span class="line"><span class="comment">#如果需要某个库，但程序在系统找不到对应的库，会出现第5行的not found信息</span></span><br></pre></td></tr></table></figure>
+<h4 id="利用ldd命令排查">3.2、利用ldd命令排查</h4>
+<h5 id="gtk库">1、GTK库</h5>
+<p>通过查阅<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.gtk.org/">GTK官网</a>得知，GTK
+是一款跨平台的为创造图形化用户界面而设计的工具库。</p>
+<blockquote>
+<p>Offering a complete set of UI elements, GTK is suitable for projects
+ranging from small one-off tools to complete application suites.</p>
+</blockquote>
+<h5 id="使用ldd命令排查库依赖">2、使用ldd命令排查库依赖</h5>
+<p>orbslam本身用的库：</p>
+<p>orbslam2/lib/liborbslam2.so</p>
+<p>orbslam2/Thirdparty/DBoW2/lib/libDBoW2.so</p>
+<p>orbslam2/Thirdparty/g2o/lib/libg2o.so</p>
+<p>opencv库</p>
+<p>pangolin、eigen3等orbslam所需的库</p>
+<p>ros功能包的相关库等。</p>
+<p><strong>首先</strong>
+通过使用<code>ldd liborbslam2.so | grep gtk</code>命令发现
+liborbslam2.so 确实链接了gtk2和gtk3两个版本的库，输出类似如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">libgtk-x11-2.0.so.0 =&gt; /usr/lib/x86_64-linux-gnu/libgtk-x11-2.0.so.0（0x00*）</span><br><span class="line">libgtk-3.so.0 =&gt; /usr/lib/x86_64-linux-gnu/libgtk-3.so.0（0x00*）</span><br></pre></td></tr></table></figure>
+<p><strong>缩小排查范围，分析</strong>：因为GTK是UI工具库，因此较大可能是因为涉及到绘制界面、图形等相关的库依赖出现问题。因此初步推断是opencv、pangolin等库依赖出现问题。</p>
+<p>简单排查pangolin库发现没有出现问题。</p>
+<p>通过查看orbslam源码中system.h、viewer.h、mapdrawer.h等文件，发现引用了opencv_highgui.h等绘制ui的相关头文件。</p>
+<p>定位liborbslam2.so依赖的opencv库，使用命令<code>ldd liborbslam2.so | grep opencv</code>，输出如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">silencht@silencht:~/slam_ws/src/orbslam2/lib$ ldd libslam_semantic_nav_ros.so | grep libopencv</span><br><span class="line">	libopencv_calib3d.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.3.2 (0x00007fce94e1c000)</span><br><span class="line">	libopencv_core.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_core.so.3.2 (0x00007fce949e1000)</span><br><span class="line">	libopencv_features2d.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.3.2 (0x00007fce9472c000)</span><br><span class="line">	libopencv_highgui.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.3.2 (0x00007fce94520000)</span><br><span class="line">	libopencv_imgproc.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.3.2 (0x00007fce93fcf000)</span><br><span class="line">	libopencv_video.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_video.so.3.2 (0x00007fce93d6c000)</span><br><span class="line">	libopencv_text.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_text.so.3.2 (0x00007fce93a4d000)</span><br><span class="line">	libopencv_core.so.3.4 =&gt; /usr/local/lib/libopencv_core.so.3.4 (0x00007fce8fef8000)</span><br><span class="line">	libopencv_imgcodecs.so.3.4 =&gt; /usr/local/lib/libopencv_imgcodecs.so.3.4 (0x00007fce8fa9f000)</span><br><span class="line">	libopencv_ml.so.3.4 =&gt; /usr/local/lib/libopencv_ml.so.3.4 (0x00007fce8f3e6000)</span><br><span class="line">	libopencv_flann.so.3.4 =&gt; /usr/local/lib/libopencv_flann.so.3.4 (0x00007fce8d785000)</span><br><span class="line">	libopencv_flann.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_flann.so.3.2 (0x00007fce8c287000)</span><br><span class="line">	libopencv_imgcodecs.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_imgcodecs.so.3.2 (0x00007fce8a13f000)</span><br><span class="line">	libopencv_ml.so.3.2 =&gt; /usr/lib/x86_64-linux-gnu/libopencv_ml.so.3.2 (0x00007fce896df000)</span><br><span class="line">	libopencv_imgproc.so.3.4 =&gt; /usr/local/lib/libopencv_imgproc.so.3.4 (0x00007fce82950000)</span><br></pre></td></tr></table></figure>
+<p>发现一个问题，由于ROS系统安装的时候自带了OpenCV 3.2.0
+（lib文件安装位置位于 /usr/lib/x86_64-linux-gnu/），而我自用的OpenCV
+3.4.15
+（安装在/usr/local/lib/）。<strong>在编译链接orbslam工程的时候，由于不恰当的配置造成了一部分文件引用了OpenCV
+3.2.0，而一部分文件引用了OpenCV 3.4.15</strong> 。</p>
+<p>那么查看3.2.0版本的 libopencv_highgui.so
+依赖（实际上为了稳妥起见，我将所有依赖的OpenCV库文件都排查过一遍），</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/lib/x86_64-linux-gnu/</span><br><span class="line">ldd libopencv_highgui.so.3.2 | grep gtk</span><br></pre></td></tr></table></figure>
+<p>从输出可发现，确实是3.2.0的libopencv_highgui.so文件依赖了gtk3版本库，而其他文件均依赖gtk2版本库。在绘制界面时，gtk2和3版本同时调用，产生了冲突。</p>
+<p>问题转到：<strong>查找ROS自带 OpenCV 库与 自行安装 OpenCV
+冲突问题</strong>。</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/qq_34570910/article/details/78245795">单纯</a>
+修改/opt/ros/kinetic/share/cv_bridge/cmake下*Config.cmake文件版本库，或者更改CmakeLists.txt中的
+find_package() 并不能完全解决问题。</p>
+<p>经排查，是编译orbslam工程的CmakeLists.txt中使用的ros功能包
+opencv_bridge 和 image_geometry 的库依赖了OpenCV 3.2.0</p>
+<hr>
+<h3 id="解决办法">4、解决办法</h3>
+<p>懒得详细写了。俩方法：</p>
+<h4 id="单独卸载这俩ros功能包">4.1、单独卸载这俩ROS功能包</h4>
+<p>去github下载相应的包，放到ros工作空间的src文件夹下，配置他们的CmakeLists.txt文件中相应的编译路径，使他们编译的时候使用自己安装的
+OpenCV 3.4.15 库。</p>
+<h4 id="直接卸载ros自带的opencv我使用的">4.2、直接卸载ros自带的OpenCV（<a target="_blank" rel="external nofollow noopener noreferrer" href="https://luyanan.com/news/info/20091648620111">我使用的</a>）</h4>
+<p><strong>简述</strong>：</p>
+<p>卸载该 OpenCV（即3.2.0版本） 会使得所有依赖此OpenCV
+的ROS功能包全部卸载。卸载完成后，去github下载工程所需要的缺失的功能包（opencv_bridge
+和
+image_geometry），放到ros工作空间的src文件夹下，配置他们的CmakeLists.txt文件，使他们编译的时候使用自己安装的
+OpenCV 库。</p>
+<p><strong>步骤</strong>：</p>
+<h5 id="使用-dpkg---get-selections-grep-opencv-指令查找所有opencv相关包">1、使用
+<code>dpkg --get-selections | grep opencv</code>
+指令查找所有opencv相关包</h5>
+<p>输出可能如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">libopencv-calib3d-dev:amd64			install</span><br><span class="line">libopencv-calib3d3.2:amd64			install</span><br><span class="line">libopencv-contrib-dev:amd64			install</span><br><span class="line">libopencv-contrib3.2:amd64			install</span><br><span class="line">libopencv-core-dev:amd64			install</span><br><span class="line">libopencv-core3.2:amd64				install</span><br><span class="line">libopencv-dev					install</span><br><span class="line">libopencv-features2d-dev:amd64			install</span><br><span class="line">libopencv-features2d3.2:amd64			install</span><br><span class="line">libopencv-flann-dev:amd64			install</span><br><span class="line">libopencv-flann3.2:amd64			install</span><br><span class="line">libopencv-highgui-dev:amd64			install</span><br><span class="line">libopencv-highgui3.2:amd64			install</span><br><span class="line">libopencv-imgcodecs-dev:amd64			install</span><br><span class="line">libopencv-imgcodecs3.2:amd64			install</span><br><span class="line">libopencv-imgproc-dev:amd64			install</span><br><span class="line">libopencv-imgproc3.2:amd64			install</span><br><span class="line">libopencv-ml-dev:amd64				install</span><br><span class="line">libopencv-ml3.2:amd64				install</span><br><span class="line">libopencv-objdetect-dev:amd64			install</span><br><span class="line">libopencv-objdetect3.2:amd64			install</span><br><span class="line">libopencv-photo-dev:amd64			install</span><br><span class="line">libopencv-photo3.2:amd64			install</span><br><span class="line">libopencv-shape-dev:amd64			install</span><br><span class="line">libopencv-shape3.2:amd64			install</span><br><span class="line">libopencv-stitching-dev:amd64			install</span><br><span class="line">libopencv-stitching3.2:amd64			install</span><br><span class="line">libopencv-superres-dev:amd64			install</span><br><span class="line">libopencv-superres3.2:amd64			install</span><br><span class="line">libopencv-ts-dev:amd64				install</span><br><span class="line">libopencv-video-dev:amd64			install</span><br><span class="line">libopencv-video3.2:amd64			install</span><br><span class="line">libopencv-videoio-dev:amd64			install</span><br><span class="line">libopencv-videoio3.2:amd64			install</span><br><span class="line">libopencv-videostab-dev:amd64			install</span><br><span class="line">libopencv-videostab3.2:amd64			install</span><br><span class="line">libopencv-viz-dev:amd64				install</span><br><span class="line">libopencv-viz3.2:amd64				install</span><br><span class="line">libopencv3.2-java				install</span><br><span class="line">libopencv3.2-jni				install</span><br><span class="line">python-opencv					install</span><br><span class="line">ros-melodic-vision-opencv			install</span><br></pre></td></tr></table></figure>
+<h5 id="从输出中看到-libopencv-core3.2amd64-install">2、从输出中看到
+libopencv-core3.2:amd64 install</h5>
+<p>使用命令 <code>sudo apt-get remove libopencv-core3.2</code>
+卸载opencv3.2.0，注意不要添加 purge 参数</p>
+<h5 id="输完指令后会出现如下类似输出">3、输完指令后会出现如下类似输出</h5>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">下列软件包将被【卸载】：</span><br><span class="line">  libopencv-dev ros-melodic-camera-calibration ros-melodic-compressed-depth-image-transport</span><br><span class="line">…………………………………………略</span><br><span class="line"> 升级了 0 个软件包，新安装了 0 个软件包，要卸载 29 个软件包，有 204 个软件包未被升级。</span><br><span class="line">解压缩后将会空出 23.7 MB 的空间。</span><br><span class="line">您希望继续执行吗？ [Y/n]</span><br></pre></td></tr></table></figure>
+<p>仔细检查上述要卸载的软件包，若没问题输入Y，然后点回车。ROS里依赖OpenCV
+的包全都会被卸载。</p>
+<p>卸载完成后，新开一个终端，输入<code>roscore</code>，若成功运行，则基本无问题。</p>
+<h5 id="下载ros对应功能包">4、下载ros对应功能包</h5>
+<p>网址：https://github.com/ros-perception/vision_opencv</p>
+<p>将 opencv_bridge 和 image_geometry
+，放到ros工作空间的src文件夹下。</p>
+<p>使用<code>pkg-config --modversion opencv</code> 查看当前 OpenCV
+版本，输出3.4.15则无问题。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ pkg-config --modversion opencv</span><br><span class="line">3.4.15</span><br></pre></td></tr></table></figure>
+<h3 id="后续">5、后续</h3>
+<p>删除ROS工作空间之前的build和devel文件，重新编译（catkin_make）整个工程。</p>
+<h3 id="附">6、附</h3>
+<p>一些相关问题网页链接：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/cv-pr/p/5366764.html">1</a> <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/raulmur/ORB_SLAM2/issues/118">2</a> <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/raulmur/ORB_SLAM2/issues/103">3</a> <a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/hansry/article/details/76764491">4</a> <a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/bigdog_1027/article/details/79092263">5</a></p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/cs/system/Unix&Linux/init-ubuntu/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    init-ubuntu
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/code/Ceres/A_Simple_Example/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Ceres使用：A Simple Example</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

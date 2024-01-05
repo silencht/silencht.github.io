@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>视觉SLAM:搞定坐标系、三角测量、PnP | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="视觉SLAM:搞定坐标系、三角测量、PnP">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="视觉SLAM:搞定坐标系、三角测量、PnP Author: [行知SLAM] Link: [https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;80921759] 1.正文 四个坐标系：世界坐标系、相机坐标系、图像坐标系、像素坐标系。 世界坐标系：机器人或相机运动过程中，肯定需要知道它的位置，因此需要设定世界坐标系，认定固定不动，作为 参考坐标系，描述世界中的任何一点P（Xw,Yw,Zw)。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视觉SLAM:搞定坐标系、三角测量、PnP">
+<meta property="og:url" content="https://silencht.github.io/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="视觉SLAM:搞定坐标系、三角测量、PnP Author: [行知SLAM] Link: [https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;80921759] 1.正文 四个坐标系：世界坐标系、相机坐标系、图像坐标系、像素坐标系。 世界坐标系：机器人或相机运动过程中，肯定需要知道它的位置，因此需要设定世界坐标系，认定固定不动，作为 参考坐标系，描述世界中的任何一点P（Xw,Yw,Zw)。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file active"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-robot/note/视觉SLAM搞定坐标系三角测量PnP_行知SLAM" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/robot/">robot</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/note/">note</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/robot/note/视觉SLAM搞定坐标系三角测量PnP_行知SLAM.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/robot/note/视觉SLAM搞定坐标系三角测量PnP_行知SLAM.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/robot/note/视觉SLAM搞定坐标系三角测量PnP_行知SLAM.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            视觉SLAM:搞定坐标系、三角测量、PnP
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%86%E8%A7%89slam%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8Fpnp"><span class="toc-number">1.</span> <span class="toc-text">视觉SLAM:搞定坐标系、三角测量、PnP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">1.1.</span> <span class="toc-text">1.正文</span></a></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <h1 id="视觉slam搞定坐标系三角测量pnp">视觉SLAM:搞定坐标系、三角测量、PnP</h1>
+<p><strong>Author:</strong> [行知SLAM]</p>
+<p><strong>Link:</strong> [https://zhuanlan.zhihu.com/p/80921759]</p>
+<h2 id="正文">1.正文</h2>
+<p>四个坐标系：世界坐标系、相机坐标系、图像坐标系、像素坐标系。</p>
+<p>世界坐标系：机器人或相机运动过程中，肯定需要知道它的位置，因此需要设定世界坐标系，认定固定不动，作为
+参考坐标系，描述世界中的任何一点P（Xw,Yw,Zw)。</p>
+<p>相机坐标系：相机或机器人运动的一个坐标系，通过世界坐标系的变换（旋转R,平移T）计算得到。因此主要是将
+世界坐标系描述的点坐标P（Xw,Yw,Zw)转换成相机坐标系下描述P（Xc,Yc,Zc)，方便计算得到在成像坐标系的坐
+标。</p>
+<p>图像（成像）坐标系：描述点在图像坐标系的成像点位置。</p>
+<p>像素坐标：在相机中得到的是一个像素，因此主要将图像坐标系的点转换成像素坐标系下。</p>
+<p><strong>1.1.将世界坐标系转换得到相机坐标系</strong></p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-ae9e4fa1277b0391a87a7e4d0f5a6468_r.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-1359ecc81b77c1d15002626a498f7cd3_r.jpg">
+旋转 平移</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-4f6a8a9ea9616815aed638e808710b0f_r.jpg">
+旋转矩阵：R，三维旋转矩阵构成特殊正交群SO(3)。知道它的物理意义就是表示旋转即可。</p>
+<p>变换矩阵：T,旋转+平移.变换矩阵构成特殊欧式群SE(3)。</p>
+<p>旋转向量（轴角）：一个旋转轴+一个旋转角，外积表示旋转，</p>
+<p>欧拉角：绕z轴旋转，得到偏航角yaw,绕旋转之后Y轴旋转，得到俯仰角pitch,绕旋转之后X轴旋转，得到滚转角
+roll。</p>
+<p>四元数，q=a+bi+cj+dk，类比虚数，同样用来表示旋转。</p>
+<p>a.欧式变换：有6个自由度，在变换前后，保持不变的性质是长度、夹角、体积。</p>
+<p>b.相似变换：有7个自由度，在变换前后，保持不变的性质是体积比。</p>
+<p>c.仿射变换：有12个自由度，在变换前后，保持不变的性质是平行性、体积比。</p>
+<p>d.射影变换：有16个自由度，在变换前后，保持不变的性质是接触平面的相交和相切。</p>
+<p>计算旋转矩阵</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-9d1b08866587d26e3954ff16656e8328_r.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-79f44af37ab7e960f762ea13e340ea37_r.jpg">
+旋转矩阵有9个量，3*3.</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-b27812cd1663a5c55f4a2b43ce8017fd_r.jpg">
+<strong>1.2相机坐标系与图像坐标系</strong></p>
+<p>从相机坐标系到图像坐标系，属于透视投影关系，从3D转换到2D。</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-1359ecc81b77c1d15002626a498f7cd3_r.jpg"></p>
+<p>此时P点已由上面经过世界坐标系转换成相机坐标系下表述P(Xc,Yc,Zc)。</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-328fe56d856e8d3be5a3664e947d597b_r.jpg">
+<strong>1.3图像坐标系与像素坐标系</strong></p>
+<p>像素坐标系和图像坐标系都在成像平面上，只是各自的原点和度量单位不一样。图像坐标系的原点为相机光轴与成
+像平面的交点，通常情况下是成像平面的中点或者叫principal
+point。图像坐标系的单位是mm，属于物理单位，而像素坐标系的单位是pixel，我们平常描述一个像素点都是几行几列。所以这二者之间的转换如下：其中dx和dy
+表示每一列和每一行分别代表多少mm，即1pixel=dx mm .</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-1359ecc81b77c1d15002626a498f7cd3_r.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-cc629f6426770774344f75b8ba516e3d_r.jpg">
+那么通过上面四个坐标系的转换就可以得到一个点从世界坐标系如何转换到像素坐标系的。</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-88114f33783c08a711b507d8d0c8e3ec_b.jpg">
+高翔十四讲简洁描述：K表示相机内参，T表示相机外参，即旋转平移。</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-3fc23445859015c3a5e07631c5d6d5de_r.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-7c10ee9a420b2dcee73bb5f226c3b12a_r.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-83223fbf8f980069874b3a4baa074def_r.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-59ae5d123135254bada20e877854227f_b.jpg"></p>
+<p>其中相机的内参和外参可以通过张正友标定获取（戳这里查看张正友标定的资料)。通过最终的转换关系来看，一个三维中的坐标点，的确可以在图像中找到一个对应的像素点，但是反过来，通过图像中的一个点找到它在三维中
+对应的点就很成了一个问题，因为我们并不知道等式左边的Zc的值。</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-9a3b41b5cf4500518a0397ad06c301cd_b.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-c7fd3481997eb55590937aef898dfd1d_b.jpg"></p>
+<p><strong>2.视觉里程计</strong></p>
+<p>视觉里程计的任务是估算相邻图相间的运动，以及局部地图的样子。由上面的像素坐标系间的关系，我们可以通过
+对极约束、三角测量、pnp求得相机的运动。</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-1359ecc81b77c1d15002626a498f7cd3_r.jpg"></p>
+<p><strong>2D-2D对极约束</strong></p>
+<p>预备知识：</p>
+<blockquote>
+<p>A为n维方阵，若有A'=-A，则称矩阵A为反对称矩阵。对于反对称矩阵，它的主对角线上的元素全为零，而位
+于主对角线两侧对称的元反号。<br>
+外积：axb=a<sup>b。将</sup>记成一个反对称符号，这样就把外积axb写成了矩阵与向量的乘法a^b。<br>
+向量的外积结果就是一个和原来两个向量垂直的向量，更为熟知的叫法是法向量，该向量垂直于a和b向量构
+成的平面。<br>
+点乘的几何意义是可以用来表征或计算两个向量之间的夹角，以及在b向量在a向量方向上的投影。<br>
+对极约束求相机运动，由于我们通过特征点匹配确定了像素点p2的位置，可以推断p的空间位置，以及相机的运动。</p>
+</blockquote>
+<p>世界坐标：</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-e45180cc45bf63b736bff35b15889182_b.jpg">
+两个像素点p1,p2的位置：</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-691c3853ac014e2375165804d84e3abf_b.jpg">
+<img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-4c86f57f6ce491dd1dcfa62795e95d72_b.jpg">
+本质矩阵E（Essential Matrix)</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-719e1d3fe9b45a4dcad6925a1906434e_r.jpg">
+基础矩阵F(Fndamental)</p>
+<p>单应矩阵(Homography)</p>
+<p><strong>求解步骤：</strong></p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-a578b33f52e376fb6678b94359b93871_r.jpg"></p>
+<p>1.根据配对点的像素位置求出E或者F.</p>
+<p>2.根据E或者F求出R,t。</p>
+<p>也就是只要知道配对点的像素位置就可以通过对极约束求出相机位姿。</p>
+<p><strong>三角测量</strong></p>
+<p>估计了相机运动后，需要用相机的运动估计特征点的空间位置。</p>
+<p>单目SLAM中，通过三角测量估计地图的深度。</p>
+<p><strong>3D-2D:PnP（Perspective-n-Point）</strong></p>
+<p>描述了当知道n个3D空间点及其投影位置时，如何估计相机的位姿。</p>
+<p>特征点的3D位置可以由三角化或RGB-D相机的深度图确定。</p>
+<p>在双目或RGB-D的视觉里程计中，我们可以直接使用PnP估计相机运动。</p>
+<p>单目视觉里程计中，必须先进行初始化，然后才能使用PnP。</p>
+<p>3D-2D方法不需要使用对极约束，又可以在很少的匹配点中获得较好的运动估计。
+PnP问题有，用3对点估计位姿的P3P、直接线性变换、EPnP、非线性优化(BA)。</p>
+<p>直接线性变换</p>
+<p><strong>P3P</strong></p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-8d7b3c65b695b875d626e85412f128ed_r.jpg"></p>
+<p>目的是求相机位姿。输入数据为3对3D-2D匹配点。3D点为A,B,C,2D点为a,b,c。</p>
+<p>知道3D点的世界坐标系中的坐标和2D点的图像位置，不知道相机坐标系的坐标。（之前的是根据已知外参和世界
+坐标系的坐标可以求得相机坐标系的坐标，现在不知道相机位姿)。</p>
+<p>利用三角形对应关系，求出得到A,B,C相机坐标系下的3D坐标。最后把问题转换成一个3D（世界坐标系）到3D(相
+机坐标系)下的位姿估计问题。</p>
+<p>Bundle Adjustment</p>
+<p>重投影误差的问题。</p>
+<p>3D-3D:ICP（Iterative,Closet Point,迭代最近点）</p>
+<p>3D-3D的位姿估计问题，假设有一组配对好的3D点。</p>
+<p>ICP位姿估计没有出现相机模型，和相机没关系。</p>
+<p>在RGBD SLAM中，可以用这种方式估计相机位姿。</p>
+<p>求解方式主要两种：线性代数求解（主要是SVD),非线性优化方式求解（类似于BA).</p>
+<p>SVD方法</p>
+<p><img src="/image/视觉SLAM搞定坐标系三角测量PnP_行知SLAM/v2-6e4b94d90c239a83b0fa41bcb9795a58_r.jpg"></p>
+<p>以上部分参考高博PPT及相关博客：<a href="https://link.zhihu.com/?target=https%3A//blog.csdn.net/sunshine_zoe/article/details/73457686%3Futm_source%3Dblog" rel="external nofollow noopener noreferrer" target="_blank">https://blog.csdn.net/sunshine_zoe/article/details/73457686?utm_source=blog</a>
+xgwz0</p>
+<p>注：未经授权，请勿转载。</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    相量法
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">贝叶斯滤波（Bayes Filter）推导</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

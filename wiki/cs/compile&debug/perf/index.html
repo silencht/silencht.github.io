@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>性能分析工具之perf | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="性能分析工具之perf">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="1. 简介 perf 是 Linux 内核提供的性能分析工具，可以分析程序运行的性能瓶颈和优化点。通常随着 Linux 内核的安装而自动安装。它通常包含在 linux-tools 或 perf-tools 包中，具体取决于你所使用的 Linux 发行版。 使用perf --version便可以查看perf的软件版本。 12$  perf --versionperf version 5.15.111">
+<meta property="og:type" content="article">
+<meta property="og:title" content="性能分析工具之perf">
+<meta property="og:url" content="https://silencht.github.io/wiki/cs/compile&debug/perf/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="1. 简介 perf 是 Linux 内核提供的性能分析工具，可以分析程序运行的性能瓶颈和优化点。通常随着 Linux 内核的安装而自动安装。它通常包含在 linux-tools 或 perf-tools 包中，具体取决于你所使用的 Linux 发行版。 使用perf --version便可以查看perf的软件版本。 12$  perf --versionperf version 5.15.111">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silencht.github.io/image/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7perf/perf.png">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silencht.github.io/image/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7perf/perf.png">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file active"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-cs/compile&amp;debug/perf" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/cs/">cs</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/cs/compile-debug/">compile&debug</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/cs/compile&debug/perf/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/cs/compile&amp;debug/perf.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/cs/compile&amp;debug/perf.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/cs/compile&amp;debug/perf.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            性能分析工具之perf
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">2. 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 分析正在运行的程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 分析可执行文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%81%AB%E7%84%B0%E5%9B%BE%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BB%93%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">3. 使用火焰图可视化结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">4.</span> <span class="toc-text">4. 参考资料</span></a></li></ol>
+                </div>
+            
+        
+        
+            <h3 id="简介">1. 简介</h3>
+<p><strong>perf</strong> 是 Linux
+内核提供的性能分析工具，可以分析程序运行的性能瓶颈和优化点。通常随着
+Linux 内核的安装而自动安装。它通常包含在 <code>linux-tools</code> 或
+<code>perf-tools</code> 包中，具体取决于你所使用的 Linux 发行版。</p>
+<p>使用<code>perf --version</code>便可以查看perf的软件版本。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"> perf --version</span></span><br><span class="line">perf version 5.15.111</span><br></pre></td></tr></table></figure>
+<p>如果提示找不到该命令，可通过以下命令进行安装（Ubuntu发行版）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install linux-tools-common</span><br></pre></td></tr></table></figure>
+<h3 id="使用">2. 使用</h3>
+<h4 id="分析正在运行的程序">2.1 分析正在运行的程序</h4>
+<p>如果要分析的程序可执行文件名称为 grid_map，使用如下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看目录下的文件，可见存在可执行文件grid_map，运行之</span></span><br><span class="line">ls </span><br><span class="line">grid_map grid_map.cpp CMakeLists.txt</span><br><span class="line">./grid_map</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">假设该程序正在运行中，通过ps命令查看它的进程号，可得PID进程号为880154</span></span><br><span class="line">ps -ef | grep grid_map</span><br><span class="line">changhe   880154  880083 99 18:01 pts/5    00:00:24 ./grid_map</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">使用perf命令分析该程序</span></span><br><span class="line">sudo perf record -F 99 -p 880154 -g  -- sleep 30</span><br><span class="line">[ perf record: Woken up 1 times to write data ]</span><br><span class="line">[ perf record: Captured and wrote 0.522 MB perf.data (4534 samples) ]</span><br><span class="line">ls</span><br><span class="line">grid_map grid_map.cpp CMakeLists.txt perf.data</span><br></pre></td></tr></table></figure>
+<p>命令说明</p>
+<ul>
+<li><code>sudo</code>: 以超级用户权限运行命令，因为 <code>perf</code>
+需要访问内核信息</li>
+<li><code>perf record</code>: 用于收集性能数据</li>
+<li><code>-F 99</code>: 设置采样的频率为 99 Hz。这意味着
+<code>perf</code> 将每秒对正在运行的程序进行99次采样</li>
+<li><code>-p 880154</code>: 指定要监视的进程的进程 ID
+(PID)。在这个例子中，<code>880154</code>
+是希望分析的grid_map进程PID。</li>
+<li><code>-g</code>:
+启用堆栈跟踪，记录每个采样时的调用堆栈信息，以便更详细地了解程序的执行路径</li>
+<li><code>-- sleep 30</code>: 持续采集30秒</li>
+</ul>
+<p>采集完成后，输出一个<code>perf.data</code>文件</p>
+<h4 id="分析可执行文件">2.2 分析可执行文件</h4>
+<p>使用如下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo perf record -F 99 -g ./grid_map --sleep 30</span><br><span class="line">[ perf record: Woken up 2 times to write data ]</span><br><span class="line">[ perf record: Captured and wrote 0.606 MB perf.data (5112 samples) ]</span><br></pre></td></tr></table></figure>
+<p>命令说明</p>
+<ul>
+<li>其实同2.1，就是将-p PID替换为了可执行文件路径</li>
+</ul>
+<h3 id="使用火焰图可视化结果">3. 使用火焰图可视化结果</h3>
+<p>FlameGraph是由<a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.brendangregg.com/index.html">BrendanGregg</a>开发的一款开源可视化性能分析工具，形象的称为火焰图。其基于
+perf 结果产生的SVG 图片，用来展示 CPU 的调用栈。</p>
+<p>要使用火焰图可视化perf分析结果，首先下载FlameGraph</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">注意：FlameGraph仓库下载的目录影响下面代码./FlameGraph/stackcollapse-perf.pl的执行路径</span></span><br><span class="line">git clone https://github.com/brendangregg/FlameGraph</span><br></pre></td></tr></table></figure>
+<p>分析结果可视化</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">现在要对分析结果文件perf.data进行火焰图可视化</span></span><br><span class="line">ls</span><br><span class="line">grid_map grid_map.cpp CMakeLists.txt perf.data</span><br><span class="line">sudo perf script -i perf.data &gt; perf.unfold</span><br><span class="line">sudo ./FlameGraph/stackcollapse-perf.pl perf.unfold &gt; perf.folded</span><br><span class="line">sudo ./FlameGraph/flamegraph.pl perf.folded &gt; perf.svg</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">现在目录下便有一个名为perf.svg的文件了</span></span><br></pre></td></tr></table></figure>
+<p>命令说明</p>
+<ul>
+<li><p><code>perf script</code>: 从 <code>perf.data</code>
+文件中生成可读的文本格式的性能数据。该命令会将数据写入标准输出</p></li>
+<li><p><code>-i perf.data</code>: 指定 <code>perf</code> 工具读取
+<code>perf.data</code> 文件</p></li>
+<li><p><code>&gt; perf.unfold</code>: 将标准输出重定向到名为
+<code>perf.unfold</code> 的文件中。这个文件包含了可读的性能数据</p></li>
+<li><p><code>./FlameGraph/stackcollapse-perf.pl</code>: 该脚本将
+<code>perf</code> 的输出进行处理</p></li>
+<li><p><code>&gt; perf.folded</code>: 将处理后的输出重定向到名为
+<code>perf.folded</code>
+的文件中。这个文件包含了折叠后的性能数据</p></li>
+<li><p><code>./FlameGraph/flamegraph.pl</code>:
+该脚本将<code>perf.folded</code>转换为 Flame Graph 的 SVG
+图形。</p></li>
+</ul>
+<p>使用浏览器将perf.svg文件打开便可以查看结果图，示例图如下：</p>
+<p><img src="/image/性能分析工具perf/perf.png"></p>
+<ul>
+<li><p>y
+轴表示调用栈，每一层都是一个函数。调用栈越深，火焰就越高，顶部就是正在执行的函数，下方都是它的父函数。</p></li>
+<li><p>x 轴表示抽样数，如果一个函数在 x
+轴占据的宽度越宽，就表示它被抽到的次数多，即执行的时间长。注意，x
+轴不代表时间，而是所有的调用栈合并后，按字母顺序排列的。</p></li>
+</ul>
+<p>也可以实时查看当前系统程序性能分析数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">perf record -F 999 -a -g -- sleep 60</span><br><span class="line">perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; out.svg</span><br></pre></td></tr></table></figure>
+<p><strong><code>perf script</code>：</strong></p>
+<ul>
+<li>这个命令从实时数据中读取。它会连接到正在运行的
+<code>perf record</code>
+进程（如果有的话）或者当前的系统事件，然后输出相应的性能数据。</li>
+<li>这个命令通常用于实时查看当前系统的性能数据，而不是读取之前保存的数据文件。</li>
+</ul>
+<p>由火焰图可见，grid_map::MedianFilter::update和grid_map::NormalVectorsFilter::update两个函数是程序性能的关键所在。继续向上回溯便可以逐渐发现程序的执行的“热点函数”。</p>
+<p>有了这些分析，便可以针对性的对程序提出一些优化。</p>
+<h3 id="参考资料">4. 参考资料</h3>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.ruanyifeng.com/blog/2017/09/flame-graph.html">如何读懂火焰图？</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.bilibili.com/video/BV1hg4y1o7Sb/?share_source=copy_web&amp;vd_source=32cbeca2ce39d95a4b3686678d95dc87">Linux
+C/C++性能优化分析工具Perf使用教程</a></li>
+</ul>
+</blockquote>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/cs/compile&debug/gdb/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    gdb
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/cs/database/MySQL/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">MySQL</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

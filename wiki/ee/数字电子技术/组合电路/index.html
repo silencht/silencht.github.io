@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>组合电路 | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="组合电路">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="0. 序 1.我常常在想，数字电子技术和程序设计基础C是何等的相似，以至于我总想把数电理解为电路中的c语言。组合逻辑电路中的译码器，编码器，数据选择器等等可以看做C语言中的各种函数，电路输入即为函数形参，电路输出即为函数返回值。我们在设计电路时，可以把各种封装器件按照它们的功能运用在不同的位置，我们编写程序时，把各种函数按照功能放在main函数中的不同行，在运用器件or函数的时候，我们不会考虑它内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="组合电路">
+<meta property="og:url" content="https://silencht.github.io/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="0. 序 1.我常常在想，数字电子技术和程序设计基础C是何等的相似，以至于我总想把数电理解为电路中的c语言。组合逻辑电路中的译码器，编码器，数据选择器等等可以看做C语言中的各种函数，电路输入即为函数形参，电路输出即为函数返回值。我们在设计电路时，可以把各种封装器件按照它们的功能运用在不同的位置，我们编写程序时，把各种函数按照功能放在main函数中的不同行，在运用器件or函数的时候，我们不会考虑它内">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-ee/数字电子技术/组合电路" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/ee/">ee</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/">数字电子技术</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/ee/数字电子技术/组合电路.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/ee/数字电子技术/组合电路.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/ee/数字电子技术/组合电路.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            组合电路
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">0. 序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E8%B7%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">1. 电路的设计方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%94%B5%E8%B7%AF%E5%99%A8%E4%BB%B6%E7%9A%84%E7%BD%97%E5%88%97"><span class="toc-number">3.</span> <span class="toc-text">2. 常用电路、器件的罗列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%9E%E4%BA%89-%E5%86%92%E9%99%A9%E7%8E%B0%E8%B1%A1"><span class="toc-number">4.</span> <span class="toc-text">3. 竞争-冒险现象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">4. 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">6.</span> <span class="toc-text">参考资料</span></a></li></ol>
+                </div>
+            
+        
+        
+            <h2 id="序">0. 序</h2>
+<p><strong>1.</strong>我常常在想，数字电子技术和程序设计基础C是何等的相似，以至于我总想把数电理解为电路中的c语言。组合逻辑电路中的译码器，编码器，数据选择器等等可以看做C语言中的各种函数，电路输入即为函数形参，电路输出即为函数返回值。我们在设计电路时，可以把各种封装器件按照它们的功能运用在不同的位置，我们编写程序时，把各种函数按照功能放在main函数中的不同行，在运用器件or函数的时候，我们不会考虑它内部的运作情况，仅仅关注它的输入与输出的关系。</p>
+<p><strong>2.</strong>数字电路按照逻辑功能的不同可分为组合逻辑电路与时序逻辑电路。其中，组合逻辑电路的本质即为:<strong>任意时刻输出仅取决于该时刻的输入</strong>。高度概括为:<strong>无反馈、无记忆</strong>。</p>
+<hr>
+<h2 id="电路的设计方法">1. 电路的设计方法</h2>
+<p><strong>方法就像是一纸蓝图，常用的组合电路、器件就像是依靠蓝图建造的幢幢房屋。</strong></p>
+<p><strong>设计方法:</strong></p>
+<blockquote>
+<p>1逻辑抽象:分析事件因果，确定输入输出。一般将因作为输入，果作为输出
+2定义逻辑状态0/1的含义 3根据因果关系列写真值表 4将真值表转化为逻辑函数
+5选定器件类型 6根据实际，化简函数或变换成适当形式 7画出电路图
+8工艺设计</p>
+</blockquote>
+<h2 id="常用电路器件的罗列">2. 常用电路、器件的罗列</h2>
+<p>这部分内容有迹可循，大多按照器件(每类器件选一到几个典型实际器件)<strong>功能/定义/目的，真值表，逻辑表达式，内部电路图，封装原件图，原件外部拓展</strong>等来介绍。</p>
+<p><strong>常用器件:</strong></p>
+<ol type="1">
+<li><strong>编码器:</strong>为了区分一系列不同事物，将其中每个事物用一个二进制代码表示，这就是编码。
+首先介绍<strong>普通编码器</strong>，之后由于普通编码器任何时刻只允许输入一个编码器信号，否则输出将发生混乱的缺点，将输入信号按照优先顺序排好队，改进为<strong>优先编码器</strong>，于是便允许同时输入两个以上的编码信号，容错率大大增加。</li>
+<li><strong>译码器:</strong>将每个输入的二进制代码译成对应的输出高低电平信号或另外一个代码
+首先介绍结构简单的适用于大规模集成电路内部的<strong>二极管与门译码器</strong>，但其有输入电阻较低，输出电阻较高、输出的高低电平信号发生偏移等缺点。于是又介绍<strong>CMOS门译码器</strong>，最后介绍一些<strong>显示译码器</strong>(半导体数码管与液晶显示器)</li>
+<li><strong>数据选择器:</strong>又称多路开关。在选择输入(地址输入)的作用下，从多个数据输入通道中选择某一通道的数据传至输出端。</li>
+</ol>
+<ul>
+<li><p>此时，局部总结一下这三个器件的关系。我们其实可以把译码器(以74HC138为例)看做一个数据分配器，将片选输入端S1作为数据输入端，将A2A1A0作为地址输入端，功能是将S1输入端的信号输出到A2A1A0所选定的输出线上去。
+于是便有这样两种关系:</p>
+<p><strong>(1)
+将S视为开关时，译码器与编码器可以看做互为反操作。</strong><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.zhihu.com/question/24369751"><strong>一组高低电平经过编码输出为二进制码，再经过译码又输出为一组高低电平</strong></a><strong>。</strong></p>
+<p><strong>(2)
+将S视为数据时，译码器看作数据分配器，其与数据选择器可以看做互为反操作。1个数据经过数据分配输出为n个数据，再经过数据选择又输出为1个数据。</strong></p>
+<p>最后，我想了很久，倒是没发现编码器与数据选择器的强烈联系。(因为我觉得按照不同角度来看，译码器可以看做分配器并分别与编码器与选择器互逆的话，编码器与选择器应该有某种角度的相似。)</p></li>
+</ul>
+<ol start="4" type="1">
+<li><strong>加法器:</strong>能够完成两数之间的相加运算，是构成运算器的基本单元。</li>
+</ol>
+<p>首先介绍极为简单的<strong>半加器</strong>，由于半加器不考虑来自低位进位的缺陷，将两个半加器和一个或门组成了可以考虑来自低位进位的<strong>全加器</strong>。由于全加器只能进行一位数据之间的运算，因此将多个全加器扩展为电路结构简单的可以进行多位数据加法的<strong>串行进位加法器</strong>，由于串行进位加法器运算速度慢，因此改进原理，设计成以提高电路复杂程度为代价的运算速度快的<strong>超前进位加法器</strong>。</p>
+<ol start="5" type="1">
+<li><strong>数值比较器:</strong>比较两个数值的大小。</li>
+</ol>
+<p>首先介绍最简单的<strong>一位数值比较器</strong>，进而扩展为从高位到低位逐位比较的<strong>多位数值比较器</strong>。</p>
+<h2 id="竞争-冒险现象">3. 竞争-冒险现象</h2>
+<p>由于竞争而在电路输出端可能产生尖峰脉冲的现象的产生原因，检查方法，消除手段，至此组合逻辑电路到了尾声。</p>
+<h2 id="总结">4. 总结</h2>
+<p>从组合电路介绍的元器件来看，编码译码，数据选择，加法，比较等五花八门。但这些<strong>器件</strong>都脱离不开组合电路的设计方法，<strong>器件</strong>的灵魂都源于<strong>设计方法</strong>的宏伟蓝图。</p>
+<p>这也使得，<strong>每个电路模块(器件)都可以仅用一张真值表来表达任何功能类型。</strong></p>
+<p><strong>所以，依据真值表，我们可以把输出数据看成输入数据所对应的编码，那么所有组合电路模块的功能都可以看成是一种译码行为。所以我们可以把所有的组合电路的元器件归结为一般意义上的译码电路，称之为广义译码器。</strong></p>
+<p>由此，在组合逻辑电路的范畴中，无论设计出何种功能迥异的器件，我们都可以直指其本质:</p>
+<p><strong>按照真值表设计的“译码器”！</strong></p>
+<h2 id="参考资料">参考资料</h2>
+<p><strong>《数字电子技术基础》第五版，阎石主编，高等教育出版社</strong></p>
+<p><strong>《数字电子技术基础》第二版，潘松、陈龙、黄继业编著，科学出版社</strong></p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/cs/database/MySQL/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    MySQL
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">触发器</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

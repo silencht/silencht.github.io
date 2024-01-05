@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>SLAMBOOK14-NOTE | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="SLAMBOOK14-NOTE">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="1、SLAM整体框架   SLAM整体框架图  1.1 传感器信息读取 在视觉SLAM中主要为相机图像信息的读取和预处理。如果是在机器人中，还可能有码盘、惯性传感器等信息的读取和同步。 1.2 视觉里程计（Visual Odometry，VO） 视觉里程计的任务是估算相邻图像间相机的运动，以及局部地图的样子。VO又称为前端（Front End）。VO与计算机视觉研究领域更为相关，比如图像的特征提取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAMBOOK14-NOTE">
+<meta property="og:url" content="https://silencht.github.io/wiki/robot/note/slambook14/book-note/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="1、SLAM整体框架   SLAM整体框架图  1.1 传感器信息读取 在视觉SLAM中主要为相机图像信息的读取和预处理。如果是在机器人中，还可能有码盘、惯性传感器等信息的读取和同步。 1.2 视觉里程计（Visual Odometry，VO） 视觉里程计的任务是估算相邻图像间相机的运动，以及局部地图的样子。VO又称为前端（Front End）。VO与计算机视觉研究领域更为相关，比如图像的特征提取">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silencht.github.io/wiki/robot/note/slambook14/picture/1.png">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://silencht.github.io/wiki/robot/note/slambook14/picture/1.png">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file active"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-robot/note/slambook14/book-note" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/robot/">robot</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/note/">note</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/note/slambook14/">slambook14</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/robot/note/slambook14/book-note/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/robot/note/slambook14/book-note.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/robot/note/slambook14/book-note.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/robot/note/slambook14/book-note.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            SLAMBOOK14-NOTE
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#slam%E6%95%B4%E4%BD%93%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">1、SLAM整体框架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E6%84%9F%E5%99%A8%E4%BF%A1%E6%81%AF%E8%AF%BB%E5%8F%96"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 传感器信息读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%86%E8%A7%89%E9%87%8C%E7%A8%8B%E8%AE%A1visual-odometryvo"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 视觉里程计（Visual
+Odometry，VO）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E4%BC%98%E5%8C%96optimization"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 后端优化（Optimization）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9E%E7%8E%AF%E6%A3%80%E6%B5%8Bloop-closing"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 回环检测（Loop Closing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E5%9B%BEmapping"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 建图（Mapping）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slam%E9%97%AE%E9%A2%98%E7%9A%84%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BF%B0"><span class="toc-number">1.6.</span> <span class="toc-text">1.6 SLAM问题的数学表述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E7%A9%BA%E9%97%B4%E5%88%9A%E4%BD%93%E8%BF%90%E5%8A%A8"><span class="toc-number">2.</span> <span class="toc-text">2、三维空间刚体运动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 旋转矩阵与平移向量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 旋转</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%B3%E7%A7%BB"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E4%B8%8E%E9%BD%90%E6%AC%A1%E5%9D%90%E6%A0%87"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 变换矩阵与齐次坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E4%B8%8E%E6%AC%A7%E6%8B%89%E8%A7%92"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 旋转向量与欧拉角</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1 旋转向量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AC%A7%E6%8B%89%E8%A7%92"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2 欧拉角</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 四元数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%8E%E7%BE%A4%E4%B8%8E%E6%9D%8E%E4%BB%A3%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">3、李群与李代数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%8E%E7%BE%A4%E4%B8%8E%E6%9D%8E%E4%BB%A3%E6%95%B0-1"><span class="toc-number">3.0.1.</span> <span class="toc-text">3.1.1 李群与李代数</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A"><span class="toc-number">4.</span> <span class="toc-text">0、注释</span></a></li>
+                </div>
+            
+        
+        
+            <h2 id="slam整体框架">1、SLAM整体框架</h2>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/image-20210408154912525.png"></p>
+<center>
+SLAM整体框架图
+</center>
+<h3 id="传感器信息读取">1.1 传感器信息读取</h3>
+<p>在视觉SLAM中主要为相机图像信息的读取和预处理。如果是在机器人中，还可能有码盘、惯性传感器等信息的读取和同步。</p>
+<h3 id="视觉里程计visual-odometryvo">1.2 视觉里程计（Visual
+Odometry，VO）</h3>
+<p>视觉里程计的任务是估算相邻图像间相机的运动，以及局部地图的样子。VO又称为<strong>前端（Front
+End）</strong>。VO与计算机视觉研究领域更为相关，比如图像的特征提取与匹配等。</p>
+<ul>
+<li><p>缺陷：仅通过VO来估计轨迹，会出现<strong>累计漂移</strong>（Accumulating
+Drift）</p></li>
+<li><p>解决方案：</p>
+<ul>
+<li>回环检测：负责检测“机器人回到原始位置”信息</li>
+<li>后端优化：根据回环检测的信息，校正整个轨迹形状</li>
+</ul></li>
+</ul>
+<h3 id="后端优化optimization">1.3 后端优化（Optimization）</h3>
+<p>后端接受不同时刻视觉里程计测量的相机位姿，以及回环检测的信息，对它们进行优化，得到全局一致的轨迹和地图。由于接在VO之后，又称为<strong>后端（Back
+End）</strong>。</p>
+<p>主要是处理SLAM过程中的<strong>噪声</strong>问题，主要是利用滤波与非线性优化算法。</p>
+<h3 id="回环检测loop-closing">1.4 回环检测（Loop Closing）</h3>
+<p>回环检测判断机器人是否到达过先前的位置。如果检测到回环，它会把信息提供给后端进行处理。</p>
+<p>主要解决位置估计随时间漂移的问题。</p>
+<p>实质上是一种计算图像数据相似性的算法。</p>
+<h3 id="建图mapping">1.5 建图（Mapping）</h3>
+<p>它根据估计的轨迹，建立与任务要求对应的地图。地图大体可分为度量地图（Metric
+Map）和拓扑地图（Topological Map）两种。</p>
+<ul>
+<li>度量地图：强调精确的表示地图中物体的位置关系。通常又分为<strong>稀疏（Sparse）</strong>与<strong>稠密（Dense）</strong>两种。
+<ul>
+<li>稀疏：进行一定程度抽象，不需要表达所有物体，选择一部分具有代表意义的东西，称为<strong>路标</strong>，一张稀疏地图就是由路标组成的地图。一般用于定位。</li>
+<li>稠密：着重于建模所有看到的东西。一般用于导航。可以用于各种导航算法。如A*,D*等，缺点是耗费大量存储空间以及大规模度量地图的一致性问题。</li>
+</ul></li>
+<li>拓扑地图：更强调地图元素之间的关系。是一个图（Graph），有节点和边组成，只考虑节点间的连通性。</li>
+</ul>
+<h3 id="slam问题的数学表述">1.6 SLAM问题的数学表述</h3>
+<p>假设:</p>
+<ul>
+<li>离散时刻：<span class="math inline">\(t=1,\cdot\cdot\cdot,K\)</span></li>
+<li>各时刻位置：<span class="math inline">\(x_1,\cdot\cdot\cdot,x_K\)</span></li>
+<li>观测到的路标点：<span class="math inline">\(y_1,\cdot\cdot\cdot,y_N\)</span></li>
+</ul>
+<p>有：</p>
+<ul>
+<li>（从<span class="math inline">\(k-1\)</span>时刻到<span class="math inline">\(k\)</span>时刻，位置<span class="math inline">\(x\)</span>如何变化）<strong>运动方程</strong>：<span class="math inline">\(x_k=f(x_{k-1},u_k,w_k),\space\space
+k=1,\cdot\cdot\cdot,K\)</span>
+<ul>
+<li><span class="math inline">\(u_k\)</span>：已知。运动传感器的输入（或读数）</li>
+<li><span class="math inline">\(w_k\)</span>：运动过程加入的噪声</li>
+</ul></li>
+<li>（在<span class="math inline">\(k\)</span>时刻观察到了某一个路标点<span class="math inline">\(y_j\)</span>）<strong>观测方程</strong>：<span class="math inline">\(z_{k,j}=h(y_j,x_k,v_{k,j}),\space\space (k,j)\in
+O\)</span>
+<ul>
+<li><span class="math inline">\(z_{k,j}\)</span>：已知。观测数据</li>
+<li><span class="math inline">\(v_{k,j}\)</span>：观测过程加入的噪声</li>
+<li><span class="math inline">\(O\)</span>：集合，记录哪个时刻观察到了哪个路标</li>
+</ul></li>
+</ul>
+<p>估计：</p>
+<ul>
+<li><span class="math inline">\(x\)</span>和<span class="math inline">\(y\)</span></li>
+</ul>
+<h2 id="三维空间刚体运动">2、三维空间刚体运动</h2>
+<p><strong>如何描述刚体在三维空间中的运动？</strong></p>
+<p>我们日常生活的空间是三维的，三维空间由3个轴组成，所以一个空间点（<strong>质点</strong>）的位置可以由3个坐标指定。不过目前要研究的机器人、相机等物件可以看作<strong>刚体</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。与质点相比，对于刚体位置的描述，不仅要指出其在空间中的<strong>位置坐标</strong>（3个坐标），还要指出其自身的<strong>姿态</strong>（即刚体的朝向）<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。</p>
+<p><strong>向量</strong>是一种具有大小和方向的矢量（此处向量均默认为列向量）。当指定了空间中具有一组<strong>基</strong>的<strong>坐标系</strong>后，向量在这个坐标系下的坐标和其自身所代表的方向就可以描述刚体的<strong>位姿</strong>。</p>
+<p>实际场景中会定义各种各样的坐标系，向量在不同坐标系下的坐标不同，所以需要一种数学手段描述向量在不同的坐标系下坐标的变换关系。两个坐标系之间的坐标相差了一个<strong>欧式变换</strong>
+（Euclidean Transform）。</p>
+<p>欧式变换由一个<strong>旋转</strong>加一个<strong>平移</strong>组成。</p>
+<h3 id="旋转矩阵与平移向量">2.1 旋转矩阵与平移向量</h3>
+<h4 id="旋转">2.1.1 旋转</h4>
+<p>假设向量<span class="math inline">\(\vec
+a\)</span>在坐标系1和坐标系2下的坐标分别为<span class="math inline">\(a_1\)</span>和<span class="math inline">\(a_2\)</span>，两坐标系的基分别为<span class="math inline">\(\vec e_1\)</span>和<span class="math inline">\(\vec e_2\)</span></p>
+<p>有： <span class="math display">\[
+\vec a ={\vec e_1}^{T} \cdot a_1 \\
+\vec a ={\vec e_2}^{T}\cdot a_2
+\]</span> 即：</p>
+<p><span class="math display">\[
+{\vec e_1}^{T} \cdot a_1 ={\vec e_2}^{T}\cdot a_2
+\]</span> 同时左乘<span class="math inline">\(\vec e_1\)</span>，有：
+<span class="math display">\[
+\vec e_1 \cdot {\vec e_1}^{T} \cdot a_1 =\vec e_1 \cdot {\vec
+e_2}^{T}\cdot a_2\\
+\vec I \cdot a_1 =\vec e_1 \cdot {\vec e_2}^{T}\cdot a_2\\
+a_1 =\vec e_1 \cdot {\vec e_2}^{T}\cdot a_2
+\]</span> 那么，两个坐标系的两组基之间的内积（即<span class="math inline">\(\vec e_1 \cdot {\vec
+e_2}^{T}\)</span>）组成<strong>旋转矩阵</strong><span class="math inline">\(\ R\)</span>（Rotation
+Matrix.），刻画了旋转前后同一个向量的坐标变换关系： <span class="math display">\[
+a_1=R\cdot a_2=R_{12}\cdot a_2
+\]</span> 其中，<span class="math inline">\(R_{12}\)</span>的表示含义为
+<strong>把坐标系2的向量变换到坐标系1中</strong></p>
+<p>又因为旋转矩阵是一个行列式为1的正交矩阵。所以n
+维度旋转矩阵的集合可定义为<strong>特殊正交群</strong>（Special
+Orthogonal Group）： <span class="math display">\[
+SO(n)=\left \{ R\in \mathbb{R}^{n\times n} \mid RR^{T} =I,det(R)=1\right
+\}
+\]</span> 由于旋转矩阵为正交矩阵，所以它的逆<span class="math inline">\({R}^{-1}\)</span>（即转置<span class="math inline">\({R}^{T}\)</span>）描述了一个相反的旋转。 <span class="math display">\[
+a_2={R}^{-1}\cdot a_1={R}^{T}\cdot a_1
+\]</span></p>
+<h4 id="平移">2.1.2 平移</h4>
+<p><span class="math inline">\(\
+t\)</span>称为平移向量。相比旋转，平移部分只需要把平移向量加到旋转之后的坐标上：
+<span class="math display">\[
+a_1=R_{12} \cdot a_2+t_{12}
+\]</span></p>
+<p>其中，<span class="math inline">\(t_{12}\)</span>的表示含义为
+坐标系1原点指向坐标系2原点的向量，<strong>在坐标系1下取的坐标</strong></p>
+<p>反过来的<span class="math inline">\(t_{21}\)</span>，即从坐标系2原点指向坐标系1原点的向量，在坐标系2下取的坐标，并不等于<span class="math inline">\(-t_{12}\)</span></p>
+<p>证明过程：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zhuanlan.zhihu.com/p/364906722">《视觉SLAM十四讲》互为反向的平移向量坐标值的关系</a></p>
+<h4 id="总结">2.1.3 总结</h4>
+<p>通过上述，用一个旋转矩阵<span class="math inline">\(\
+R\)</span>和一个平移向量<span class="math inline">\(\
+t\)</span>完整描述了一个欧式空间的坐标变换关系。</p>
+<p>然而还存在一个小问题：<strong>这里的变换关系不是线性关系</strong>。</p>
+<h3 id="变换矩阵与齐次坐标">2.2 变换矩阵与齐次坐标</h3>
+<p>引入齐次坐标和变换矩阵来处理上述的小问题。将一个三维向量的末尾添加1，将其变成四维向量，进行降维打击。这被称为<strong>齐次坐标</strong>。矩阵<strong>T</strong>称为<strong>变换矩阵</strong>（Transform
+Matrix）。 <span class="math display">\[
+\begin{bmatrix}a&#39; \\1\end{bmatrix}=\begin{bmatrix}R  &amp;
+t\\0^{T}   &amp; 1\end{bmatrix}\begin{bmatrix}a
+\\1\end{bmatrix}\overset{def} {=} T\begin{bmatrix}a \\1\end{bmatrix}
+\]</span></p>
+<p>变换矩阵这种矩阵又称为<strong>特殊欧氏群</strong>（Special Euclidean
+Group）:</p>
+<p><span class="math display">\[
+SE(3)=\left \{  T=\begin{bmatrix}R  &amp; t\\0^{T}   &amp;
+1\end{bmatrix}\in \mathbb{R}^{4\times 4} \mid R\in SO(3),t \in
+\mathbb{R}^{3}  \right \}
+\]</span> 与特殊正交群一样，变换矩阵的逆矩阵表示一个反向的变换。</p>
+<hr>
+<h4 id="总结-1">2.2.1 总结</h4>
+<p>旋转由旋转矩阵SO（3）描述，平移直接由一个三维向量描述。将旋转和平移放在一个矩阵中，就形成了变换矩阵SE（3）.这个变换矩阵描述了一个6自由度的三维刚体运动，不过矩阵表示方式至少有<strong>两个缺点</strong>：</p>
+<ol type="1">
+<li>SO（3）的旋转矩阵有9个量，但一次旋转只有3个自由度；SE（3）有16个量，表达了6自由度的欧式变换。表达方式是<strong>冗余</strong>的。</li>
+<li>旋转矩阵自身带有<strong>约束</strong>：必须是正交矩阵且行列式为1。变换矩阵同理。这些约束使得求解变得困难。</li>
+</ol>
+<p>因此，需要一种方式来<strong>紧凑</strong>的描述旋转和平移。</p>
+<h3 id="旋转向量与欧拉角">2.3 旋转向量与欧拉角</h3>
+<h4 id="旋转向量">2.3.1 旋转向量</h4>
+<p>任意旋转都可以用一个<strong>旋转轴</strong>和一个<strong>旋转角</strong>来刻画。</p>
+<p>于是，使用一个向量，其方向与旋转轴一致，长度等于旋转角，这种向量称为<strong>旋转向量</strong>，也称为<strong>角轴</strong>（Angle-Axis）。此时，只需要一个三维向量即可描述旋转；同样，使用一个旋转向量和一个平移向量即可描述一次变换，这时正好是六维向量。</p>
+<p>表示一个旋转，可以用旋转矩阵<span class="math inline">\(\
+R\)</span>。假设旋转轴为<strong>单位向量</strong><span class="math inline">\(\vec n\)</span>，旋转角度为<span class="math inline">\(\theta\)</span>，那么向量<span class="math inline">\(\theta \vec n\)</span>也可描述该旋转。</p>
+<ul>
+<li><p>旋转矩阵和旋转向量如何转换？</p>
+<ul>
+<li><p>旋转向量<span class="math inline">\(\longrightarrow\)</span>旋转矩阵<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>：
+<span class="math display">\[
+R=\cos\theta \mathit{I} + \left ( 1-\cos \theta  \right )  \vec n \vec
+n^{T} +  \sin \theta \vec n^{\wedge }
+\]</span></p></li>
+<li><p>旋转矩阵<span class="math inline">\(\longrightarrow\)</span>旋转向量<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>：</p></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+  \theta =\arccos \frac{tr\left ( R \right )-1 }{2}
+\]</span></p>
+<center>
+转轴n是旋转矩阵R特征值1对应的归一化特征向量
+</center>
+<blockquote>
+<p>注：旋转轴上的向量在旋转后不会发生改变，所以<span class="math inline">\(R\vec n=1\vec n\)</span>，即有上述。</p>
+<p><span class="math inline">\(^\wedge\)</span>符号：将一个向量变为对应的反对称矩阵。然后则有外积：<span class="math inline">\(a\times b=a^\wedge b\)</span></p>
+<p><span class="math inline">\(^\vee\)</span>符号：将一个反对称矩阵变为对应的向量。若<span class="math inline">\(A\)</span>为反对称矩阵，则<span class="math inline">\(a^\wedge=A\)</span>，<span class="math inline">\(A^\vee=a\)</span></p>
+</blockquote>
+<h4 id="欧拉角">2.3.2 欧拉角</h4>
+<p>旋转矩阵和旋转向量对于人类不直观，<strong>欧拉角</strong>提供了一种直观的方式来描述旋转——使用三个分离的转角，，把一个旋转分解成3次绕不同轴的旋转。不过欧拉角的定义方式很多，带来了很多困难。这里介绍rpy角，它的绕轴旋转顺序是Z（偏航角yaw）Y（俯仰角pitch）X（滚转角roll）。</p>
+<p>欧拉角的一个<strong>重大缺点</strong>是著名的<strong>万向锁问题</strong>（Gimbal
+Lock）：在俯仰角（即绕Y轴的角）为±90°时，第一次旋转与第三次旋转将使用同一个轴，使得系统丢失了一个自由度。这被称为<strong>奇异性</strong>问题（旋转向量同样有此问题）。</p>
+<p><strong>万向锁问题</strong>：这种现象的发生就是由于上述固定坐标轴旋转顺序造成的。理论上，欧拉旋转可以靠这种顺序让一个物体指到任何一个想要的方向，但如果在旋转中不幸让某些坐标轴重合了就会发生万向节锁，这时就会丢失一个方向上的旋转能力，也就是说在这种状态下我们无论怎么旋转（当然还是要原先的顺序）都不可能得到某些想要的旋转效果，除非我们打破原先的旋转顺序或者同时旋转3个坐标轴。由于万向节锁的存在，欧拉旋转无法实现球面平滑插值。</p>
+<p><strong>用途</strong>：验证算法是否有错，转换成欧拉角能快速分辨结果是否正确。某些主体主要为2D场合，也可以把旋转分解为三个欧拉角，然后把其中一个拿出来做定位输出。</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/psklf/articles/5656938.html">万向锁问题参考资料1</a></p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://mp.weixin.qq.com/s/zrbTbBuXFujgGFfkwxJ-hg">万向锁问题参考资料2</a></p>
+<h3 id="四元数">2.4 四元数</h3>
+<p>旋转矩阵用9个量描述3自由度的旋转，具有冗余性；旋转向量和欧拉角是紧凑的，但具有奇异性。</p>
+<p>事实上，我们<strong>找不到不带奇异性的三维向量描述方式</strong>。</p>
+<p><strong>四元数</strong>（Quaternion）可以描述三维空间的旋转，它既是紧凑的，也没有奇异性。</p>
+<p><a href="../book/quaternion.pdf">阅读材料1：quaternion.pdf</a></p>
+<p><a href="../book/Understanding_Quaternions_CN.pdf">阅读材料2：Understanding_Quaternions
+Chinese</a></p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.zhihu.com/question/23005815/answer/33971127">阅读材料3：形象理解四元数</a></p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.bilibili.com/video/BV1SW411y7W1">视频：四元数的可视化</a></p>
+<p><img src="../picture/1.png"></p>
+<h2 id="李群与李代数">3、李群与李代数</h2>
+<p><strong>什么样的相机位姿最符合当前观测数据？</strong>这就需要构建一个优化问题，求解最优<span class="math inline">\(R,t\)</span>，使得误差最小化。</p>
+<p>旋转矩阵自身带有约束（正交且行列式值为1）。将之作为优化变量会引入额外约束，使优化变困难。</p>
+<p>所以我们希望通过李群—李代数的转换关系，将位姿估计变成无约束的优化问题。</p>
+<h4 id="李群与李代数-1">3.1.1 李群与李代数</h4>
+<p><strong>群</strong>（Group）是<strong>一种集合</strong>加上<strong>一种运算</strong>的代数结构。</p>
+<p>现在把集合记作<span class="math inline">\(\
+A\)</span>，一种运算记作<span class="math inline">\(\cdot\)</span>，群记作<span class="math inline">\(\ G=(A,
+\cdot)\)</span>，群要求运算满足以下四个条件：</p>
+<ol type="1">
+<li>封闭性：集合中的两个元素运算后还属于该集合；</li>
+<li>结合律：元素运算的先后顺序不影响结果；</li>
+<li>幺元：存在一个单位元，使得每个元素与之运算的结果都是元素本身；</li>
+<li>逆元：对于集合内所有的元素，都有其对应的逆元素，使得元素与对应逆元素运算结果为单位元；</li>
+</ol>
+<p><strong>李群</strong>是指具有连续（光滑）性质的群。</p>
+<p>李群的<strong>例子</strong>：<span class="math inline">\(SO(3)\)</span>和<span class="math inline">\(SE(3)\)</span></p>
+<hr>
+<p><strong>李代数</strong>：由一个集合<span class="math inline">\(\mathbb V\)</span>、一个数域<span class="math inline">\(\mathbb F\)</span>和一个二元运算<span class="math inline">\(\ [,]\)</span>组成，称<span class="math inline">\((\mathbb V,\mathbb
+F,[,])\)</span>为李代数，记作<span class="math inline">\(\mathfrak
+g\)</span></p>
+<p>需满足以下性质：</p>
+<ol type="1">
+<li>封闭性：同一集合的两元素运算过后还属于该集合</li>
+<li>双线性</li>
+<li>自反性：自己与自己运算结果为零</li>
+<li>雅可比等价</li>
+</ol>
+<p>其中：二元运算被称为<strong>李括号</strong>。</p>
+<p>每个李群都有与之对应的李代数。<strong>李代数描述了李群的局部性质（单位元附近的正切空间）</strong>。</p>
+<p>李代数的<strong>例子</strong>：</p>
+<p><span class="math inline">\(SO(3)\)</span>对应的李代数<span class="math inline">\(\mathfrak {so}(3)\)</span>为三维向量<span class="math inline">\(\phi\)</span>。每个<span class="math inline">\(\phi\)</span>都可以生成一个反对称矩阵<span class="math inline">\(\Phi = \phi ^\wedge \in \mathbb R^{3\times
+3}\)</span>。</p>
+<p>有：<span class="math inline">\(\mathfrak {so}(3) =\{\phi \in \mathbb
+R^3,\Phi=\phi^\wedge \in \mathbb R^{3\times 3}
+\}\)</span>。其可以用来表达旋转矩阵的导数。</p>
+<p><span class="math inline">\(SO(3)\)</span>与<span class="math inline">\(\mathfrak {so}(3)\)</span>关系为：<span class="math inline">\(R=exp(\phi^\wedge)\)</span></p>
+<p>此定义下，两个向量的李括号为：<span class="math inline">\([\phi_1,\phi_2]=(\Phi_1\Phi_2-\Phi_2\Phi_1)^\vee\)</span></p>
+<hr>
+<p><span class="math inline">\(SE(3)\)</span>对应的李代数<span class="math inline">\(\mathfrak {se}(3)\)</span>为六维向量<span class="math inline">\(\xi\)</span>。 <span class="math display">\[
+\mathfrak{s e}(3)=\left\{\boldsymbol{\xi}=\left[\begin{array}{c}
+\rho \\
+\phi
+\end{array}\right] \in \mathbb{R}^{6}, \rho \in \mathbb{R}^{3}, \phi \in
+\mathfrak{s o}(3), \boldsymbol{\xi}^{\wedge}=\left[\begin{array}{cc}
+\phi^{\wedge} &amp; \rho \\
+0^{T} &amp; 0
+\end{array}\right] \in \mathbb{R}^{4 \times 4}\right\}
+\]</span> 其中，前三位为平移（与变换矩阵平移不同），记为<span class="math inline">\(\rho\)</span>；后三维为旋转，记为<span class="math inline">\(\phi\)</span>，实质为<span class="math inline">\(\mathfrak {so}(3)\)</span>。</p>
+<p>注意：在<span class="math inline">\(\mathfrak
+{se}(3)\)</span>中，使用<span class="math inline">\(^\wedge\)</span>符号表示将一个六维向量转换成四维矩阵：
+<span class="math display">\[
+\boldsymbol{\xi}^{\wedge}=\left[\begin{array}{cc}
+\boldsymbol{\phi}^{\wedge} &amp; \boldsymbol{\rho} \\
+\mathbf{0}^{T} &amp; 0
+\end{array}\right] \in \mathbb{R}^{4 \times 4}
+\]</span> 此定义下，两个向量的李括号为：<span class="math inline">\(\left[\xi_{1},
+\xi_{2}\right]=\left(\boldsymbol{\xi}_{1}^{\wedge}
+\boldsymbol{\xi}_{2}^{\wedge}-\boldsymbol{\xi}_{2}^{\wedge}
+\boldsymbol{\xi}_{1}^{\wedge}\right)^{\vee}\)</span></p>
+<h2 id="注释">0、注释</h2>
+<p><span class="math display">\[
+a^{\wedge } =\begin{bmatrix}0
+  &amp; -a_{3}  &amp;a_{2}  \\a_{3}
+  &amp; 0 &amp; -a_{1}  \\-a_{2}
+  &amp; a_{1}  &amp;0
+\end{bmatrix}
+\]</span></p>
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>在<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/物理学">物理学</a>里，理想<strong>刚体</strong>（rigid
+body）是一种有限尺寸，可以忽略<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/形變">形变</a>的<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/固体">固体</a>。不论是否感受到<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/作用力">外力</a>，在刚体内部，<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/質點">质点</a>与质点之间的<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/距离">距离</a>都不会改变。这种理想模型适用条件是，运动过程比固体中的弹性波的传播要缓慢得多。根据<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/相對論">相对论</a>，这种物体不可能实际存在，但物体通常可以假定为完美刚体，前提是必须满足运动速度远小于<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/光速">光速</a>的条件。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>刚体是由一群数量超多的质点组成。实际而言，不可能精确地追踪其中每一个质点的运动。为了简化运算，可以利用刚体的“刚性”，即其内部所有质点彼此之间距离不变的性质。假若物体具有刚性，则倚靠设定三个不共线质点的位置，就足以设定此物体的位置。这意味着，在三维空间里，刚体至多只有九个<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.wikipedia.org/wiki/自由度_(物理学)">自由度</a>，但由于假定三个质点之间的距离固定不变，所以，刚体只有六个自由度。假设还有其它约束，例如，刚体的运动必需绕着其内部一点旋转（定点转动），或绕着其内部一直轴旋转（定轴转动），则自由度会小于六。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>符号^是向量到反对称矩阵的转换符。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>tr求迹是求矩阵的对角线之和。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Eigen代码第90行保证半正定的简单证明
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">互为反向的平移向量坐标值的关系</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

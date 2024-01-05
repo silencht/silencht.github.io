@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>使用ORB-SLAM构建octomap要注意的一些问题 | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="使用ORB-SLAM构建octomap要注意的一些问题">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="使用ORB-SLAM构建octomap要注意的一些问题 以ORB-SLAM系统做为基本框架，RGB-D相机作为基本输入。然后在此基础上，新建一个点云建图线程，将普通帧或关键帧对应的深度图像转换为三维点云，再发布至octomap_server功能包（或者直接仿照此功能包在线程中直接重写八叉树地图构建代码）是目前诸多开源代码的主要流程。   结构点云与非结构点云、深度值合法性、坐标参考系转换  ORB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用ORB-SLAM构建octomap要注意的一些问题">
+<meta property="og:url" content="https://silencht.github.io/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="使用ORB-SLAM构建octomap要注意的一些问题 以ORB-SLAM系统做为基本框架，RGB-D相机作为基本输入。然后在此基础上，新建一个点云建图线程，将普通帧或关键帧对应的深度图像转换为三维点云，再发布至octomap_server功能包（或者直接仿照此功能包在线程中直接重写八叉树地图构建代码）是目前诸多开源代码的主要流程。   结构点云与非结构点云、深度值合法性、坐标参考系转换  ORB">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file active"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-robot/code/ORB-SLAM/使用ORB-SLAM构建octomap要注意的一些问题" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/robot/">robot</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/code/">code</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/code/ORB-SLAM/">ORB-SLAM</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/robot/code/ORB-SLAM/使用ORB-SLAM构建octomap要注意的一些问题.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/robot/code/ORB-SLAM/使用ORB-SLAM构建octomap要注意的一些问题.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/robot/code/ORB-SLAM/使用ORB-SLAM构建octomap要注意的一些问题.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            使用ORB-SLAM构建octomap要注意的一些问题
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8orb-slam%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">使用ORB-SLAM构建octomap要注意的一些问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E7%82%B9%E4%BA%91%E4%B8%8E%E9%9D%9E%E7%BB%93%E6%9E%84%E7%82%B9%E4%BA%91%E6%B7%B1%E5%BA%A6%E5%80%BC%E5%90%88%E6%B3%95%E6%80%A7%E5%9D%90%E6%A0%87%E5%8F%82%E8%80%83%E7%B3%BB%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.
+结构点云与非结构点云、深度值合法性、坐标参考系转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#orb-slam%E4%B8%8Eros%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9D%90%E6%A0%87%E7%B3%BB%E6%A8%A1%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.0.2.</span> <span class="toc-text">2.
+ORB-SLAM与ROS系统的坐标系模式转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#octomap_server%E5%BB%BA%E5%9B%BE%E6%97%B6%E9%83%A8%E5%88%86%E6%96%B9%E6%A0%BC%E6%97%A0%E6%95%85%E6%B6%88%E5%A4%B1%E9%97%AE%E9%A2%98"><span class="toc-number">1.0.3.</span> <span class="toc-text">3.
+octomap_server建图时部分方格无故消失问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sg-slam-%E5%8F%82%E8%80%83"><span class="toc-number">1.1.</span> <span class="toc-text">SG-SLAM 参考</span></a></li></ol>
+                </div>
+            
+        
+        
+            <h1 id="使用orb-slam构建octomap要注意的一些问题">使用ORB-SLAM构建octomap要注意的一些问题</h1>
+<p>以ORB-SLAM系统做为基本框架，RGB-D相机作为基本输入。然后在此基础上，新建一个点云建图线程，将普通帧或关键帧对应的深度图像转换为三维点云，再发布至octomap_server功能包（或者直接仿照此功能包在线程中直接重写八叉树地图构建代码）是目前诸多开源代码的主要流程。</p>
+<blockquote>
+<ol type="1">
+<li>结构点云与非结构点云、深度值合法性、坐标参考系转换<br>
+</li>
+<li>ORB-SLAM与ROS系统的坐标系模式转换<br>
+</li>
+<li>octomap_server建图时部分方格无故消失问题</li>
+</ol>
+</blockquote>
+<p>在复现此类仓库代码时，有一些问题需要注意，在此总结如下。</p>
+<h3 id="结构点云与非结构点云深度值合法性坐标参考系转换">1.
+结构点云与非结构点云、深度值合法性、坐标参考系转换</h3>
+<p>如上述代码，根据关键帧pkf的深度图想构建了一个位于相机坐标系下的三维点云团camera_pc_和一个位于世界坐标系下的三维点云团world_pc_。需要注意的问题，已在注释中说明。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">PointCloudMapping::generatePointCloud</span><span class="params">(KeyFrame* pkf ,pcl::PointCloud&lt;pcl::PointXYZRGB&gt;::Ptr camera_pc_ ,</span></span></span><br><span class="line"><span class="params"><span class="function">pcl::PointCloud&lt;pcl::PointXYZRGB&gt;::Ptr world_pc_)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="comment">//如果后续需要点云团在深度图像中的像素坐标信息（比如要和深度学习获取的目标检测框、语义分割信息等进行处理）</span></span><br><span class="line"><span class="comment">//那么可以生成此类“结构化点云（organized point cloud）”来保留点云像素坐标信息。</span></span><br><span class="line"><span class="comment">//如果不需要像素坐标信息，那么可以直接略过以下三行代码，直接对深度图像进行处理计算，然后往点云团对象中</span></span><br><span class="line"><span class="comment">//push_back点云点元素，如高翔老师仓库的实现：</span></span><br><span class="line"><span class="comment">//https://github.com/gaoxiang12/ORBSLAM2_with_pointcloud_map/blob/cf94d66a9e4253abd66398c7ef461a7a903efffe/ORB_SLAM2_modified/src/pointcloudmapping.cc#L79</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//is_dense设置为false的原因是深度相机有很多位置的信息/点云不可信（不合法），做此标记后，后续的点云处理算法会</span></span><br><span class="line"><span class="comment">//知道该点云团内部还有非法点，从而进行单独处理，避免算法因异常点引发崩溃 </span></span><br><span class="line">    camera_pc_-&gt;<span class="built_in">resize</span>(pkf-&gt;mImDep.rows * pkf-&gt;mImDep.cols);</span><br><span class="line">    camera_pc_-&gt;width = pkf-&gt;mImDep.cols;</span><br><span class="line">    camera_pc_-&gt;height = pkf-&gt;mImDep.rows;</span><br><span class="line">    camera_pc_-&gt;is_dense = <span class="literal">false</span>;<span class="comment">//false if have points are invalid (e.g., have NaN or Inf values).</span></span><br><span class="line"><span class="comment">//有部分开源代码为节省算力，会对深度图进行跨点采样。具体做法是设置一个步长int stride = 3;然后嵌套for循环处的</span></span><br><span class="line"><span class="comment">//行列m+=1和n+=1均改为m+=stride和n+=stride。</span></span><br><span class="line">    <span class="keyword">for</span> ( <span class="type">int</span> m=<span class="number">0</span>; m&lt;pkf-&gt;mImDep.rows; m+=<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> ( <span class="type">int</span> n=<span class="number">0</span>; n&lt;pkf-&gt;mImDep.cols; n+=<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">float</span> d = pkf-&gt;mImDep.<span class="built_in">ptr</span>&lt;<span class="type">float</span>&gt;(m)[n];</span><br><span class="line"><span class="comment">//在深度图像中得到深度值d后，需要对其进行合法性判断（深度相机的有效深度范围）。</span></span><br><span class="line"><span class="comment">//多数仓库代码实现均为简单的深度相机值阈值判断：</span></span><br><span class="line"><span class="comment">//如 if (d &lt; 0.01 || d&gt;10)，此处的0.01和10对应下述代码的camera_valid_depth_Min和camera_valid_depth_Max。</span></span><br><span class="line"><span class="comment">//根据我的测试，如果d为nan值无法通过该范围滤除，因此最好判断条件里再加上nan值判断语句isnan(d)</span></span><br><span class="line">            <span class="keyword">if</span>(d &lt; camera_valid_depth_Min || d &gt; camera_valid_depth_Max || <span class="built_in">isnan</span>(d)) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="type">size_t</span> index = m * pkf-&gt;mImDep.cols + n;</span><br><span class="line">            camera_pc_-&gt;points[index].z = d;</span><br><span class="line">            camera_pc_-&gt;points[index].x = ( n - pkf-&gt;cx) * d / pkf-&gt;fx;</span><br><span class="line">            camera_pc_-&gt;points[index].y = ( m - pkf-&gt;cy) * d / pkf-&gt;fy;</span><br><span class="line">            camera_pc_-&gt;points[index].r = pkf-&gt;mImRGB.<span class="built_in">ptr</span>&lt;uchar&gt;(m)[n*<span class="number">3</span>+<span class="number">2</span>];</span><br><span class="line">            camera_pc_-&gt;points[index].g = pkf-&gt;mImRGB.<span class="built_in">ptr</span>&lt;uchar&gt;(m)[n*<span class="number">3</span>+<span class="number">1</span>];</span><br><span class="line">            camera_pc_-&gt;points[index].b = pkf-&gt;mImRGB.<span class="built_in">ptr</span>&lt;uchar&gt;(m)[n*<span class="number">3</span>+<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//上述点云团坐标均位于相机坐标系下，如果要得到世界系下的点云团，则使用关键帧的位姿变换矩阵Twc，将其转换至世界系。即，</span></span><br><span class="line"><span class="comment">//P_&#123;world) = Twc * P_&#123;camera&#125;</span></span><br><span class="line"><span class="comment">//world_pc_便为世界系下的点云团</span></span><br><span class="line">    Eigen::Isometry3d Twc = ORB_SLAM2::Converter::<span class="built_in">toSE3Quat</span>( pkf-&gt;<span class="built_in">GetPoseInverse</span>() );</span><br><span class="line">    pcl::<span class="built_in">transformPointCloud</span>(*camera_pc_, *world_pc_, Twc.<span class="built_in">matrix</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//3D Semantic Object Detect</span></span><br><span class="line">    <span class="keyword">if</span>(pkf-&gt;mvObjects2D.<span class="built_in">size</span>() &gt; <span class="number">0</span> &amp;&amp; is_octo_semantic_map_construction)</span><br><span class="line">        mpDetector3D-&gt;<span class="built_in">Detect</span>(pkf-&gt;mvObjects2D,pkf-&gt;mImDep,world_pc_);</span><br><span class="line"><span class="comment">//如果要进行全局三维点云地图重建</span></span><br><span class="line">    <span class="keyword">if</span>(is_global_pc_reconstruction)</span><br><span class="line">        <span class="built_in">slam_to_ros_mode_transform</span>(*world_pc_, *world_pc_);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="orb-slam与ros系统的坐标系模式转换">2.
+ORB-SLAM与ROS系统的坐标系模式转换</h3>
+<p>此处可参考此文章：<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zhuanlan.zhihu.com/p/342481675">ORB_SLAM到ROS坐标转换</a>。用图来说明便是，</p>
+<p><img src="/image/使用ORB-SLAM构建octomap要注意的一些问题/v2-1c1cbd0c007eaaa48c0af556b27675f4_r.jpg"></p>
+<p>SLAM坐标系与ROS坐标系之间的转换
+在三维点云重建功能中，一般实现方法是：将连续到来的每张关键帧计算得到的世界系部分点云团world_pc_都累加到一个global_map_pc对象中，然后通过ROS将全图点云团global_map_pc发布至Rviz进行可视化。</p>
+<p>问题是，即使从关键帧的深度图中导出了该帧的世界系点云团world_pc_，此世界系位姿也是相对于SLAM系统的初始帧（默认初始帧位姿为世界系单位阵）而言的。它的坐标系表示方式是上图中上方的SLAM（Z超前，X朝右，Y朝下）模式的。如果直接将该点云发布至Rviz进行可视化，那么此点云的显示相对于Rviz的grid网格是有一个错位颠倒的变换的，看起来是“垂直于”网格地面。所以我们发布前需要统一位姿表示模式。</p>
+<p>这就是做三维点云地图重建时，代码里要做一个T_slam_to_ros的位姿转换的原因：从SLAM位姿模式的Z、-X、-Y转变为ROS模式下的X、Y、Z，以便在Rviz中正确显示。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果要进行全局三维点云地图重建</span></span><br><span class="line"><span class="keyword">if</span>(is_global_pc_reconstruction)</span><br><span class="line">        <span class="built_in">slam_to_ros_mode_transform</span>(*world_pc_, *world_pc_);</span><br><span class="line"><span class="comment">//将点云位姿从SLAM表示模式转换至ROS表示模式</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">PointCloudMapping::slam_to_ros_mode_transform</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZRGB&gt;&amp; source, pcl::PointCloud&lt;pcl::PointXYZRGB&gt;&amp; out)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Eigen::Matrix4f T_slam_to_ros;</span><br><span class="line">	T_slam_to_ros&lt;&lt; <span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,</span><br><span class="line">	               <span class="number">-1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">		           <span class="number">0</span>,<span class="number">-1</span>,<span class="number">0</span>,<span class="number">0</span>,</span><br><span class="line">                    <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>;</span><br><span class="line">	<span class="function">Eigen::Affine3f <span class="title">transform</span><span class="params">(T_slam_to_ros)</span></span>;</span><br><span class="line">	pcl::<span class="built_in">transformPointCloud</span>(source, out, transform);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>同理，向ROS发布当前相机位姿，也是如此处理：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">Camera_Pose = SLAM.<span class="built_in">TrackRGBD</span>(imRGB,imD,tframe);<span class="comment">//从Track获得当前帧位姿，即Tcw</span></span><br><span class="line"><span class="built_in">Pub_CamPose</span>(Camera_Pose); <span class="comment">//将该位姿发布，在Rviz中进行显示</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Pub_CamPose</span><span class="params">(cv::Mat &amp;pose)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">cv::Mat <span class="title">Rwc</span><span class="params">(<span class="number">3</span>,<span class="number">3</span>,CV_32F)</span></span>;</span><br><span class="line">	<span class="function">cv::Mat <span class="title">twc</span><span class="params">(<span class="number">3</span>,<span class="number">1</span>,CV_32F)</span></span>;</span><br><span class="line">	Eigen::Matrix&lt;<span class="type">double</span>,<span class="number">3</span>,<span class="number">3</span>&gt; rotationMat;</span><br><span class="line">	sg_slam_tf_broadcaster = <span class="keyword">new</span> tf::TransformBroadcaster;</span><br><span class="line">	<span class="keyword">if</span>(pose.dims &lt; <span class="number">2</span> || pose.rows &lt; <span class="number">3</span>)&#123;</span><br><span class="line">                Rwc = Rwc;twc = twc;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		Rwc = pose.<span class="built_in">rowRange</span>(<span class="number">0</span>,<span class="number">3</span>).<span class="built_in">colRange</span>(<span class="number">0</span>,<span class="number">3</span>).<span class="built_in">t</span>();<span class="comment">//pose is Tcw, so Rwc need .t()</span></span><br><span class="line">		twc = -Rwc*pose.<span class="built_in">rowRange</span>(<span class="number">0</span>,<span class="number">3</span>).<span class="built_in">col</span>(<span class="number">3</span>);</span><br><span class="line">		rotationMat &lt;&lt; Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>,<span class="number">0</span>), Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>,<span class="number">1</span>), Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>,<span class="number">2</span>),</span><br><span class="line">					   Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">1</span>,<span class="number">0</span>), Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">1</span>,<span class="number">1</span>), Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">1</span>,<span class="number">2</span>),</span><br><span class="line">					   Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">2</span>,<span class="number">0</span>), Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">2</span>,<span class="number">1</span>), Rwc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line">		<span class="function">Eigen::Quaterniond <span class="title">Q</span><span class="params">(rotationMat)</span></span>;</span><br><span class="line">		<span class="comment">// sg-slam&#x27;s trans. x is twc.at&lt;float&gt;(0), y is twc.at&lt;float&gt;(1), z is twc.at&lt;float&gt;(2)</span></span><br><span class="line">		<span class="comment">// ros&#x27;s x 为 slam&#x27;s Z; ros&#x27;s y 为 slam&#x27;s -x; ros&#x27;s z 为 slam&#x27;s -y</span></span><br><span class="line">		sg_slam_tf.<span class="built_in">setOrigin</span>(tf::<span class="built_in">Vector3</span>(twc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">2</span>), -twc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>), -twc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">1</span>)));</span><br><span class="line">		sg_slam_tf.<span class="built_in">setRotation</span>(tf::<span class="built_in">Quaternion</span>(Q.<span class="built_in">z</span>(), -Q.<span class="built_in">x</span>(), -Q.<span class="built_in">y</span>(), Q.<span class="built_in">w</span>()));</span><br><span class="line">		<span class="comment">//sg_slam_tf_broadcaster.sendTransform(tf::StampedTransform(sg_slam_tf, ros::Time::now(), &quot;/map&quot;, &quot;/camera&quot;));</span></span><br><span class="line">		<span class="comment">//delete sg_slam_tf_broadcaster;</span></span><br><span class="line">		Cam_Pose.header.stamp = ros::Time::<span class="built_in">now</span>();</span><br><span class="line">		Cam_Pose.header.frame_id = <span class="string">&quot;/map&quot;</span>;</span><br><span class="line">		tf::<span class="built_in">pointTFToMsg</span>(sg_slam_tf.<span class="built_in">getOrigin</span>(), Cam_Pose.pose.position);</span><br><span class="line">		tf::<span class="built_in">quaternionTFToMsg</span>(sg_slam_tf.<span class="built_in">getRotation</span>(), Cam_Pose.pose.orientation);</span><br><span class="line">		CamPose_Pub.<span class="built_in">publish</span>(Cam_Pose);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="octomap_server建图时部分方格无故消失问题">3.
+octomap_server建图时部分方格无故消失问题</h3>
+<p>通过点云建图线程向ROS发布关键帧的点云话题，然后使用octomap_server功能包订阅点云话题构建八叉树地图（或者可以根据octomap库api自己直接编写相关功能）进行增量地图构建时，地图在扩建的过程中，之前的部分体素格会出现”逐渐消失“情况。如：</p>
+<p><strong>DS-SLAM的这部分代码</strong></p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/ivipsourcecode/DS-SLAM/blob/c7577c8300f73c2e15cb540a963492659d972c73/src/pointcloudmapping.cc#L205-L219">DS-SLAM发布点云话题相关代码</a>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( <span class="type">size_t</span> i=lastKeyframeSize; i&lt;N ; i++ )</span><br><span class="line">&#123;</span><br><span class="line">    PointCloud::Ptr p = <span class="built_in">generatePointCloud</span>( keyframes[i],semanticImgs_color[i], semanticImgs[i],colorImgs[i], depthImgs[i] );</span><br><span class="line">    *KfMap += *p;</span><br><span class="line">    *globalMap += *p;	    </span><br><span class="line">&#125;	</span><br><span class="line">    <span class="function">PointCloud::Ptr <span class="title">tmp1</span><span class="params">(<span class="keyword">new</span> PointCloud())</span></span>;</span><br><span class="line">    voxel.<span class="built_in">setInputCloud</span>( KfMap );</span><br><span class="line">    voxel.<span class="built_in">filter</span>( *tmp1 );</span><br><span class="line">    KfMap-&gt;<span class="built_in">swap</span>( *tmp1 );	</span><br><span class="line">    pcl_cloud_kf = *KfMap;	</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Cloud_transform</span>(pcl_cloud_kf,pcl_filter);</span><br><span class="line">    pcl::<span class="built_in">toROSMsg</span>(pcl_filter, pcl_point);</span><br><span class="line">    pcl_point.header.frame_id = <span class="string">&quot;/pointCloud&quot;</span>;</span><br><span class="line">    pclPoint_pub.<span class="built_in">publish</span>(pcl_point);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+将点云团由相机系转换为世界系（SLAM模式）后，再由SLAM模式转换为ROS模式（
+Cloud_transform(,) ）。其点云参考系为“frame_id =
+"/pointCloud"”，随后便直接发布至ROS系统。在启动octomap建图时，要先使用roslaunch启动两个节点：</p>
+<p>一是<a href="https://link.zhihu.com/?target=https%3A//github.com/ivipsourcecode/DS-SLAM/blob/master/Examples/ROS/ORB_SLAM2_PointMap_SegNetM/launch/Octomap.launch" rel="external nofollow noopener noreferrer" target="_blank">octomap_server</a>，其参考系为/map</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;frame_id&quot;</span> <span class="attr">type</span>=<span class="string">&quot;string&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/map&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>二是<a href="https://link.zhihu.com/?target=https%3A//github.com/ivipsourcecode/DS-SLAM/blob/master/Examples/ROS/ORB_SLAM2_PointMap_SegNetM/launch/transform.launch" rel="external nofollow noopener noreferrer" target="_blank">transform.launch</a>，作用是向ROS输出一个全局静态TF变换，即参考系/pointCloud与参考系/map（实际上，在这里map系就是默认的Rviz世界系）的固定变换为"0.195
+-0.095 0.9 0 0 0"（x y z r p y表示）。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">node</span> <span class="attr">pkg</span>=<span class="string">&quot;tf&quot;</span> <span class="attr">type</span>=<span class="string">&quot;static_transform\_publisher&quot;</span> <span class="attr">name</span>=<span class="string">&quot;map&quot;</span> <span class="attr">args</span>=<span class="string">&quot;0.195 -0.095 0.9 0 0 0 /map /pointCloud 70&quot;</span> &gt;</span></span><br></pre></td></tr></table></figure>
+<p>以上便是DS-SLAM发布点云至octomap_server增量建图的基本思路。</p>
+<p>接下来，看octomap_server源码中接收点云建图的相关代码。<a href="https://link.zhihu.com/?target=https%3A//github.com/OctoMap/octomap_mapping/blob/6e96c831795c664ba554bdff53844657a7916f83/octomap_server/src/OctomapServer.cpp%23L179" rel="external nofollow noopener noreferrer" target="_blank">octomap_server节点启动，对象构建时，参数设置完毕后便会启用回调函数进行无限循环（#179）</a>，回调函数上方是两个话题订阅器，顾名思义，一个订阅点云话题，一个订阅点云位姿tf话题。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//https://github.com/OctoMap/octomap_mapping/blob/kinetic-devel/octomap_server/src/OctomapServer.cpp</span></span><br><span class="line"><span class="comment">//#L179</span></span><br><span class="line">  m_pointCloudSub = <span class="keyword">new</span> message_filters::<span class="built_in">Subscriber</span>&lt;sensor_msgs::PointCloud2&gt; (m_nh, <span class="string">&quot;cloud_in&quot;</span>, <span class="number">5</span>);</span><br><span class="line">  m_tfPointCloudSub = <span class="keyword">new</span> tf::<span class="built_in">MessageFilter</span>&lt;sensor_msgs::PointCloud2&gt; (*m_pointCloudSub, m_tfListener, m_worldFrameId, <span class="number">5</span>);</span><br><span class="line">  m_tfPointCloudSub-&gt;<span class="built_in">registerCallback</span>(boost::<span class="built_in">bind</span>(&amp;OctomapServer::insertCloudCallback, <span class="keyword">this</span>, boost::placeholders::_1));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><a href="https://link.zhihu.com/?target=https%3A//github.com/OctoMap/octomap_mapping/blob/6e96c831795c664ba554bdff53844657a7916f83/octomap_server/src/OctomapServer.cpp%23L263" rel="external nofollow noopener noreferrer" target="_blank">回调函数</a>的主要功能在代码中注释如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">OctomapServer::insertCloudCallback</span><span class="params">(<span class="type">const</span> sensor_msgs::PointCloud2::ConstPtr&amp; cloud)</span></span>&#123;</span><br><span class="line">  ros::WallTime startTime = ros::WallTime::<span class="built_in">now</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ground filtering in base frame</span></span><br><span class="line">  PCLPointCloud pc; <span class="comment">// input cloud for filtering and ground-detection</span></span><br><span class="line">  pcl::<span class="built_in">fromROSMsg</span>(*cloud, pc);</span><br><span class="line"></span><br><span class="line"><span class="comment">//从ROS系统的话题中订阅获取传感器参考系（此文中即相机系）到世界系的位姿变换放入sensorToWorldTf</span></span><br><span class="line">  tf::StampedTransform sensorToWorldTf;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    m_tfListener.<span class="built_in">lookupTransform</span>(m_worldFrameId, cloud-&gt;header.frame_id, cloud-&gt;header.stamp, sensorToWorldTf);</span><br><span class="line">  &#125; <span class="built_in">catch</span>(tf::TransformException&amp; ex)&#123;</span><br><span class="line">    <span class="built_in">ROS_ERROR_STREAM</span>( <span class="string">&quot;Transform error of sensor data: &quot;</span> &lt;&lt; ex.<span class="built_in">what</span>() &lt;&lt; <span class="string">&quot;, quitting callback&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  Eigen::Matrix4f sensorToWorld;</span><br><span class="line">  pcl_ros::<span class="built_in">transformAsMatrix</span>(sensorToWorldTf, sensorToWorld);<span class="comment">//格式转换</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 一些滤波处理（部分代码省略）</span></span><br><span class="line">  pcl::PassThrough&lt;PCLPoint&gt; pass_x;</span><br><span class="line">  ……</span><br><span class="line">  <span class="keyword">if</span> (m_filterGroundPlane)&#123;</span><br><span class="line">   <span class="comment">//如果设置了滤除地面，部分处理操作（省略）</span></span><br><span class="line">  ……</span><br><span class="line">  &#125; </span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// directly transform to map frame:将点云从传感器坐标系变换至世界系</span></span><br><span class="line">    pcl::<span class="built_in">transformPointCloud</span>(pc, pc, sensorToWorld);</span><br><span class="line">    <span class="comment">// 滤波处理（省略）</span></span><br><span class="line">  ……</span><br><span class="line">    <span class="comment">// pc_nonground is empty without ground segmentation</span></span><br><span class="line">    pc_ground.header = pc.header;</span><br><span class="line">    pc_nonground.header = pc.header;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//将点云插入octomap，进行增量更新</span></span><br><span class="line">  <span class="built_in">insertScan</span>(sensorToWorldTf.<span class="built_in">getOrigin</span>(), pc_ground, pc_nonground);</span><br><span class="line">  ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>点云插入增量更新代码如下，</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">OctomapServer::insertScan</span><span class="params">(<span class="type">const</span> tf::Point&amp; sensorOriginTf, <span class="type">const</span> PCLPointCloud&amp; ground, <span class="type">const</span> PCLPointCloud&amp; nonground)</span></span>&#123;</span><br><span class="line">  point3d sensorOrigin = <span class="built_in">pointTfToOctomap</span>(sensorOriginTf);</span><br><span class="line"></span><br><span class="line">……</span><br><span class="line">  <span class="comment">// instead of direct scan insertion, compute update to filter ground:</span></span><br><span class="line">  KeySet free_cells, occupied_cells;</span><br><span class="line">  <span class="comment">// insert ground points only as free:</span></span><br><span class="line"> ……</span><br><span class="line">  <span class="comment">// 对于所有非地面点云: free on ray, occupied on endpoint:</span></span><br><span class="line">  <span class="keyword">for</span> (PCLPointCloud::const_iterator it = nonground.<span class="built_in">begin</span>(); it != nonground.<span class="built_in">end</span>(); ++it)&#123;</span><br><span class="line">    <span class="function">point3d <span class="title">point</span><span class="params">(it-&gt;x, it-&gt;y, it-&gt;z)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> ((m_minRange &gt; <span class="number">0</span>) &amp;&amp; (point - sensorOrigin).<span class="built_in">norm</span>() &lt; m_minRange) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="comment">// maxrange check</span></span><br><span class="line">    <span class="keyword">if</span> ((m_maxRange &lt; <span class="number">0.0</span>) || ((point - sensorOrigin).<span class="built_in">norm</span>() &lt;= m_maxRange) ) &#123;</span><br><span class="line">      <span class="comment">// free cells</span></span><br><span class="line">      <span class="keyword">if</span> (m_octree-&gt;<span class="built_in">computeRayKeys</span>(sensorOrigin, point, m_keyRay))&#123;</span><br><span class="line">        free_cells.<span class="built_in">insert</span>(m_keyRay.<span class="built_in">begin</span>(), m_keyRay.<span class="built_in">end</span>());</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// occupied endpoint</span></span><br><span class="line">      OcTreeKey key;</span><br><span class="line">      <span class="keyword">if</span> (m_octree-&gt;<span class="built_in">coordToKeyChecked</span>(point, key))&#123;</span><br><span class="line">        occupied_cells.<span class="built_in">insert</span>(key);</span><br><span class="line">      ……</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;<span class="comment">// ray longer than maxrange:;</span></span><br><span class="line">      ……</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// mark free cells only if not seen occupied in this cloud</span></span><br><span class="line">……</span><br><span class="line">  <span class="comment">// now mark all occupied cells:</span></span><br><span class="line">……</span><br><span class="line">……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从OctomapServer::insertScan()函数中可以看出，每次插入点云时，以传感器在世界系下的原点为起点，以点云（世界系下）坐标为终点，更新octomap。即，从原点到终点光线ray上的所有点设置为空闲free，点云所在点（终点）设置为占据occupied状态（free
+on ray, occupied on endpoint），如下图所示。</p>
+<p><img src="/image/使用ORB-SLAM构建octomap要注意的一些问题/v2-5512e3adef92396b21c39c8d25d1bdd1_r.jpg"></p>
+<p>https://www.arminhornung.de/Research/pub/hornung13roscon.pdf</p>
+<p>综上，那么DS-SLAM以及一些类似的问题<a href="#ref_1">[1]</a> <a href="#ref_2">[2]</a>出现体素格莫名其妙消失（清除cleared)的原因可以分析如下：</p>
+<p>在SLAM系统生成点云时，在SLAM中便将3D点云转换为了世界系（此时均为SLAM位姿模式），然后又将SLAM模式转换为ROS模式（见本文第二节），最后将点云消息进行发布。</p>
+<p>octomap_server功能包的建图逻辑是订阅
+【相机系下的3D点云信息】、【与该点云信息有关的传感器系（本文即相机系）到世界系的位姿变换
+tf 】两种数据（octomap_server默认所有消息的位姿类型均为ROS模式）。</p>
+<p>DS-SLAM并没有在SLAM系统中发布相机系到世界系的位姿变换 tf
+，而且它将相机系下的3D点云（SLAM模式）手动转换为了世界系下的3D点云（ROS模式）并发布出去。</p>
+<p>为了使得octomap_server可以处理DS-SLAM发布的点云数据，DS-SLAM直接roslaunch了一个tf静态变换文件，持续向ROS发布相机系/pointCloud到世界系/map的位姿变换tf，只不过这个tf除了一些xyz的单纯位置变换外，并没有其他的旋转操作。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">node</span> <span class="attr">pkg</span>=<span class="string">&quot;tf&quot;</span> <span class="attr">type</span>=<span class="string">&quot;static_transform_publisher&quot;</span> <span class="attr">name</span>=<span class="string">&quot;map&quot;</span> <span class="attr">args</span>=<span class="string">&quot;0.195 -0.095 0.9 0 0 0 /map /pointCloud 70&quot;</span> &gt;</span></span><br></pre></td></tr></table></figure>
+<p>两种数据齐备，那么octomap_server此时确实已经可以运行。不过这里有一个小小的问题，那便是：</p>
+<p>由于每次octomap_server接收到的相机系到世界系的位姿变换tf是DS-SLAM手动发布的静态信息，因此octomap_server每次处理3D点云并对octomap进行增量更新时，它所参考的传感器原点（上文图中的sensor
+origin）一直是"0.195 -0.095 0.9 0 0
+0"这个相对于世界系的静态坐标，从来不会发生变化。</p>
+<p>再由八叉树更新原理可知，每次的空闲和占据状态是根据传感器真正原点到点云坐标点的“光线”（下图中以true
+sensor origin起始的黑色箭头）来进行处理的。本来每次的原点sensor
+origin都应该是传感器实时相对于世界系的真实原点，而点云则是基于传感器系下的坐标，然后回调函数insertCloudCallback()会自己对这些数据进行坐标系变换处理。</p>
+<p><img src="/image/使用ORB-SLAM构建octomap要注意的一些问题/v2-87db55fd53e188aab6c9287fbfc1df9d_r.jpg"></p>
+<p>正确的传感器原点、错误的传感器原点设置
+然而，如上图所示，现在DS-SLAM的部分代码一边对点云的坐标系和模式进行了手动处理（点云变为了ROS模式的世界系坐标），一边发布了一个静态tf变换对octomap_server进行“蒙蔽”。这就导致一旦相机拍摄到已经占据的体素格的点云，新产生的光线线路（图中绿色箭头）上所有的体素格（无论占据与否）都将更新为空闲free。那么便会有一部分实际为占据状态的体素（如end
+point)，被更新为空闲状态。这就导致了部分体素“消失”的现象。</p>
+<p><strong>解决的方法很简单，按照octomap_server的正常使用方式使用即可：</strong></p>
+<p><strong>1. generatePointCloud( )直接输出相机系下的点云团，</strong><a href="https://link.zhihu.com/?target=https%3A//github.com/silencht/SG-SLAM/blob/c5d613653d2ad9cbea0109cc7dc1d0d9b7d8eca2/src/sg-slam/src/PointcloudMapping.cc%23L283" rel="external nofollow noopener noreferrer" target="_blank">只将SLAM位姿模式改为ROS模式即可</a><strong>，</strong><a href="https://link.zhihu.com/?target=https%3A//github.com/silencht/SG-SLAM/blob/c5d613653d2ad9cbea0109cc7dc1d0d9b7d8eca2/src/sg-slam/src/PointcloudMapping.cc%23L285" rel="external nofollow noopener noreferrer" target="_blank">并将点云团参考系设为/camera</a><strong>.</strong></p>
+<p><strong>2.</strong> <a href="https://link.zhihu.com/?target=https%3A//github.com/silencht/SG-SLAM/blob/c5d613653d2ad9cbea0109cc7dc1d0d9b7d8eca2/src/sg-slam/src/PointcloudMapping.cc%23L263-L274" rel="external nofollow noopener noreferrer" target="_blank">求解相机系到世界系的位姿变换tf（ROS模式的）</a><strong>，</strong></p>
+<p><strong>3.</strong> <a href="https://link.zhihu.com/?target=https%3A//github.com/silencht/SG-SLAM/blob/c5d613653d2ad9cbea0109cc7dc1d0d9b7d8eca2/src/sg-slam/src/PointcloudMapping.cc%23L291-L293" rel="external nofollow noopener noreferrer" target="_blank">发布点云团和tf变换，标记tf参考系变换为/camera_sensor至/map</a></p>
+<p>那么，octomap_server现在接收到的信息便是：</p>
+<ol type="1">
+<li><p>每个关键帧的位于相机系下的ROS模式点云团数据，参考系为/camera_sensor；</p></li>
+<li><p>每个关键帧的自相机系/camera_sensor至世界系/map的ROS模式位姿变换tf；</p></li>
+</ol>
+<p>然后octomap_server便可正确处理这些数据了。</p>
+<p>还可参考代码或文章</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/gaoxiang12/octomap_tutor/blob/f4a6a8eaf835fb6189345c0ee598509ed6faa280/src/joinMap.cpp#L135">高翔老师octomap
+tutor</a> <a target="_blank" rel="external nofollow noopener noreferrer" href="https://zhuanlan.zhihu.com/p/176513040"></a>
+本文部分代码摘自仓库</p>
+<h2 id="sg-slam-参考"><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/SG-SLAM">SG-SLAM</a> 参考</h2>
+<ol type="1">
+<li>[^](#ref_1_0)<a target="_blank" rel="external nofollow noopener noreferrer" href="https://answers.ros.org/question/224488/octomap-decreasing-probabilities-when-obstacle-is-not-there-anymore/" class="uri">https://answers.ros.org/question/224488/octomap-decreasing-probabilities-when-obstacle-is-not-there-anymore/</a></li>
+<li>[^](#ref_2_0)<a target="_blank" rel="external nofollow noopener noreferrer" href="https://answers.ros.org/question/51837/octomap_server-globally-referenced-pointcloud-and-transform/" class="uri">https://answers.ros.org/question/51837/octomap_server-globally-referenced-pointcloud-and-transform/</a></li>
+</ol>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    MapPoint::PredictScale()小记
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">特征点数量分配计算时缩放因子开方原因</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

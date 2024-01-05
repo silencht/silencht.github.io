@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>相量法 | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="相量法">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="观看此文应具备基础知识：学习电路至正弦激励下动态电路的稳态分析一章、微积分基础、微分方程等   约定正文符号如下：（①②③…等为公式标识符；❶❷❸…等为文末注释标识符），相关量后面的‘h’是homogeneous通解的首字母，‘p’是particular特解的首字母，数学中的虚数 i 为了避免在电路中与电流 i 混淆，所以虚数 i在此记作 j，相量法中I头上的点由于这里不好编辑，所以用头上的~表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="相量法">
+<meta property="og:url" content="https://silencht.github.io/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="观看此文应具备基础知识：学习电路至正弦激励下动态电路的稳态分析一章、微积分基础、微分方程等   约定正文符号如下：（①②③…等为公式标识符；❶❷❸…等为文末注释标识符），相关量后面的‘h’是homogeneous通解的首字母，‘p’是particular特解的首字母，数学中的虚数 i 为了避免在电路中与电流 i 混淆，所以虚数 i在此记作 j，相量法中I头上的点由于这里不好编辑，所以用头上的~表">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file active"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-ee/电路/相量法" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/ee/">ee</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/ee/%E7%94%B5%E8%B7%AF/">电路</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/ee/电路/相量法.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/ee/电路/相量法.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/ee/电路/相量法.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            相量法
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B"><span class="toc-number">1.</span> <span class="toc-text">开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F"><span class="toc-number">2.</span> <span class="toc-text">结束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A"><span class="toc-number">3.</span> <span class="toc-text">注释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">4.</span> <span class="toc-text">参考文献</span></a></li></ol>
+                </div>
+            
+        
+        
+            <blockquote>
+<p>观看此文应具备基础知识：学习电路至正弦激励下动态电路的稳态分析一章、微积分基础、微分方程等</p>
+</blockquote>
+<blockquote>
+<p>约定正文符号如下：（①②③…等为公式标识符；❶❷❸…等为文末注释标识符），相关量后面的‘h’是homogeneous通解的首字母，‘p’是particular特解的首字母，数学中的虚数
+i 为了避免在电路中与电流 i 混淆，所以虚数 i在此记作
+j，相量法中I头上的点由于这里不好编辑，所以用头上的~表示</p>
+</blockquote>
+<p>首先，先来看一道简单的电路习题：</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/0相量法20200410173936.png"></p>
+<p><strong>题目：</strong> 如图<span class="math inline">\(Us\)</span>为正弦电压源，其值为<span class="math inline">\(Umsin｛wt+\varphi u｝\)</span>，其中<span class="math inline">\(\varphi
+u\)</span>是电压源的初相位。设电感初始值<span class="math inline">\(iL｛0^{-} ｝=0\)</span>安培，<span class="math inline">\(t=0\)</span>时，开关S从1合向2，求换路后电感电流<span class="math inline">\(iL｛t｝（t≥0）\)</span>.</p>
+<p><strong>解1（</strong>对比之前直流电压源<span class="math inline">\(Us\)</span>做法，这是我一开始想到的方法，但是理解到后面，我认为这个方法应该是不通的）：</p>
+<p><strong>一阶RC/RL电路经典法求解一般步骤：</strong></p>
+<ol type="1">
+<li><strong>建立描述电路的微分方程</strong></li>
+<li><strong>求齐次微分方程的通解和非齐次微分方程的一个特解</strong></li>
+<li><strong>将齐次微分方程的通解与非齐次微分方程的的一个特解相加，得到非齐次微分方程的通解，利用初始条件确定通解的系数</strong></li>
+</ol>
+<p>1.描述换路后电路的微分方程为（实质为KVL）：</p>
+<p><span class="math inline">\(L\frac{di_{L} }{dt} +Rdi_{L}=U_{m}
+sin｛wt+\varphi u｝\)</span>----①</p>
+<p>令<span class="math inline">\(\frac{di_{L}}{dt} =y^{&#39;}\)</span>
+,<span class="math inline">\(iL=y\)</span>,代入①式有：</p>
+<p><span class="math inline">\(Ly^{&#39;} +Ry=U_{m} sin｛wt+\varphi
+u｝\)</span> ----②</p>
+<p>2.列写特征方程（P算子解法❶）：<span class="math inline">\(LP+R=0\Rightarrow P=-\frac{R}{L}\)</span>,</p>
+<p>因而齐次微分方程的通解为：$yh=ke^{- t} $（其中k为待确定量），</p>
+<p>自由项<span class="math inline">\(f｛t｝=U_{m} sin｛wt+\varphi
+u｝\)</span>，</p>
+<p>设特解<span class="math inline">\(yp=A\)</span>，<span class="math inline">\(y^{&#39;}
+=0\)</span>（A为常数）代入原方程②，有</p>
+<p><span class="math inline">\(yp=A=\frac{U_{m} }{R}sin[wt+\varphi u]
+=I_{m} sin[wt+\varphi u]\)</span>,</p>
+<p>3.方程通解为：<span class="math inline">\(y=yh+yp=i_{L}[0^{+}
+]=k\cdot e^{-\frac{L}{R} \cdot t} +I_{m} sin[wt+\varphi
+u]\)</span>，</p>
+<p>代入初始条件：<span class="math inline">\(y|_{t=0^{+} } =i_{L}[0^{+}]
+=i_{L}[0^{-}]=0\)</span>,</p>
+<p>求得系数<span class="math inline">\(k=-I_{m} sin[wt+\varphi
+u]\)</span>，</p>
+<p>最后可求得题目结果：</p>
+<p>$i_{L}[t]=I_{m}sin[wt+u]-I_{m}sin[wt+u]e^{-t } $③(t≥0)</p>
+<p>乍一看似乎并没有错，但这个式子应该是错误的。学过高中物理知识即可知道，电感对于交流电是有阻碍作用的（通直流阻交流），这个阻碍作用在R中并不能体现出来（因为电阻的电阻为R，也就变相说明电路中阻碍电流的只有线性电阻），而且在学习了后续课程之后可以知道，电感电容这类电学器件是有感抗与容抗的<em>【在求解一阶动态电路三要素法中：时间常数RiC，L/Ri中Ri的含义是从电路的储能原件两端看进去的戴维南等效电阻】</em>；</p>
+<p>式子中的<span class="math inline">\(\varphi
+u\)</span>也是错误的，学过后续课程之后也可以知道，<a target="_blank" rel="external nofollow noopener noreferrer" href="http://wenku.baidu.com/link?url=HPYHCgGlSfH-NWasUNfFEW3Axamq_IbyXEORx5yv3RmJLq393cCccFIDtmuaNRM941OTAdw1XILdHzLxoA61A48dV8u_KnGZOCk_dYRBXd_">电感上的电流是落后与电压90°相位的（同样地，电容上的电流也是超前电压90°相位的）</a>。</p>
+<p>所以这个方法行不通（可能有解决、改进的办法，但是我没有想出）。</p>
+<p><strong>解2（</strong>此为《电路原理》书中解法，有删减、补充、改动<strong>）：</strong></p>
+<p>1.描述换路后电路的微分方程为：$L +Ri_{L}=U_{m}sin[wt+u] $----④</p>
+<p>2.齐次微分方程的通解仍为指数形式：<span class="math inline">\(i_{Lh}
+=Ae^{-\frac{R}{L} \cdot t}（t≥0）\)</span></p>
+<p>非齐次微分方程的一个特解与外加激励应具有同样的形式，设为：</p>
+<p><span class="math inline">\(i_{Lp} =I_{m} sin[wt+\varphi i
+]（t≥0）\)</span></p>
+<p>将上式代入式子④，有：</p>
+<p><span class="math inline">\(wLI_{m}cos[wt+\varphi
+i]+RI_{m}sin[wt+\varphi i]=U_{m}sin[wt+\varphi u]\)</span>,</p>
+<p>对等号左边进行三角变换（<a target="_blank" rel="external nofollow noopener noreferrer" href="http://baike.baidu.com/link?url=tVXNP_sCZzR1wdbkNwroyqy23dWHr04HngwbNf09CYo-BNQFnsd3noG625AUM55sIXgcEqNSwpaJeRO3VWNZgq">辅助角公式❷</a>）：</p>
+<p><span class="math inline">\(\sqrt{[wL]^{2} +R^{2} } \cdot I_{m}
+sin[wt+\varphi i+\varphi ]=U_{m} sin[wt+\varphi u]\)</span>⑤,</p>
+<p>其中<span class="math inline">\(\varphi\)</span>
+称为电路的<strong>阻抗角</strong>，$tan= $，</p>
+<p>比较⑤中等号左右两边的对应项：</p>
+<p><span class="math inline">\(\sqrt{[wL]^{2} +R^{2} } \cdot
+I_{m}\Leftrightarrow U_{m}\)</span> 与<span class="math inline">\(sin[wt+\varphi i+\varphi ]\Leftrightarrow
+sin[wt+\varphi u]\)</span>，</p>
+<p>可求得：$I_{m} = <span class="math inline">\(与\)</span>i=u-=u-arctan
+$，</p>
+<p>因此，式子④的一个特解为：<span class="math inline">\(i_{Lp}
+=\frac{U_{m} }{\sqrt{[wL]^{2} +R^{2} } } sin[wt+\varphi u-\varphi
+](t≥0)\)</span>，</p>
+<p>3.电感电流的全响应为：<span class="math inline">\(i=i_{Lh}
++i_{Lp}=Ae^{-\frac{R}{L} \cdot t}+\frac{U_{m} }{\sqrt{[wL]^{2} +R^{2} }
+} sin[wt+\varphi u-\varphi ]（t≥0）\)</span></p>
+<p>代入初始条件：<span class="math inline">\(i_{L} [0^{+} ]=i_{L} [0^{-}
+]=0\)</span>，</p>
+<p>有：<span class="math inline">\(A+\frac{U_{m} }{\sqrt{[wL]^{2} +R^{2}
+} } sin[\varphi u-\varphi ]=0\Rightarrow A=-\frac{U_{m} }{\sqrt{[wL]^{2}
++R^{2} } } sin[\varphi u-\varphi ]\)</span>,</p>
+<p>因此，电感电流为：</p>
+<p><span class="math inline">\(i_{L} =\frac{U_{m} }{\sqrt{[wL]^{2}
++R^{2} } } sin[wt+\varphi u-\varphi ]-\frac{U_{m} }{\sqrt{[wL]^{2}
++R^{2} } } sin[\varphi u-\varphi ]e^{-\frac{R}{L} \cdot
+t}\)</span>⑥（t≥0）.</p>
+<p>【总结】</p>
+<p>1.比较解1、解2结果③（现将Im按照解1变形）与⑥：</p>
+<p><span class="math inline">\(i_{L}[t]=\frac{U_{m} }{R} sin[wt+\varphi
+u]-\frac{U_{m} }{R}sin[wt+\varphi u]\cdot e^{-\frac{R}{L}t }\)</span>
+③</p>
+<p><span class="math inline">\(i_{L} =\frac{U_{m} }{\sqrt{[wL]^{2}
++R^{2} } } sin[wt+\varphi u-\varphi ]-\frac{U_{m} }{\sqrt{[wL]^{2}
++R^{2} } } sin[\varphi u-\varphi ]e^{-\frac{R}{L} \cdot t}\)</span>⑥</p>
+<p>可见，解1后面分析是正确的：</p>
+<p>◆sin[这里的值是有相位变换的]</p>
+<p>◆比较分子$U_{m} <span class="math inline">\(下面的分母，可见解1中的R的确不是单纯的电路电阻值。含储能元件的此电路中对电流阻力的表现形式是这样的：\)</span>{
+} $。</p>
+<p>可预见的是：电感元件在电路中对电流阻力作用是与电源的角频率w与其本身电感值L共同决定的。这些便是接下来的感抗方面的内容了。</p>
+<p>2.通过解2我们发现：上例仅仅是最简单的一阶动态电路，其复杂程度已经令人咂舌。</p>
+<p>可以预见，如果在各种大型电路网络中利用此类方法求解，是比较困难的（请允许我用了“比较”这个词汇，鄙见：因为在计算机飞速发展的时代，求解一些普通点的微分方程似乎并不是什么难事？）。由此：</p>
+<p>我们不禁想象，是不是有一种方法，可以<strong>不用求解微分方程，仅仅像之前直流电源那样，利用线性方程求解</strong>，那该多好啊？</p>
+<p>于是，天才工程师<a target="_blank" rel="external nofollow noopener noreferrer" href="http://baike.baidu.com/link?url=uIj8VldxFKt2c00E6Wgq-SaWEAmbtOA03IMmJcRA1XOQECLTBrv0xQOcaWDHj0T-01xwmr51M68xBZrCzqj0ea">斯泰因梅茨</a>疯狂的在电压电流上加了个点，一个伟大的方法诞生了——<strong>相量法</strong>！</p>
+<h2 id="开始">开始</h2>
+<p>我们盯住上述题目中：电压源<span class="math inline">\(U_{s}=
+Umsin｛wt+\varphi u｝\)</span>
+以及用微分方程求解电路过程中的各个方程式。其中有各种各样的已知量、未知量：电压、电流的幅值$U_{m}
+/I_{m} <span class="math inline">\(，初相角\)</span>u/i<span class="math inline">\(，以及激励的频率\)</span>w$等等。</p>
+<p>帅的人可能已经发现：无论是题设、过程、结果，我们如此多的方程式中只要含有三角函数的式子，其中的频率无一不是<span class="math inline">\(w\)</span>！显然，在给定频率的正弦电压电源中，其<strong>电路的频率保持不变</strong>。可以预见的，正弦电流电源同样如此。</p>
+<p>那么，我们想：我们在题目中关注的量（也可以理解为：其中参与方程式变换的量）一般为三个：电压、电流的幅值$U_{m}
+/I_{m} <span class="math inline">\(；初相角\)</span>u/i<span class="math inline">\(；激励的频率\)</span>w<span class="math inline">\(。既然电路中自始至终频率\)</span>w$死活不变【可以理解为：方程式中参与实际运算的量仅仅为幅值与初相角】，那么我们是不是可以残忍的抛弃这个好吃懒做的家伙、仅仅关心真正的两位劳模：幅值与初相角呢？</p>
+<p>如何将频率<code>*</code>时间从三角函数的大别墅【在此将三角函数如<span class="math inline">\(sin[wt+\varphi
+]\)</span>中的[]戏称为别墅，其中的频率<code>*</code>时间、初相角为别墅中的成员】中拖出来扔到大街？在抛弃频率<code>*</code>时间这个好吃懒做的家伙之后，运算过程能否得以简化？让我们拭目以待。</p>
+<p>常规的三角函数变换手段似乎难以将别墅中阴险的频率小伙子诱骗出来，是时候发大招了——欧拉的愤怒！</p>
+<p><strong>欧拉公式❸【请阅读下文之前务必阅读此注释，重要！重要！重要！】：</strong></p>
+<p><span class="math inline">\(e^{jx} =cosx+j\cdot sinx\)</span></p>
+<p>仔细观察公式，将之与$ Umsin｛wt+u｝$比较、分析。还是没有启发？</p>
+<p>那么我们将欧拉公式进一步变换：<span class="math inline">\(e^{j[wt+\varphi ]} =cos[wt+\varphi ]+j\cdot
+sin[wt+\varphi ]\Rightarrow e^{jwt+j\varphi } =cos[wt+\varphi ]+j\cdot
+sin[wt+\varphi ]\)</span>，</p>
+<p>再变：<span class="math inline">\(e^{jwt } \cdot e^{j\varphi }
+=｛coswt+jsinwt ]\cdot ｛cos\varphi +jsin\varphi
+｝\)</span>，现在呢，是不是有点眉目了？</p>
+<p>我们思考：正弦电压源表达式三角函数大别墅中的两个成员不就可以<strong>运用欧拉公式变换为两个e指数函数的乘积形式</strong>，<strong>从而</strong>将之从别墅中<strong>分离</strong>吗？</p>
+<p>按照这个思路，根据：<span class="math inline">\(k\cdot sinx=k\cdot
+IM[e^{jx} ]=IM[k\cdot e^{jx} ]\)</span>，</p>
+<p>于是，电流源<span class="math inline">\(i=I_{m} sin[wt+\varphi
+i]\)</span>可以表示为：<span class="math inline">\(I_{m} \cdot
+IM[e^{j[wt+\varphi i]} ]=IM[I_{m} \cdot e^{j[wt+\varphi i]}
+]\)</span>⑦，</p>
+<p>高中的时候（嗯，电路原理课程前面也推到过的，在此不细说），我们就知道：正弦交流电的幅值是有效值的$
+<span class="math inline">\(倍，即\)</span>I_{m} = I$。</p>
+<p>⑦式又可以表示为：<span class="math inline">\(IM[\sqrt{2} I\cdot
+e^{j\varphi i}\cdot e^{jwt} ]\)</span>⑧，现在总算将<span class="math inline">\(IM[ e^{jwt} ]\)</span>，也就是<span class="math inline">\(wt\)</span>这个家伙拖出来了！【——来人呐，帮朕把这个刁民拖出去，打一百二十大板！——嗻！】</p>
+<p>再继续之前，还要介绍一个概念：<strong>旋转因子❹。</strong></p>
+<p>那让我们乘胜追击，单独看剩下的两个劳模（幅值与初相角）：<span class="math inline">\(\sqrt{2} I\cdot e^{j\varphi
+i}\)</span>，乘号$$左侧代表幅值，右侧代表初相角。</p>
+<p>那么我们之后的运算全都建立在⑧式中的两个劳模 <span class="math inline">\(I\cdot e^{j\varphi
+i}\)</span>，等到运算完成之后，再把<span class="math inline">\(wt\)</span>这个家伙塞进来，反向逆推算子，不就可以得到结果了吗？</p>
+<p>为了简便起见，我们约定：<span class="math inline">\(\tilde{I} =I\cdot
+e^{j\varphi i} =I\cdot ∠\varphi i\)</span></p>
+<p>小结：</p>
+<p><span class="math inline">\(I_{m} sin[wt+\psi i]=IM[\sqrt{2}I\cdot
+e^{\psi i} \cdot e^{jwt} ]\)</span>,<span class="math inline">\(e^{jx}
+=cosx+j\cdot sinx\)</span></p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/1相量法20200410173718.jpg"></p>
+<h2 id="结束">结束</h2>
+<p><strong>1.</strong>将<span class="math inline">\(i（t）\)</span>变成$
+$的过程称为<strong>从时域到频域的相量变换：</strong> <span class="math display">\[
+i[t]=I_{m} cos[wt+\varphi ]\Rightarrow i[t]=IM[I_{m}e^{j[wt+\varphi ]}
+]\Rightarrow \tilde{I} =I_{m}e^{j\varphi } \Rightarrow \tilde{I}=I_{m}
+\]</span> <strong>2.大体流程图：</strong></p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/2相量法20200410173750.jpg"></p>
+<p><strong>3</strong>.以下是知友【<a target="_blank" rel="external nofollow noopener noreferrer" href="https://zhuanlan.zhihu.com/people/b635647b41a2edc8634bed7606c83569"><span class="citation" data-cites="frente">@frente</span> nemo</a>
+】对相量法的相关理解，供参考：</p>
+<blockquote>
+<p>我想他用的就是以不变应万变的道理吧，所有量都以一个频率在变，其效果就更想对静止差不多了吧，但是他们对电容和电感产生了新的影响，因为他们的电流电压之间有微分和积分的关系。在新的思路下你可以将电感变成jwl，将电容变成1/jwc，接下来你又改思考为什么可以这样变。这是在极坐标下的电流电压关系可以推导出来的。你要再追根溯源说，为什么可以用复数来代替正弦？那是因为欧拉公式将正弦转化成了复数表达。你还问欧拉公式又是什么？它是迈克劳林（泰勒）公式得到的。你必须不断地思考，不断地提问才能明白这一起是怎么回事。</p>
+<p>链接：https://www.zhihu.com/question/19851763/answer/37465084</p>
+</blockquote>
+<p>4.接下来，按照思路，可以推导“元件约束与基尔霍夫定律下的相量形式”，然后就可以求解相关习题了！~</p>
+<p>最后引用这位知友的一句话作为本文的结束：</p>
+<blockquote>
+<p>伟大的人类用自己的智慧把交流量头上打个点，然后一切又归于平静了。</p>
+</blockquote>
+<h2 id="注释">注释</h2>
+<p><em>【约定注释部分符号如下：（ⅠⅡⅢ…等为公式标识符】</em></p>
+<p>❶列写特征方程求解一阶微分方程（在我看来，电路求解中的P算子解法接近于高等数学微分方程的特征方程解法，三要素解法接近于高等数学中的通解公式解法。）</p>
+<p>下面给出【高等数学一阶微分方程知识以及其特征方程解法】与【直流电压源动态电路中P算子解法】的互相对照：</p>
+<p><strong>高等数学一阶线性微分方程基础知识：</strong></p>
+<p>对于形如：</p>
+<p><img src="https://pic1.zhimg.com/c500ff3b97aa039ad927a2d3769cc4b0_b.png"></p>
+<p>----Ⅰ的方程，叫做<strong>一阶线性微分方程</strong>。</p>
+<p>如果对于Ⅰ中，若：</p>
+<p><img src="https://pic4.zhimg.com/55ada3580653136fecd8c71c8eb9806f_b.png"></p>
+<p>，那么方程：</p>
+<p><img src="https://pic1.zhimg.com/83cef79fd8e2c2ebc00fdd91c76d8024_b.png"></p>
+<p>----Ⅱ称为<strong>齐次</strong>的；否则，方程Ⅰ称为<strong>非齐次</strong>的。</p>
+<p><strong>一阶非齐次线性微分方程特征方程解法（部分过程参考自文献）：</strong></p>
+<blockquote>
+<p>如果一阶常系数非齐次线性微分方程的一般形式是：$my^{'} +py=qe^{x} $
+(m、p、q为常数，一般情况下<span class="math inline">\(\lambda
+=0\)</span>)。</p>
+<p>对于此方程,一般先求出对应的齐次方程的通解,再用常数变易法求原方程的通解。
+对应的齐次方程的通解：列写对应特征方程<span class="math inline">\(mr+p=0\)</span>（r为未知量），求解得出$r=- <span class="math inline">\(，则齐次通解为：\)</span>yh=k e^{-x }$
+，下面求非齐次特解。 特解应设为<span class="math inline">\(yp=x^{k}
+\cdot e^{\lambda x} Rm[x]\)</span>,求解步骤：</p>
+</blockquote>
+<ol type="1">
+<li><p><span class="math inline">\(Rm[x]\)</span>是与q同次的多项式，因<span class="math inline">\(q\)</span>为常数，所以<span class="math inline">\(Rm[x]\)</span>取<span class="math inline">\(x=1\)</span>的常数，在此我们约定为常数A</p></li>
+<li><p><span class="math inline">\(\lambda
+=0\)</span>与r对照比较，一般情况下<span class="math inline">\(\lambda
+\ne r\)</span>，因此<span class="math inline">\(\lambda
+=0\)</span>不是特征方程的根，所以特解表达式中k取0</p></li>
+<li><p>把特解表达式（此时特解表达式应为<span class="math inline">\(yp
+=A\)</span>，<span class="math inline">\(y^{&#39;}
+=0\)</span>[常数A求导为0]）代入（需要求导的求导之后代入）一般形式的原方程（此时原方程应为<span class="math inline">\(my^{&#39;} +py=q）\)</span>，得：</p>
+<p><span class="math inline">\(pA=q\Rightarrow
+yp=A=\frac{q}{p}\)</span></p></li>
+</ol>
+<p>原方程的通解等于其对应的齐次方程的通解与其一个特解的和：</p>
+<p><span class="math inline">\(y=yh+yp=k \cdot e^{-\frac{p}{m}x
+}+\frac{q}{p}\)</span></p>
+<p>❷在数学中，辅助角是指三角变换中收缩变换的代表<strong>辅助角公式</strong>：<span class="math inline">\(asinx+bcosx=\sqrt{(a^2+b^2)} sin(x+\varphi
+)\)</span>，其中<span class="math inline">\(tan\varphi
+=\frac{b}{a}\)</span></p>
+<p><strong>❸欧拉公式与复数：</strong></p>
+<p>在介绍欧拉公式之前，先要说明的是虚数。经历过高考的我们都知道，复数这个词可以用一个形如<span class="math inline">\(a+jb\)</span>的整体来表示，这里a、b都是通常的实数且b≠0，而<span class="math inline">\(j\)</span>和通常实数不同，具有<span class="math inline">\(j^{2}
+=-1\)</span>这个性质。虽然看起来很难理解，但是在此只能强迫读者默认这个事实。如果想对复数有更深入的认识，不妨读一下《复分析
+可视化方法》这本书。</p>
+<p><strong>1. 复数及其运算：</strong>
+设A为一复数，a和b分别是它的实部和虚部，则复数A的代数形式（又称直角坐标形式）为：<span class="math inline">\(A=a+jb\)</span>，上式中，<span class="math inline">\(j=\sqrt{-1}\)</span> 为虚数单位。</p>
+<p><strong>2.
+复数的</strong>实部和虚部分别用下列<strong>符号表示</strong>：<span class="math inline">\(Re[A]=a,Im[A]=b\)</span>。在此不用纠结于Re与Im，可以看作一种算子（就像高中做的那些新定义题目一样，如：定义a#b=ab，那么我们遇到2#3就等于2×3=6）。</p>
+<p><strong>【但是为了防止算子<span class="math inline">\(Im\)</span>与电流幅值</strong><span class="math inline">\(I_{m}\)</span>
+<strong>混淆，在本文中我们约定用<span class="math inline">\(IM\)</span>做取虚部算子写法】</strong></p>
+<p>复数经过它们的运算后分别得到该复数的实部和虚部。</p>
+<p>复数A还可以表示为三角形式：<span class="math inline">\(A=|A|[cos\Theta +jsin\Theta ]\)</span>，</p>
+<p>根据欧拉公式又可进一步写成指数形式：$A=|A|e^{j} $，</p>
+<p>还可以改写为极坐标形式：<span class="math inline">\(A=|A|∠\Theta\)</span> 。</p>
+<p>其中：若$A=a+jb=|A|∠$，则 <span class="math inline">\(a=|A|cos\Theta
+,b=|A|sin\Theta\)</span> ,<span class="math inline">\(|A|=\sqrt{a^{2}
++b^{2} } ,\Theta =arctan[\frac{b}{a} ]\)</span></p>
+<p><strong>几何表示</strong>：</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/3相量法20200410173815.png"></p>
+<p><strong>3.
+复数的运算：</strong>【图片来源：《电路原理》P390-392】</p>
+<p><img src="https://pic1.zhimg.com/d7407e50ddee346fcdaacf43e831c850_b.png"></p>
+<p><img src="https://pic3.zhimg.com/b0dbd0472cbdbe4571e8e4a8cbc41b9e_b.png"></p>
+<p><img src="https://pic1.zhimg.com/ac978ab1d88c4924035f5f45c24eae64_b.png"></p>
+<p><img src="https://pic1.zhimg.com/a97c023835d0b4282d6ac81d28cf9dc0_b.png"></p>
+<p><strong>文字浓缩：</strong></p>
+<ul>
+<li><strong>两个复数之和A+B由通常向量加法的平行四边形法则给出</strong></li>
+<li><strong>两个复数的乘法：AB之长是A之长与B之长的乘积，AB的幅角是A与B的幅角之和</strong></li>
+</ul>
+<p><strong>4. 欧拉公式的猜想式推导（非严格）：</strong> 设<span class="math inline">\(f(x)=\cos x+j\sin x\)</span>,有：<span class="math inline">\(f(x)f(y)=f(x+y)\)</span>， 猜知：<span class="math inline">\(f(x)\)</span>为指数函数，设： <span class="math inline">\(f(x)=e^{kx} =\cos x+j\sin
+x\)</span>（其中k为常数，j为虚数单位） 两边求导，得: <span class="math inline">\(k\cdot e^{kx} =-\sin x+j\cos x=j^{2}\sin x+j\cos
+x=j[\cos x+j\sin x]\)</span>， 其中[]中便是<span class="math inline">\(e^{kx}\)</span>,即：<span class="math inline">\(k\cdot e^{kx} =j\cdot e^{kx}\)</span>， 消去<span class="math inline">\(e^{kx}\)</span>（其不为0）, 则<span class="math inline">\(k=j\)</span>, 因此我们有：<span class="math inline">\(e^{jx} =\cos x+j\sin x\)</span></p>
+<p><strong>5.</strong></p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://baike.baidu.com/link?url=0PTGJ6d5x50smMrxUugmumGqxjaJG9blyMs2Qa7t1hE-MIsFOZDZeew74UE8KKzi3i5tWDhOMJ4O9-wvbSWP2a">欧拉公式</a></p>
+<p>更加有趣的是，在《复分析》这本书的注释中，有这样一句话：</p>
+<blockquote>
+<p>我们相信，现在的证法支持一个观点，即这种恒等式只是复数乘法的简单法则的复杂化了的表现形式。</p>
+</blockquote>
+<p>被誉为<strong>上帝公式</strong>的欧拉公式，仅仅是复数乘法法则的表现形式！有兴趣的可以读一读这本书的前面几章内容~</p>
+<p><strong>❹旋转因子：</strong></p>
+<p>我们假设初值：<span class="math inline">\(A=|A|\cdot e^{j\Theta
+}\)</span> <strong>，</strong>如图：</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/4相量法20200410173836.png"></p>
+<p>然后做运算：<span class="math inline">\(A\cdot e^{j\psi } =|A|\cdot
+e^{j\Theta } \cdot e^{j\psi }=|A|\cdot e^{j[\Theta +\psi ]}\)</span>
+<strong>，</strong></p>
+<p>我们可以想象，A的初值是A的绝对值乘e的<span class="math inline">\(j\Theta\)</span>
+次方，当它再乘e的$j$次方时，几何直观看来为：</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/5相量法20200410173853.png"></p>
+<p><strong>总结为：任何一个复数乘以<span class="math inline">\(e^{j\psi
+}\)</span></strong>
+<strong>之后，等于这个复数模不变，相角逆时针增加<span class="math inline">\(\psi\)</span></strong> <strong>度</strong></p>
+<p><span class="math inline">\(e^{jwt}\)</span>
+<strong>是以角速度w逆时针方向旋转的单位长度的有向线段，称之为旋转因子。</strong></p>
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>《
+一阶常系数线性微分方程的某些求法的比较》，作者：汤文菊、胡荣、简志宏
+.文章编号:1008-8458(2005)04-0009-02</li>
+<li>《高等数学》第七版上册，同济大学数学系编，高等教育出版社，2015年6月第五次印刷</li>
+<li>《电路原理》编著：于歆杰、朱桂萍、陆文娟，清华大学出版社，2007年3月第一次印刷</li>
+<li>《工程电路分析》（engineering circuit
+analysis）第七版，作者：【美】William H. Hayt，Jr. Jack E.Kemmerly
+Steven M.Durbin 编著 ，周玲玲、蒋乐天
+等译.，电子工业出版社，2007年7月第一次印刷</li>
+<li>《复分析 可视化方法》（visual complex analysis）作者：【美】Tristan
+Needhan 著，齐民友译，人民邮电出版社，2009年7月北京第一次印刷</li>
+</ul>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    电路原理脉络
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">视觉SLAM:搞定坐标系、三角测量、PnP</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

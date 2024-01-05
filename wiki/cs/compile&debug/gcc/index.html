@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>gcc | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="gcc">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本系列教程将介绍现代C&#x2F;C++项目的构建编译常用工具链，GCC，Make，以及CMake。 其中，GCC是C&#x2F;C++语言的编译工具，Make是增量式（编译）批处理工具，CMake是Make脚本生成工具。 在现代C&#x2F;C++项目的构建中，它们的关系如下。 12              cmake           make       gccCMakelist.txt -----&gt; Make">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gcc">
+<meta property="og:url" content="https://silencht.github.io/wiki/cs/compile&debug/gcc/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="本系列教程将介绍现代C&#x2F;C++项目的构建编译常用工具链，GCC，Make，以及CMake。 其中，GCC是C&#x2F;C++语言的编译工具，Make是增量式（编译）批处理工具，CMake是Make脚本生成工具。 在现代C&#x2F;C++项目的构建中，它们的关系如下。 12              cmake           make       gccCMakelist.txt -----&gt; Make">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.533Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file active"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-cs/compile&amp;debug/gcc" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/cs/">cs</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/cs/compile-debug/">compile&debug</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/cs/compile&debug/gcc/">
+            <time datetime="2023-11-29T02:08:16.533Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/cs/compile&amp;debug/gcc.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/cs/compile&amp;debug/gcc.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/cs/compile&amp;debug/gcc.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            gcc
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#gcc"><span class="toc-number">1.</span> <span class="toc-text">GCC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">编译流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">编译参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#i%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.1.</span> <span class="toc-text">-I参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#l%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">-l参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#l%E5%8F%82%E6%95%B0-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">-L参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.4.</span> <span class="toc-text">其他编译参数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pkg-config"><span class="toc-number">1.3.</span> <span class="toc-text">pkg-config</span></a></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <p>本系列教程将介绍<strong>现代</strong>C/C++项目的构建编译常用工具链，GCC，Make，以及CMake。
+其中，GCC是C/C++语言的编译工具，Make是增量式（编译）批处理工具，CMake是Make脚本生成工具。
+在现代C/C++项目的构建中，它们的关系如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">              cmake           make       gcc</span><br><span class="line">CMakelist.txt -----&gt; Makefile ----&gt; Cmds ---&gt; Binary</span><br></pre></td></tr></table></figure>
+<p>开发者需要编写<code>CMakelist.txt</code>文件，来配置项目相关的CMake参数。
+通过运行<code>cmake</code>命令，自动生成对应平台的Make工具自动构建脚本<code>Makefile</code>文件。
+当然，CMake也支持生成<strong>其他的</strong>构建工具的配置文件，比如Xcode的<code>xxxx.xcodeproj</code>，Visual
+Studio的<code>xxxx.sln</code>，Ninja的<code>xxxx.ninja</code>等等。
+目前，大多数开源的C/C++项目都支持使用CMake生成<code>Makefile</code>文件，再调用<code>make</code>命令，使用Make工具进行自动构建。
+<code>Makefile</code>文件可以看成是一系列<strong>依赖于文件</strong>的Shell命令。
+它基于文件修改的<strong>时间戳</strong>来实现增量式处理。
+具体规则大致如下，若生成的<strong>目标文件</strong>的时间戳早于<strong>依赖文件</strong>的时间戳时，则执行对应的命令，<strong>重新生成</strong>目标文件。
+这实际上暗示了，Make工具不只用于编译，还可以用于其他的<strong>增量式文件生成</strong>任务。
+使用Make工具来编译C/C++项目时，一般会使用Shell命令来调用<code>gcc</code>，<strong>自动化</strong>且<strong>增量式</strong>地实现C/C++源代码的编译链接等一系列工作。</p>
+<h2 id="gcc">GCC</h2>
+<p>在早期，GCC为<strong>GNU C
+Compiler</strong>的简写，即GNU计划中的C语言编译器。
+但经过多年的扩展和迭代，GCC逐渐支持C、C++、Objective-C、Fortran、Java、Ada和Go等越来越多语言的编译。
+因此，其GCC被重新定义为<strong>GNU Compiler Collection</strong>，即
+GNU编译器套件。 在本篇中，我们仅介绍使用GCC编译C/C++项目。</p>
+<blockquote>
+<p>值得注意的是，Apple公司曾经一直使用GCC作为官方的编译器。
+但是由于GCC开发社区对Apple所提的需求，给予的优先级始终不高，甚至很多Apple的重要需求基本不做考虑。
+于是，财大气粗的Apple一怒之下，决定放弃GCC，基于LLVM重新开发了编译工具Clang，支持
+C、C++、Objective-C等语言。
+因此，目前macOS上自带的默认<code>gcc</code>命令，实际上调用的是<code>clang</code>。
+希望在macOS上使用GCC，需要自行安装，如使用macOS上常用的包管理工具Homebrew，（<code>brew install gcc</code>）。
+比较幸运的一点事，<code>clang</code>在使用上（调用方式，参数等方面），基本复刻了<code>gcc</code>。
+所以，在本篇中，笔者虽然讲GCC，但实际上给出的例子，都是使用的Clang，但基本上差异不大，不会导致太大的问题。</p>
+</blockquote>
+<h3 id="编译流程">编译流程</h3>
+<p>使用<code>gcc</code>编译C/C++程序时，主要的编译流程如下，包含<strong>预处理</strong>、<strong>编译</strong>、<strong>汇编</strong>、<strong>链接</strong>等四个步骤。
+以输入C语言程序源码文件<code>b.c</code>为例，直接调用命令<code>gcc b.c</code>，将会<strong>完整执行</strong>以下流程，并生成对应的<strong>可执行</strong>的<strong>二进制</strong>文件<code>a.out</code>。
+注意，这里<code>gcc</code>的默认输出就是固定的<code>a.out</code>。
+在GCC工具链中，汇编由工具<code>as</code>完成，链接则由工具<code>ld</code>完成。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">      -E          -S          -c          </span><br><span class="line">b.c ------&gt; b.i ------&gt; b.s ------&gt; b.o ------&gt; a.out</span><br><span class="line">      gcc         gcc         as          ld</span><br></pre></td></tr></table></figure>
+<p>对<code>gcc</code>使用以下指令，将会使其编译流程<strong>停止</strong>在对应位置：</p>
+<ul>
+<li><code>-E</code>，（pr<strong>E</strong>processing），执行到<strong>预处理</strong>步骤之后，即处理C/C++源码中<code>#</code>开头的指令，包括<strong>宏展开</strong>以及<code>#include</code><strong>头文件引入</strong>等等。
+该指令默认不输出文件，可以使用<code>-o</code>指令输出约定后缀为<code>*.i</code>的文件。</li>
+<li><code>-S</code>，（a<strong>S</strong>sembly），执行到<strong>编译</strong>步骤之后，生成汇编文件，但不生成二进制机器码。
+该指令默认的输出文件后缀为<code>*.s</code>。</li>
+<li><code>-c</code>，（<strong>c</strong>ompilation），执行到<strong>汇编</strong>步骤之后，调用工具<code>as</code>，从汇编码生成二进制机器码，但不进行链接。
+该指令默认的输出文件后缀为<code>*.o</code>（<strong>o</strong>bject）。</li>
+<li>不带以上参数调用<code>gcc</code>将会完整执行以上流程，即执行到到<strong>链接</strong>（linking）步骤之后。
+链接步骤实际上调用链接工具<code>ld</code>来执行，会将源码生成的二进制文件，库文件，以及程序的启动部分进行组合，从而形成一个完整的二进制可执行文件。</li>
+</ul>
+<p>特别的，使用指令<code>-o</code>，（<strong>o</strong>utput），可以指定输出文件的名称。
+例如<code>gcc b.c -o b.bin</code>，将生成可执行文件<code>b.bin</code>，而不是默认的<code>a.out</code>。</p>
+<p>以上指令都可以在编译流程任意环节的基础上进行调用，例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">gcc -E b.c -o b.i</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash"><span class="built_in">ls</span></span></span><br><span class="line">b.c b.i</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">gcc -S b.i</span></span><br><span class="line">b.c b.i b.s</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">gcc -c b.s</span></span><br><span class="line">b.c b.i b.o b.s</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">gcc b.o</span></span><br><span class="line">b.c b.i b.o a.out b.s</span><br></pre></td></tr></table></figure>
+<h3 id="编译参数">编译参数</h3>
+<p>对于一个实际的C/C++项目而言，源文件一般不会只有一个，而且绝大多数情况下会使用到<strong>第三方库</strong>（Third-party
+Library）。 由于C/C++没有官方的<strong>包管理工具</strong>（Package
+Manager），如Python的<code>pip</code>，Java的<code>maven</code>，Nodejs的<code>npm</code>等等，
+所以，在C/C++项目中使用第三方库时，一般使用系统自带的包管理器来进行第三方库的安装，例如Ubuntu下的<code>apt-get</code>，macOS的<code>brew</code>（Homebrew）等等。
+同时，也可以选择自行获取第三方库的源码进行编译安装。</p>
+<p>第三方库主要由两个部分组成，即 a)<strong>头文件</strong>，
+b)<strong>库文件</strong>。
+头文件一般是一系列名为<code>xxx.h</code>（<strong>h</strong>ead）的文件，相当于暴露出第三方库所提供的API接口（函数签名）。
+库文件一般会包含<strong>静态库文件</strong>和<strong>动态库文件</strong>，相当于第三方库在功能上的二进制实现。
+其中，静态库文件是一系列名为<code>libxxx.a</code>（<strong>a</strong>rchive）的文件（Windows下为<code>libxxx.lib</code>，<strong>lib</strong>rary）。
+动态库文件则是一系列名为<code>libxxx.so</code>（<strong>s</strong>hared
+<strong>o</strong>bject）的文件（Windows下为<code>libxxx.dll</code>，<strong>d</strong>ynamic
+<strong>l</strong>ink
+<strong>l</strong>ibrary，macOS下为<code>libxxx.dylib</code>，<strong>dy</strong>namic
+<strong>lib</strong>rary）。
+系统自带的，以及由系统包管理器安装的第三方库，其头文件一般在<code>/usr/include</code>或<code>/usr/local/include</code>路径下，库文件一般在<code>/lib</code>，<code>/usr/lib</code>和<code>/usr/local/lib</code>目录下。</p>
+<p>正是由于以上因素的影响，GCC工具链不负责管理第三方库，因此无法判定C/C++项目具体需要使用哪些库，以及这些库的准确信息，如位置、版本等。
+所以，仅使用GCC，无法完全自动地解决C/C++项目第三方库的依赖问题。
+我们需要人工地添加各种编译参数，如<code>-I</code>，<code>-l</code>以及<code>-L</code>，将所依赖的第三方库的相关信息，传递给<code>gcc</code>编译器。
+其中<code>-I</code>传递的是头文件所在的目录，<code>-l</code>传递的是需要链接的库的名称，<code>-L</code>传递的是库文件所在的目录。</p>
+<h4 id="i参数"><code>-I</code>参数</h4>
+<p>回顾之前所介绍的GCC编译流程，在<strong>预处理</strong>阶段需要处理<code>#include</code>指令，将包含的头文件替换进源码。
+一般来说，在进行预处理时，<code>gcc</code>会自动在当前工程目录下，以及<code>/usr/include</code>目录下寻找对应的头文件。</p>
+<p>但对于位于其他目录下的第三方库的头文件，<code>gcc</code>无法自动寻找到所需头文件的位置，会报出形如<code>xxx.h: file not found</code>的错误。
+我们需要使用<code>-I</code>参数来指定第三方库头文件的位置。
+例如，在macOS下，使用Homebrew包管理器安装<code>llvm</code>，会相应地安装LLVM项目所包含的第三方库，其对应的头文件位于<code>/usr/local/opt/llvm/include</code>目录。</p>
+<p>而我们在使用LLVM提供的库时，可以使用<code>-I/usr/local/opt/llvm/include</code>（或者<code>-I /usr/local/opt/llvm/include</code>，加空格）来指定头文件所在的位置。
+从而，<code>gcc</code>会额外在<code>-I</code>参数指定的目录下搜索对应的头文件。
+<code>-I</code>参数可以<strong>重复多次</strong>使用，从而指定多个额外的头文件目录。
+<code>-I</code>参数一般指定<strong>绝对路径</strong>，但也可以用<strong>相对路径</strong>，比如头文件在当前目录，可以用<code>-I.</code>来指定。</p>
+<blockquote>
+<p>需要注意的是，在C/C++源码中，使用<code>#include"xxxx.h"</code>语句时，其中的<code>xxxx.h</code>可以带上路径。
+我们甚至可以使用绝对路径来引用头文件。
+比如说，存在头文件<code>/usr/local/opt/llvm/include/llvm/Pass.h</code>，我们在使用它时，可以直接通过这样的方式引用<code>#include"/usr/local/opt/llvm/include/llvm/Pass.h"</code>。</p>
+<p>不过，在C/C++工程中，并不推荐这种做法。
+比较推荐的做法是，使用相对路径加参数<code>-I include_dir</code>的方法来引用头文件。
+比如以上的例子中，我们会直接在源码中使用<code>#include"llvm/Pass.h"</code>，并且将llvm库的头文件所在目录，通过参数<code>-I /usr/local/opt/llvm/include</code>传递给<code>gcc</code>。
+这样做能够灵活地管理第三方库版本，也便于不同机器下的多人协作开发，比直接包含绝对路径头文件要好很多。</p>
+<p>总而言之，<code>gcc</code>在进行预处理时，会将库文件目录（如<code>-I</code>参数传递进来的目录，以及默认的<code>/usr/include</code>，<code>/usr/local/include</code>等目录），与程序源码中<code>#include"xxxx.h"</code>语句的<code>xxxx.h</code>进行组合拼接。
+倘若某个组合，得到的路径存在实际的头文件，那么就会将该头文件包含进来。</p>
+</blockquote>
+<h4 id="l参数"><code>-l</code>参数</h4>
+<p>在GCC编译流程的链接阶段，会默认链接标准库，如<code>libc.a</code>，但是对于第三方库，就需要手动添加。
+倘若在编译中报出如下的错误：
+<code>Undefined symbols for architecture x86_64: xxx...xxx ld: symbol(s) not found for architecture x86_64</code>这一般是由<strong>未正确指定</strong>需要链接的第三方库导致的。</p>
+<p>在使用<code>gcc</code>时，一般会选择使用<code>-l</code>参数来指定需要链接的库。
+例如，假定我们使用了<code>math</code>库（即<code>#include&lt;math.c&gt;</code>），在进行编译时，便会报出如上的<code>Undefined</code>错误。
+这时，我们可以使用<code>-lm</code>（或者<code>-l m</code>）参数来指定需要链接<code>math</code>库。</p>
+<blockquote>
+<p>注意，某些gcc编译器会把<code>math</code>库视为标准库进行自动链接。
+这时我们需要加上<code>-nostdlib</code>参数，使其不自动链接标准库，才会报出如上的<code>Undefined</code>错误。</p>
+</blockquote>
+<p>初看<code>-lm</code>参数，可能会感觉有些诡异。
+那么，<code>-l</code>参数具体是如何使用的呢？
+<code>-l</code>参数后需要接<strong>库名</strong>（如<code>m</code>），而不是<strong>库文件名</strong>（如<code>libm.so</code>）。
+但库名和库文件名之间，存在非常直观的联系。
+以<code>math</code>库为例，其库文件名是<code>libm.so</code>，而库名是<code>m</code>。
+从中很容易看出，库名就是把库文件名的前缀<code>lib</code>和后缀名<code>.so</code>去掉后得到的。
+再比如说，LLVM包含的库文件<code>libLLVMCore.a</code>，其对应的库名就是<code>LLVMCore</code>，而链接它的参数为<code>-lLLVMCore</code>。</p>
+<h4 id="l参数-1"><code>-L</code>参数</h4>
+<p>位于<code>/lib</code>，<code>/usr/lib</code>，<code>/usr/local/lib</code>等目录下的库文件，例如<code>libm.so</code>，在使用<code>-l</code>参数后，可以直接被链接。
+但如果库文件不在这些目录里，只用<code>-l</code>参数，进行链接时仍会报错，<code>ld: library not found for -lxxx</code>。
+这意味着链接程序<code>ld</code>在当前的库文件路径中，无法找到<code>libxxx.so</code>或<code>libxxx.a</code>。</p>
+<p>这时，我们需要使用<code>-L</code>参数，将所要链接的库文件所在的路径告诉<code>gcc</code>。
+<code>-L</code>参数后需要跟库文件所在的路径。
+例如，在macOS下，使用Homebrew包管理器安装<code>llvm</code>，其对应的库文件位于<code>/usr/local/opt/llvm/lib</code>目录。
+倘若我们需要使用库<code>LLVMCore</code>，即链接库文件<code>libLLVMCore.a</code>，除了添加<code>-lLLVMCore</code>参数外，还需要使用参数<code>-L/usr/local/opt/llvm/lib</code>，告诉<code>gcc</code>库文件所在的目录。</p>
+<h4 id="其他编译参数">其他编译参数</h4>
+<p>除了以上的这些参数外，<code>gcc</code>还有一些其他的参数，也是比较重要的，在此分别简要介绍。</p>
+<p><strong>A. 静态链接参数</strong></p>
+<p>在前面讲库文件的时候，我们提到了<strong>静态链接库文件</strong>（<code>libxxx.a</code>）和<strong>动态链接库文件</strong>（<code>libxxx.so</code>）。
+我们并未提及两者的区别。 其实，我们通过如下的方式简单进行理解。
+<code>gcc</code>链接静态库文件，会将静态库文件中用到的部分，<strong>拷贝</strong>到生成的二进制程序中，从而导致生成的文件比较大；
+而链接动态库文件，则不会进行拷贝，所以生成的二进制程序会比较小。
+链接动态库文件的缺点是，在其他机器上运行该程序时，要求其上正确安装了对应的动态库文件。
+相应的，链接静态库文件生成的程序，则没有这个要求。</p>
+<p>在使用<code>gcc</code>进行链接时，<strong>默认优先</strong>使用动态链接库文件。
+仅当动态链接库文件不存在时，才使用静态链接库文件。
+如果需要使用静态链接的方式，则需要在编译时加上<code>-static</code>参数，强制使用静态链接库文件。
+例如，在<code>/usr/local/opt/llvm/lib</code>目录下，同时存在库文件<code>libunwind.so</code>和<code>libunwind.a</code>。
+为了让<code>gcc</code>在链接时使用静态链接库文件<code>libunwind.a</code>，我们可以添加<code>-static</code>参数，使用如下编译命令<code>gcc hello.o –static –L/usr/local/opt/llvm/lib –lunwind</code>。</p>
+<p><strong>B. 优化参数</strong></p>
+<p>编译优化也是编译器的重要功能，适当的编译优化能大大加速程序的执行效率。
+<code>gcc</code>提供了4级优化参数，分别是<code>-O0</code>、<code>-O1</code>、<code>-O2</code>、<code>-O3</code>。
+一般来说，数字越大，所包含的编译优化策略就越多。
+此外，<code>gcc</code>还提供了特殊的<code>-Os</code>参数。</p>
+<ul>
+<li><code>-O0</code>参数表示不使用任何优化策略，是<code>gcc</code>默认的优化参数。
+因为没有使用任何优化策略，编译得到的机器码与程序源码<strong>高度对应</strong>，两者之间基本可以建立一一对应的关系。所以，<code>-O0</code>优化非常适合用于程序调试，并且通常和生成调试信息的参数<code>-g</code>（<strong>g</strong>enerate
+debug
+information）配合使用。<code>-g</code>参数会在编译时给生成的二进制文件附加一些用于代码调试的信息，比如符号表和程序源码。</li>
+<li><code>-O1</code>会尽量采用一些不影响编译速度的优化策略，<strong>降低</strong>生成的二进制文件的大小，以及<strong>提高</strong>程序执行的速度。</li>
+<li><code>-O2</code>使用<code>-O1</code>中的所有优化策划，还会采用一些会<strong>降低</strong>编译速度的优化策略，以<strong>提高</strong>程序的执行速度。</li>
+<li><code>-O3</code>在<code>-O2</code>的基础上，使用更多的优化策略。这些额外的优化策略会进一步<strong>降低</strong>编译速度，而且会<strong>增加</strong>生成的二进制文件的大小，但程序的执行速度则会进一步<strong>提高</strong>。</li>
+<li><code>-Os</code>则和<code>-O3</code>优化的方向相反。它在<code>-O2</code>的基础上，采用额外的优化策略，尽量的<strong>降低</strong>生成的二进制文件的大小。</li>
+</ul>
+<p>倘若对各优化参数下，所开启的优化策略感兴趣，或者希望了解其他的优化参数，可以参考[<a href="https://link.zhihu.com/?target=https%3A//gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html" rel="external nofollow noopener noreferrer" target="_blank">1]</a>。</p>
+<p><strong>C. 宏相关参数</strong></p>
+<p>有时，为了保证C/C++项目的跨平台性，或者在编译时，能比较灵活地在多个相似的库中作出选择，需要在源码中使用<strong>条件编译</strong>。
+条件编译即使用<code>#ifdef M</code>，<code>#else</code>，<code>#endif</code>（或<code>#ifndef M</code>，<code>#else</code>，<code>#endif</code>，以及<code>#if</code>，<code>#elif</code>，<code>#else</code>，<code>#endif</code>）等指令，通过<strong>宏定义</strong>来控制需要编译的代码。</p>
+<p>C/C++语言中，可以使用<code>#define M</code>语句在源码中定义宏<code>M</code>。
+但是条件编译一般需要从外界，如编译器，传入一个宏定义。
+因此，<code>gcc</code>提供了宏定义参数<code>-D</code>以及取消宏定义参数<code>-U</code>。
+在使用<code>gcc</code>进行编译时，可以通过如下的方式，来进行相应的宏操作：</p>
+<ul>
+<li><code>-Dmacro</code>定义宏<code>macro</code>，默认将其定义为<code>1</code>，相当于在程序源码中使用<code>#define macro</code>语句。</li>
+<li><code>-Dmacro=def</code>定义宏<code>macro</code>为<code>def</code>，相当于在程序源码中使用<code>#define macro=def</code>语句。</li>
+<li><code>-Umacro</code>取消宏<code>macro</code>的定义，相当于在程序源码中使用<code>#undef macro</code>语句。</li>
+<li><code>-undef</code>取消所有非标准宏的定义。</li>
+</ul>
+<p><strong>D. 其他</strong></p>
+<p>此外，还有一些其他的参数，也很重要，例如：</p>
+<ul>
+<li><code>-std</code>参数可以指定编译使用的C/C++标准。例如，<code>-std=c++11</code>表示使用C++11标准，<code>-std=c99</code>表示使用C99标准。特殊的，<code>-ansi</code>表示使用ANSI
+C标准，一般等同于<code>-std=c90</code>。</li>
+<li><code>-Werror</code>参数要求<code>gcc</code>将产生的<strong>警告</strong>（Warning）当成<strong>错误</strong>（Error）进行显示。</li>
+<li><code>-Wall</code>要求<code>gcc</code>显示出尽可能多的警告信息。</li>
+<li><code>-w</code>要求<code>gcc</code>不显示警告信息。</li>
+<li><code>-Wl</code>参数告诉<code>gcc</code>，将后面跟随的参数传递给链接器<code>ld</code>。</li>
+<li><code>-v</code>参数可以显示<code>gcc</code>编译过程中一些额外输出信息。</li>
+</ul>
+<p>倘若希望了解<code>gcc</code>的其他参数，可以通过<code>gcc --help</code>或者<code>man gcc</code>查看，也可以直接参考[GCC手册<a href="https://link.zhihu.com/?target=https%3A//gcc.gnu.org/onlinedocs/10.1.0/" rel="external nofollow noopener noreferrer" target="_blank">1]</a>。</p>
+<h3 id="pkg-config">pkg-config</h3>
+<p>一般来说，人工编辑第三方库的编译链接参数是比较麻烦的。
+我们需要查找第三方库的头文件、库文件的安装路径，了解第三方库需要链接哪些其他的库，了解第三方库需要哪些编译参数等等。
+这些都不利于第三方库的快速集成。
+目前，很多现代的第三方库都提供了其对应的编译参数<strong>自动生成</strong>工具，一般名为<code>xxx-config</code>。
+比如<code>llvm</code>就提供了<code>llvm-config</code>工具。
+在使用系统包管理器，或者自行编译安装了<code>llvm</code>后，可以直接调用<code>llvm-config</code>命令。
+我们以以<code>llvm 10.0</code>为例，进行说明。</p>
+<ul>
+<li>执行<code>llvm-config --cxxflags</code>，可以得到<code>-I/usr/local/Cellar/llvm/11.0.0/include -std=c++14 -stdlib=libc++ -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS</code>。
+这是编译<code>llvm 10.0</code>提供的库，所需的编译参数。
+它说明<code>llvm 10.0</code>的头文件目录是<code>/usr/local/Cellar/llvm/11.0.0/include</code>，并且要求使用C++14标准，使用C++标准库，还定义了一些编译时需要的宏。</li>
+<li>执行<code>llvm-config --ldflags</code>，可以得到<code>-L/usr/local/Cellar/llvm/11.0.0/lib -Wl,-search_paths_first -Wl,-headerpad_max_install_names</code>。
+这是链接<code>llvm 10.0</code>提供的第三方库所需要的链接参数。
+它告诉编译器，第三方库的位置在<code>/usr/local/Cellar/llvm/11.0.0/lib</code>，并会传递一些其他的参数给链接器<code>ld</code>。</li>
+<li>执行<code>llvm-config --libs</code>会得到<code>-lLLVMXRay -lLLVMWindowsManifest ... -lLLVMDemangle</code>。
+这是<code>llvm 10.0</code>可以链接的全部库。
+一般我们不会选择链接所有的库。
+而是会使用形如以下的命令<code>llvm-config --libs core</code>，得到
+<code>-lLLVMCore -lLLVMRemarks -lLLVMBitstreamReader -lLLVMBinaryFormat -lLLVMSupport -lLLVMDemangle</code>。
+这是使用<code>core</code>模块所需要链接的库。</li>
+<li>执行<code>llvm-config --system-libs</code>会得到<code>-lm -lz -lcurses -lxml2</code>。
+这是<code>llvm 10.0</code>所需要用到的系统库。</li>
+</ul>
+<p>一般来说，我们会将以上命令的参数进行组合使用，例如调用<code>llvm-config --cxxflags --ldflags --system-libs --libs core</code>，就可以得到我们所需的全部编译参数。</p>
+<p>除了第三方库自带的<code>xxx-config</code>以外，很多现代的第三方库都可以使用工具<code>pkg-config</code>来生成编译参数。
+我们可以用<code>pkg-config --list-all</code>命令，来查看其所支持的所有第三方库。
+<code>pkg-config</code>的一般使用方法是调用形如<code>pkg-config pkg-name --libs --cflags</code>的命令。
+例如，倘若要使用gmp库，我们可以执行<code>pkg-config gmp --libs --cflags</code>，得到如下输出
+<code>-I/usr/local/Cellar/gmp/6.2.1/include -L/usr/local/Cellar/gmp/6.2.1/lib -lgmp</code>。</p>
+<blockquote>
+<p>我们可以直接复制这些输出，再粘贴到<code>gcc</code>命令后，也可以使用形如"gcc
+a.c
+<code>pkg-config gmp --libs --cflags</code>"的命令，通过内嵌shell命令的方式，将第三方库的编译参数传递给<code>gcc</code>.</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://zhuanlan.zhihu.com/p/342151242">原文链接</a></li>
+</ul>
+</blockquote>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    an-introductionto-gcc-Brian-Gough
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">旋转矩阵求导出现角速度的理解</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

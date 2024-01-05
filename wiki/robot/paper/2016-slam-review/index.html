@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>2016-slam-review | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="2016-slam-review">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="1. SLAM概念 1.1 SLAM是什么？ 同时定位与地图构建（英语：Simultaneous localization and mapping，一般直接称SLAM）是一种概念：  希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。   localization：我在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2016-slam-review">
+<meta property="og:url" content="https://silencht.github.io/wiki/robot/paper/2016-slam-review/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="1. SLAM概念 1.1 SLAM是什么？ 同时定位与地图构建（英语：Simultaneous localization and mapping，一般直接称SLAM）是一种概念：  希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。   localization：我在">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file active"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-robot/paper/2016-slam-review" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/robot/">robot</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/paper/">paper</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/robot/paper/2016-slam-review/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/robot/paper/2016-slam-review.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/robot/paper/2016-slam-review.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/robot/paper/2016-slam-review.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            2016-slam-review
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#slam%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">1. SLAM概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#slam%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 SLAM是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slam%E7%94%A8%E5%9C%A8%E5%93%AA"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 SLAM用在哪？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1 适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2 不适用场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slam%E4%B8%BA%E4%BD%95%E5%85%B4%E8%B5%B7"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 SLAM为何兴起？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slam%E6%9C%89%E7%A0%94%E7%A9%B6%E6%84%8F%E4%B9%89%E5%90%97"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 SLAM有研究意义吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E6%9C%BA%E5%99%A8%E4%BA%BA%E9%9C%80%E8%A6%81slam%E5%90%97"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.4.1 自动机器人需要SLAM吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">1.4.1.0 引言</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#odometry%E5%B0%B1%E6%98%AFslam%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">1.4.1.1 Odometry就是SLAM的一部分</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#odometry-%E5%92%8C-loop-closure-%E7%BC%BA%E4%B8%80%E4%B8%8D%E5%8F%AF"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">1.4.1.2 Odometry 和 Loop
+Closure 缺一不可</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9C%A8%E8%A6%81%E6%B1%82%E5%85%A8%E5%B1%80%E4%B8%80%E8%87%B4%E5%9C%B0%E5%9B%BE%E4%B8%ADslam%E6%98%AF%E5%BF%85%E9%A1%BB%E7%9A%84"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">1.4.1.3
+在要求全局一致地图中，SLAM是必须的</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#slam%E5%9C%A8%E5%AD%A6%E6%9C%AF%E4%B8%8A%E5%B7%B2%E7%BB%8F%E8%A2%AB%E8%A7%A3%E5%86%B3%E4%BA%86%E5%90%97"><span class="toc-number">1.4.2.</span> <span class="toc-text">1.4.2
+SLAM在学术上已经被解决了吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AF%94%E8%BE%83%E6%88%90%E7%86%9F%E7%9A%84%E9%A2%86%E5%9F%9F%E6%8F%90%E9%AB%98%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%B2%BE%E5%BA%A6%E9%B2%81%E6%A3%92%E6%80%A7"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">1.4.2.1
+比较成熟的领域：提高系统的精度、鲁棒性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B0%9A%E4%B8%8D%E6%88%90%E7%86%9F%E7%9A%84%E9%A2%86%E5%9F%9F%E9%AB%98%E9%80%9F%E6%97%B6%E5%A4%B1%E6%95%88"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">1.4.2.2
+尚不成熟的领域：高速时失效</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%86%E8%A7%89slam%E7%9A%84%E7%9B%B8%E6%9C%BA%E5%86%B3%E7%AD%96"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 视觉SLAM的相机决策</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#slam%E7%9A%84%E5%8F%91%E5%B1%95%E9%98%B6%E6%AE%B5"><span class="toc-number">2.</span> <span class="toc-text">2. SLAM的发展阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#classical-age%E5%8F%A4%E5%85%B8%E6%97%B6%E6%9C%9F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 1986—2004：classical
+age（古典时期）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 研究内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BA%E6%96%87"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 论文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%91%E6%88%98"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 挑战</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#algorithmic-analysis-age%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E6%97%B6%E6%9C%9F"><span class="toc-number">2.2.</span> <span class="toc-text">2.2
+2004—2015：algorithmic-analysis age（算法分析时期）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 研究内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BA%E6%96%87-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 论文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%91%E6%88%98-1"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3 挑战</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%B3%E4%BB%8Arobust-perception-age%E7%A8%B3%E5%81%A5%E6%84%9F%E7%9F%A5%E6%97%B6%E6%9C%9F"><span class="toc-number">2.3.</span> <span class="toc-text">2.3
+2015—至今：robust-perception age（稳健感知时期）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9-2"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1 研究内容</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A8%B3%E5%81%A5%E7%9A%84%E6%80%A7%E8%83%BD"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">2.3.1.1 稳健的性能</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">2.3.1.2 高级的理解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E6%84%8F%E8%AF%86"><span class="toc-number">2.3.1.3.</span> <span class="toc-text">2.3.1.3 资源意识</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E9%A9%B1%E5%8A%A8%E6%84%9F%E7%9F%A5"><span class="toc-number">2.3.1.4.</span> <span class="toc-text">2.3.1.4 任务驱动感知</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BA%E6%96%87-2"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2 论文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%91%E6%88%98-2"><span class="toc-number">2.3.3.</span> <span class="toc-text">2.3.3 挑战</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AA%E6%9D%A5"><span class="toc-number">2.3.4.</span> <span class="toc-text">2.3.4 未来</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8B%B1%E6%96%87%E5%90%8D%E8%AF%8D%E7%BF%BB%E8%AF%91%E8%A7%A3%E9%87%8A"><span class="toc-number">3.</span> <span class="toc-text">0.1 英文名词翻译&#x2F;解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pdf%E5%8E%9F%E6%96%87"><span class="toc-number">4.</span> <span class="toc-text">3. PDF原文</span></a></li></ol>
+                </div>
+            
+        
+        
+            <h2 id="slam概念">1. SLAM概念</h2>
+<h3 id="slam是什么">1.1 SLAM是什么？</h3>
+<p><strong>同时定位与地图构建</strong>（英语：Simultaneous localization
+and mapping，一般直接称SLAM）是一种概念：</p>
+<blockquote>
+<p>希望机器人从未知环境的未知地点出发，在运动过程中通过重复观测到的地图特征（比如，墙角，柱子等）定位自身位置和姿态，再根据自身位置增量式的构建地图，从而达到同时定位和地图构建的目的。</p>
+</blockquote>
+<ul>
+<li><p>localization：我在什么地方？——<strong>定位</strong></p></li>
+<li><p>mapping：周围环境什么样子？——<strong>建图</strong></p></li>
+<li><p>simultaneous：先做什么？——<strong>同时</strong></p>
+<blockquote>
+<p>simultaneous map building and localization can be seen to present a
+question of which came fifirst, the chicken or the egg? (The map or the
+motion?)</p>
+</blockquote>
+<blockquote>
+<p>starting from the unknown location of the unknown environment, the
+robot locates its own position and attitude through repeated observation
+of environmental features in the movement process, and then builds an
+incremental map of the surrounding environment according to its own
+position, so as to achieve the purpose of simultaneous positioning and
+map construction.</p>
+</blockquote>
+<p><strong>同时</strong>建立地图和定位可以被视为一个是先有鸡还是先有蛋的问题。</p>
+<p>从未知环境的未知地点出发，通过运动过程中对环境特征的反复观察，定位自身位置和姿态，然后根据自身位置来构建周围环境的<strong>增量地图</strong>，实现
+同时 定位和地图构造的目的。</p>
+<p><strong>SLAM问题的本质：对运动主体自身和周围环境空间不确定性的估计</strong></p></li>
+</ul>
+<h3 id="slam用在哪">1.2 SLAM用在哪？</h3>
+<h4 id="适用场景">1.2.1 适用场景</h4>
+<blockquote>
+<p>SLAM finds applications in all scenarios in which a prior map is not
+available and needs to be built.</p>
+</blockquote>
+<p>那些没有办法构建先验地图且需要构建地图的所有场景。</p>
+<h4 id="不适用场景">1.2.2 不适用场景</h4>
+<blockquote>
+<p>SLAM may not be required if localization can be done reliably with
+respect to the known landmarks.</p>
+</blockquote>
+<p>那些能依靠已知地标进行有效定位的场景。</p>
+<h3 id="slam为何兴起">1.3 SLAM为何兴起？</h3>
+<blockquote>
+<p>The popularity of the SLAM problem is connected with the emergence of
+indoor applications of mobile robotics.</p>
+</blockquote>
+<p>与室内移动机器人的兴起息息相关。</p>
+<blockquote>
+<p>The popularity of SLAM in the last 30 years is not surprising if one
+thinks about the manifold aspects that SLAM involves.</p>
+<p>At the lower level (called the <em>front-end</em> ) SLAM naturally
+intersects other research fifields such as computer vision and signal
+processing;</p>
+<p>At the higher level (that we later call the <em>back-end</em> ), SLAM
+is an appealing mix of geometry, graph theory, optimization, and
+probabilistic estimation.</p>
+</blockquote>
+<p>如果考虑到SLAM涉及的多方面问题，那么它在这三十年的流行也就不足为奇。</p>
+<p>从低层次，即SLAM前端来说，它与计算机视觉和信号处理等领域很自然的交叉作用；</p>
+<p>从高层次，即SLAM后端来说，它是一个吸引人的几何、图论、优化和概率估计的组合。</p>
+<h3 id="slam有研究意义吗">1.4 SLAM有研究意义吗？</h3>
+<h4 id="自动机器人需要slam吗">1.4.1 自动机器人需要SLAM吗？</h4>
+<h5 id="引言">1.4.1.0 引言</h5>
+<blockquote>
+<blockquote>
+<p>SLAM aims at building a globally consistent representation of the
+environment, leveraging both ego-motion measurements and loop closures.
+The keyword here is “<strong>loop closure</strong>”: if we sacrififice
+loop closures, SLAM reduces to <strong>odometry</strong>. In early
+applications, odometry was obtained by integrating wheel encoders. The
+pose estimate obtained from wheel odometry quickly
+<strong>drifts</strong>, making the estimate unusable after few
+meters.</p>
+</blockquote>
+<p>SLAM旨在利用自我运动测量和闭环检测来构建整体一致的环境表示。这里的关键词是“闭环检测”：如果我们丢弃闭环检测，那么SLAM将会退化为里程测量
+/
+里程计。在早期的应用中，可以通过积分车轮编码器来获得里程。然而，从车轮里程测量所获得的姿态估计快速<strong>漂移</strong>，使得估计数在短短几米之内就不可用。</p>
+<ul>
+<li>A. Kelly. Mobile Robotics: Mathematics, Models, and Methods .
+Cambridge University Press, 2013.</li>
+</ul>
+<blockquote>
+<p>this was one of the main thrusts behind the development of SLAM: the
+observation of external landmarks is useful to reduce the trajectory
+drift and possibly correct it.</p>
+</blockquote>
+<p>这个是SLAM发展背后的主要推动力之一：对于外部地标的观测有助于减少轨迹漂移并可能纠正之。</p>
+<ul>
+<li>P. Newman, J. J. Leonard, J. D. Tardos, and J. Neira. Explore and
+Return: Experimental Validation of Real-Time Concurrent Mapping and
+Localization. In <em>Proceedings of the IEEE International Conferenceon
+Robotics and Automation (ICRA)</em>, pages 1802–1809. IEEE, 2002.</li>
+</ul>
+<blockquote>
+<p>However, more recent odometry algorithms are based on visual and
+inertial information, and have very small drift (<em>&lt;</em>
+0<em>.</em>5% of the trajectory length).</p>
+</blockquote>
+<p>然而，很多最近的基于视觉和惯性信息的测速方法漂移越来越小。</p>
+<ul>
+<li>C. Forster, L. Carlone, F. Dellaert, and D. Scaramuzza. On-Manifold
+Preintegration for Real-Time Visual–Inertial Odometry. <em>IEEE
+Transactions on Robotics (TRO)</em>, PP(99):1–21, 2016.</li>
+</ul>
+<p>那么问题来了，</p>
+<p><strong>我们真的还需要SLAM这个算法吗？</strong></p>
+<p><strong>答案有三方面</strong></p>
+</blockquote>
+<h5 id="odometry就是slam的一部分">1.4.1.1 Odometry就是SLAM的一部分</h5>
+<ul>
+<li><strong>视觉-惯性导航（VIN）就是一个简化版SLAM</strong></li>
+</ul>
+<p>​
+首先，在过去十年的SLAM发展中，研究本身就产生了基于视觉-惰性测量算法，这种算法目前代表了最先进的水平[163,175]。在这种意义上，视觉-惯性导航（visual-inertial
+navigation）就是SLAM：<strong>VIN可以被看作一个简化版SLAM系统，只不过这个系统的闭环检测（loop
+closure）或者位置识别（place recongnition）模块没有开启</strong>。</p>
+<p>​ 更一般的，SLAM直接导致了在相比以前文献（如航空航天工程中的<a href="../note/inertial_navigation.md">惰性导航</a>）更有挑战性的设置下（如没有GPS,低质量传感器等）关于传感器融合的研究。</p>
+<h5 id="odometry-和-loop-closure-缺一不可">1.4.1.2 Odometry 和 Loop
+Closure 缺一不可</h5>
+<ul>
+<li><p><strong>单纯的里程计会无限探索新区域，加入位置识别有助于理解环境真实拓扑</strong></p>
+<p>第二个回答是关于环境的真实拓扑结构（true
+topology）的。一个只运行里程计（odometry）而关闭闭环检测（loop
+closure）的机器人会将世界解释为一个“无限走廊（infinite
+corridor）”，在这个“走廊”里，机器人一直保持着探索未定义的新区域，如图1左侧。回路闭环事件会通知机器人这个走廊与它自身发生相交（intersect），如图1右侧。闭环检测的优势现在开始变得清晰：<strong>加入闭环检测后，机器人可以理解环境的真实拓扑，也就有能力找到位置之间的最短路径</strong>（比如地图上的点B和点C）。</p></li>
+</ul>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/image-20210331092855678.png"></p>
+<center>
+图1
+</center>
+<p><em>图一：<strong>左图</strong>：利用里程计构建的地图。这个地图可看作是一条从起始位置
+A 到最终位置 B的一条长走廊。在现实中实际距离很近的点（例如 B和
+C）可能在测距图（odometric
+map）中是任意远的。<strong>右图</strong>：利用
+SLAM构建的地图。通过充分利用回路闭环（loop
+closures），SLAM可以估计环境的实际拓扑结构（topology）并在地图中发现（discovers）最短路径（shortcuts）。</em></p>
+<ul>
+<li><strong>单纯的位置识别有可能被位置不同而场景相似的数据关联所欺骗</strong></li>
+</ul>
+<p>​
+那么，既然获得正确的环境拓扑是SLAM的优点之一，那为什么不简单删掉度量信息（metric
+information）就只做位置识别呢？答案很简单：度量信息可以使得位置识别更简单和鲁棒；度量的重建会通知机器人有关闭环检测的机会，并允许丢弃虚假的回路闭环[150]。因此，尽管SLAM在原理上可能是冗余的（一个甲骨文位置识别模块足以胜任构建拓扑地图），但是SLAM（中的度量信息）为那些错误的数据关联和感知混叠提供了自然的防御（此时，对于环境中的实际位置不同而场景却相似的情况将不会欺骗到位置识别）。</p>
+<p>​
+从这个意义上来说，<strong>SLAM地图提供了一种既预测又验证未来测量结果的方法</strong>：我们相信这个机制将是机器人稳定运行的关键。</p>
+<h5 id="在要求全局一致地图中slam是必须的">1.4.1.3
+在要求全局一致地图中，SLAM是必须的</h5>
+<p>​ 对于许多无论是内在还是外在需求全局一致（globally
+consistent）的地图（map）来说，SLAM是必需的。例如，在许多军用和民用应用中，机器人的目标是探索一个（未知）环境，然后向人类操作员报告一张确保全覆盖该环境的地图。另外一个例子是，机器人必须可以（对建筑、桥梁等）进行结构性检查；同样，在这种情况下，一个全局一致的三维重建是获得成功的需要。</p>
+<h4 id="slam在学术上已经被解决了吗">1.4.2
+SLAM在学术上已经被解决了吗？</h4>
+<p>​
+这个问题很难回答。因为SLAM已经成为一个很广泛的话题，所以这个问题适合在
+<strong>给定的 机器人/环境/性能 三者组合的情况下</strong> 提问。</p>
+<h5 id="比较成熟的领域提高系统的精度鲁棒性">1.4.2.1
+比较成熟的领域：提高系统的精度、鲁棒性</h5>
+<ul>
+<li>配备 车轮编码器和激光扫描仪 的构建 二维地图 的
+室内机器人已经有了相当的精度（&lt;10cm）和足够的鲁棒性（如低故障率），可以被认为在很大程度上已经得到解决；</li>
+<li>配备 基于视觉SLAM 的
+缓慢移动机器人（例如火星漫游者、家用机器人等），以及视觉惯性里程计（visual-inertial
+odometry）可以被视为是比较成熟的领域；</li>
+</ul>
+<h5 id="尚不成熟的领域高速时失效">1.4.2.2
+尚不成熟的领域：高速时失效</h5>
+<ul>
+<li>当机器人的 运动 或者 所处环境
+具有挑战性的时候，SLAM算法很容易失效。例如，快速机器人动力学 、
+高度动态的环境；</li>
+<li>SLAM算法往往无法满足严格性能要求场合。例如，快速闭环控制下的高速率估计（high
+rate estimation for fast closed-loop control）</li>
+<li>如何平衡实时性和准确性是一个问题；</li>
+<li>有关动态、非结构化、复杂、不确定和大规模的环境的解决方案仍有待探索；</li>
+</ul>
+<h3 id="视觉slam的相机决策">1.5 视觉SLAM的相机决策</h3>
+<table>
+<colgroup>
+<col style="width: 6%">
+<col style="width: 46%">
+<col style="width: 46%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">相机</th>
+<th style="text-align: center;">优点</th>
+<th style="text-align: center;">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">单目相机</td>
+<td style="text-align: center;">结构简单，成本特别低</td>
+<td style="text-align: center;">平移之后才能计算深度，无法确定真实尺度</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">双目相机</td>
+<td style="text-align: center;">克服了单目相机的缺点</td>
+<td style="text-align: center;">配置与标定较为复杂，深度量程和精度受双目基线与分辨率所限，视差计算非常消耗计算资源</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">深度相机</td>
+<td style="text-align: center;">相比双目相机节省大量计算资源</td>
+<td style="text-align: center;">测量范围窄、噪声大、视野小、易受日光干扰、无法测量透射材质等。主要用于室内，室外较难应用。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">事件相机</td>
+<td style="text-align: center;">相比传统相机具有更小的时间延迟，更快的更新速率、更强的动态范围、更低的功耗和更小的存储空间要求。有望成为继深度相机后的新型视觉传感器</td>
+<td style="text-align: center;">完全依赖于场景动态,低动态环境下性能反而不如传统相机</td>
+</tr>
+</tbody>
+</table>
+<h2 id="slam的发展阶段">2. SLAM的发展阶段</h2>
+<h3 id="classical-age古典时期">2.1 1986—2004：classical
+age（古典时期）</h3>
+<h4 id="研究内容">2.1.1 研究内容</h4>
+<blockquote>
+<p>the introduction of <strong>the main probabilistic
+formulations</strong> for SLAM , including approaches based on
+<strong>Extended Kalman Filters</strong>, <strong>Rao-Blackwellised
+Particle Filters</strong>, and <strong>maximum likelihood
+estimation</strong>.</p>
+</blockquote>
+<p>引入了SLAM主要的概率公式，其中包括 扩展卡尔曼滤波、粒子滤波 和
+最大似然估计</p>
+<h4 id="论文">2.1.2 论文</h4>
+<blockquote>
+<p>A thorough historical review of the first 20 years of the SLAM
+problem</p>
+</blockquote>
+<p>详细论述SLAM发展前二十年的review</p>
+<ul>
+<li>H. F. Durrant-Whyte and T. Bailey. Simultaneous Localisation and
+Mapping (SLAM): Part I. <em>IEEE Robotics and Automation Magazine</em>,
+13(2):99–110, 2006.</li>
+<li>T. Bailey and H. F. Durrant-Whyte. Simultaneous Localisation and
+Mapping (SLAM): Part II. <em>Robotics and Autonomous Systems (RAS)</em>,
+13(3):108–117, 2006.</li>
+</ul>
+<blockquote>
+<p>Two other excellent references describing the <strong>three main SLAM
+formulations</strong> of the classical age</p>
+</blockquote>
+<p>描述三大SLAM主要公式的论文</p>
+<ul>
+<li>S. Thrun, W. Burgard, and D. Fox. Probabilistic Robotics. MIT
+Press,2005.</li>
+<li>C. Stachniss, S. Thrun, and J. J. Leonard. Simultaneous Localization
+and Mapping. In B. Siciliano and O. Khatib, editors, Springer Handbook
+of Robotics, chapter 46, pages 1153–1176. Springer, 2nd edition,
+2016.</li>
+</ul>
+<h4 id="挑战">2.1.3 挑战</h4>
+<blockquote>
+<p>the basic challenges connected to efficiency and robust data
+association.</p>
+</blockquote>
+<p>效率和鲁棒的数据关联的挑战 。</p>
+<h3 id="algorithmic-analysis-age算法分析时期">2.2
+2004—2015：algorithmic-analysis age（算法分析时期）</h3>
+<h4 id="研究内容-1">2.2.1 研究内容</h4>
+<blockquote>
+<p>the study of fundamental properties of SLAM, including observability,
+convergence, and consistency. In this period, the key role of
+<strong>sparsity</strong> towards effificient SLAM solvers was also
+understood, and the main open-source SLAM libraries were developed.</p>
+</blockquote>
+<p>研究SLAM的基本特性，包括可观测性、收敛性和一致性。在这一时期，（人们）理解了对SLAM的高效率解决器？起到关键作用的<strong>稀疏性</strong>，并开发了主要的开源SLAM库。</p>
+<h4 id="论文-1">2.2.2 论文</h4>
+<blockquote>
+<p>partially covered</p>
+</blockquote>
+<p>覆盖部分该时期内容的review</p>
+<ul>
+<li>G. Dissanayake, S. Huang, Z. Wang, and R. Ranasinghe. A review of
+recent developments in Simultaneous Localization and Mapping. In
+International Conference on Industrial and Information Systems*, pages
+477–482. IEEE, 2011.</li>
+</ul>
+<h4 id="挑战-1">2.2.3 挑战</h4>
+<h3 id="至今robust-perception-age稳健感知时期">2.3
+2015—至今：robust-perception age（稳健感知时期）</h3>
+<h4 id="研究内容-2">2.3.1 研究内容</h4>
+<h5 id="稳健的性能">2.3.1.1 稳健的性能</h5>
+<blockquote>
+<p>the SLAM system operates with low failure rate for an extended period
+of time in a broad set of environments; the system includes fail-safe
+mechanisms and has self-tuning capabilities in that it can adapt the
+selection of the system parameters to the scenario.</p>
+</blockquote>
+<p>系统在广泛的环境中长期运行且具有低故障率；系统包括故障-安全机制和自调整功能，可以针对适应场景修改参数。</p>
+<h5 id="高级的理解">2.3.1.2 高级的理解</h5>
+<blockquote>
+<p>the SLAM system goes beyond basic geometry reconstruction to obtain a
+high-level understanding of the environment</p>
+</blockquote>
+<p>系统超越基本的几何重建来获得对环境的更高级别的理解。（高级图形学、语义学、物理学、affordances）</p>
+<h5 id="资源意识">2.3.1.3 资源意识</h5>
+<blockquote>
+<p>the SLAM system is tailored to the available sensing and
+computational resources, and provides means to adjust the computation
+load depending on the available resources</p>
+</blockquote>
+<p>系统针对可用传感器与计算资源进行裁剪，提供根据可用资源调整计算负载的方法</p>
+<h5 id="任务驱动感知">2.3.1.4 任务驱动感知</h5>
+<blockquote>
+<p>the SLAM system is able to select relevant perceptual information and
+fifilter out irrelevant sensor data, in order to support the task the
+robot has to perform; moreover, the SLAM system produces adaptive map
+representations, whose complexity may vary depending on the task at
+hand</p>
+</blockquote>
+<p>系统有 选择 相关感知信息 和 滤除 不相关传感数据 的能力
+来支持机器人需要执行的任务。此外，系统产生自适应的根据手头任务不同而复杂性不同的地图表示。</p>
+<h4 id="论文-2">2.3.2 论文</h4>
+<h4 id="挑战-2">2.3.3 挑战</h4>
+<blockquote>
+<p>Visual SLAM still face some important obstacles like the illumination
+condition, high dynamic environment, fast motion, vigorous rotation and
+low texture environment.</p>
+</blockquote>
+<p>视觉SLAM仍然面临着光照条件、高动态环境、运动快、旋转剧烈、低纹理环境等重要阻碍。</p>
+<h4 id="未来">2.3.4 未来</h4>
+<ul>
+<li>基于智能手机、嵌入式平台（如无人机）的SLAM</li>
+<li>详细的三维重建，使用深度学习的场景理解</li>
+<li>多传感器融合问题</li>
+<li>语义SLAM：还可以支持全局优化、闭环检测和重新定位；传统的SLAM依赖于点线面等几何特征来推断环境结构，而语义SLAM是使机器人像人类一样思考，从而在大规模场景中实现高精度实时定位的目标。</li>
+<li>算法和传感器的深度融合，集成、专用的传感器将发挥出巨大的潜力</li>
+<li>端到端</li>
+</ul>
+<h2 id="英文名词翻译解释">0.1 英文名词翻译/解释</h2>
+<ul>
+<li>metric 度量</li>
+<li>semantic 语义 Semantic is used to describe things that deal with the
+meanings of words and sentences.</li>
+<li>pose 姿态，这里一般指机器人的位置和姿势 position and
+orientation</li>
+<li>topology 拓扑the way the parts of sth are arranged and related</li>
+</ul>
+<h2 id="pdf原文">3. PDF原文</h2>
+<div>
+<p><iframe src="/pdfjs/web/viewer.html?file=/pdf/robot/Past-Present-and-Future-of-Simultaneous-Localization-And-Mapping-Towards-the-Robust-Perception-Age.pdf" width="100%" height="1280px" frameborder="0"></iframe></p>
+</div>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/robot/paper/2006-slam-review/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    2006-slam-review
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/paper/orbslam1-translation/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">orbslam1-translation</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

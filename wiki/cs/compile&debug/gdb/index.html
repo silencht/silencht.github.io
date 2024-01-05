@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>gdb | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="gdb">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="1. 启动gdb调试 1. 编译程序 程序编译时需要附加调试信息-g，并关闭优化-O0 1234567891011121314$ gcc -g -o helloworld helloworld.c$ gdb helloworldGNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2Copyright (C) 2020 Free Software Foundation,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gdb">
+<meta property="og:url" content="https://silencht.github.io/wiki/cs/compile&debug/gdb/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="1. 启动gdb调试 1. 编译程序 程序编译时需要附加调试信息-g，并关闭优化-O0 1234567891011121314$ gcc -g -o helloworld helloworld.c$ gdb helloworldGNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2Copyright (C) 2020 Free Software Foundation,">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file active"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-cs/compile&amp;debug/gdb" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/cs/">cs</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/cs/compile-debug/">compile&debug</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/cs/compile&debug/gdb/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/cs/compile&amp;debug/gdb.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/cs/compile&amp;debug/gdb.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/cs/compile&amp;debug/gdb.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            gdb
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8gdb%E8%B0%83%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">1. 启动gdb调试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.1.</span> <span class="toc-text">1. 编译程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E8%B0%83%E8%AF%95"><span class="toc-number">1.2.</span> <span class="toc-text">2. 启动调试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 命令详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#run"><span class="toc-number">2.1.</span> <span class="toc-text">run</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#continue"><span class="toc-number">2.2.</span> <span class="toc-text">continue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#breaktbreak"><span class="toc-number">2.3.</span> <span class="toc-text">break、tbreak</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#backtraceframe"><span class="toc-number">2.4.</span> <span class="toc-text">backtrace、frame</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#info-breakenabledisabledelete"><span class="toc-number">2.5.</span> <span class="toc-text">info
+break、enable、disable、delete</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#list"><span class="toc-number">2.6.</span> <span class="toc-text">list</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#printptype"><span class="toc-number">2.7.</span> <span class="toc-text">print、ptype</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#infothread"><span class="toc-number">2.8.</span> <span class="toc-text">info、thread</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#nextstepuntilfinishreturnjump"><span class="toc-number">2.9.</span> <span class="toc-text">next、step、until、finish、return、jump</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#disassemble"><span class="toc-number">2.10.</span> <span class="toc-text">disassemble</span></a></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <h3 id="启动gdb调试">1. 启动gdb调试</h3>
+<h4 id="编译程序">1. 编译程序</h4>
+<p>程序编译时需要附加调试信息-g，并关闭优化-O0</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -g -o helloworld helloworld.c</span><br><span class="line">$ gdb helloworld</span><br><span class="line">GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2</span><br><span class="line">Copyright (C) 2020 Free Software Foundation, Inc.</span><br><span class="line">……</span><br><span class="line">Reading symbols from xxx/helloworld...done.</span><br><span class="line"><span class="comment">#如果不带-g，即gcc -o helloworld helloworld.c，则输出</span></span><br><span class="line">Reading symbols from xxx/helloworld...(no debugging symbols found)...<span class="keyword">done</span>.</span><br><span class="line"><span class="comment">#编译命令带-g生成程序后，可以使用Linux的strip命令移除该程序的调试信息</span></span><br><span class="line"><span class="comment">#使用strip命令之前</span></span><br><span class="line">-rwxr-xr-x. 1 root root 12416 Sep 8 09:45 helloworld</span><br><span class="line"><span class="comment">#使用strip命令之后，文件大小变小（12416-&gt;6312），此时再用gdb启动该程序，则会返回no debugging symbols found</span></span><br><span class="line">$ strip helloworld</span><br><span class="line">-rwxr-xr-x. 1 root root 6312 Sep 8 09:55 helloworld</span><br></pre></td></tr></table></figure>
+<h4 id="启动调试">2. 启动调试</h4>
+<p>三种方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#1. 直接启动程序进行调试</span></span><br><span class="line">$ gdb helloworld</span><br><span class="line"></span><br><span class="line"><span class="comment">#2. 如果程序已经启动在运行，使用attach命令将gdb附加到该程序进程ID上（gdb attach pid）</span></span><br><span class="line"><span class="comment">#进程ID可以使用ps命令获取</span></span><br><span class="line">$ ps -ef | grep helloworld</span><br><span class="line">changhe   217055  216643 99 10:43 pts/2  00:00:55 ./helloworld</span><br><span class="line">$ gdb attach 217055</span><br><span class="line"></span><br><span class="line"><span class="comment">#3. 程序Crash后调试core文件</span></span><br><span class="line"><span class="comment">#Linux默认不开启程序Crash产生core文件机制，可以使用ulimit -c查看是否开启，输出0则是不开启</span></span><br><span class="line">$ <span class="built_in">ulimit</span> -c</span><br><span class="line"><span class="comment">#开启产生core机制可以使用ulimit -c unlimited命令，unlimited意为不限制core文件大小，也可改成具体数值，比如1024（即1024k字节大小）</span></span><br><span class="line"><span class="comment">#ulimit -c unlimited命令只在当前终端有效，关闭终端后失效。设置永久生效的方式有两种：</span></span><br><span class="line"><span class="comment">#一是在/etc/security/limits.conf 中增加一行</span></span><br><span class="line"><span class="comment">#&lt;domain&gt;    &lt;type&gt;  &lt;item&gt;  &lt;value&gt;</span></span><br><span class="line">*             soft    core   unlimited</span><br><span class="line"><span class="comment">#二是在/etc/proﬁle文件（所有用户）或~/.bashrc（当前用户）末尾加入该命令</span></span><br><span class="line"><span class="built_in">ulimit</span> -c unlimited （或 <span class="built_in">ulimit</span> -c 1024）</span><br><span class="line"><span class="comment">#程序崩溃生成core.pid文件（需要编译时添加-g）后，使用下面命令进行调试</span></span><br><span class="line">$ gdb filename corename</span><br></pre></td></tr></table></figure>
+<p>程序崩溃后很难知道当时它运行的PID，所以也就不知道对应哪个core文件。以下是记录程序对应core文件的两个方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 程序启动时记录自己的PID，这样就可以根据core.pid去查找对应的core文件了</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">writePid</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="type">uint32_t</span> curPid = (<span class="type">uint32_t</span>) <span class="built_in">getpid</span>();</span><br><span class="line">FILE* f = <span class="built_in">fopen</span>(<span class="string">&quot;helloworld.pid&quot;</span>, <span class="string">&quot;w&quot;</span>);</span><br><span class="line"><span class="built_in">assert</span>(f);</span><br><span class="line"><span class="type">char</span> szPid[<span class="number">32</span>];</span><br><span class="line"><span class="built_in">snprintf</span>(szPid, <span class="built_in">sizeof</span>(szPid), <span class="string">&quot;%d&quot;</span>, curPid);</span><br><span class="line"><span class="built_in">fwrite</span>(szPid, <span class="built_in">strlen</span>(szPid), <span class="number">1</span>, f);</span><br><span class="line"><span class="built_in">fclose</span>(f);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2. 自定义生成core文件的目录名称</span></span><br><span class="line">mkdir ~/core_dump_directory</span><br><span class="line"><span class="comment">//%e是程序名，%p是PID，%t是文件生成时间</span></span><br><span class="line">echo <span class="string">&quot;~/core_dump_directory/core-%e-%p-%t&quot;</span> &gt; /proc/sys/kernel/core_pattern</span><br><span class="line"><span class="comment">//最终会在 ~/core_dump_directory 目录下（需具备写入权限）生成的 test 的 core 文件名格式如下</span></span><br><span class="line">-rw-------. <span class="number">1</span> user user <span class="number">409600</span> Jan <span class="number">14</span> <span class="number">13</span>:<span class="number">54</span> core-helloworld<span class="number">-13154</span><span class="number">-1547445291</span></span><br></pre></td></tr></table></figure>
+<h3 id="命令详解">2. 命令详解</h3>
+<h4 id="run">run</h4>
+<p>启动调试后，只是在程序上附加了gdb，并没有启动该程序，需要输入run命令启动这个程序。</p>
+<p>程序启动后可使用Ctrl+C终端程序，再次输入run，可以重新启动该程序。</p>
+<h4 id="continue">continue</h4>
+<p>如果不想重新启动程序，而是想让中断的程序继续运行，可以输入continue命令</p>
+<h4 id="breaktbreak">break、tbreak</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在名为function的函数入口出添加一个断点</span></span><br><span class="line">(gdb) <span class="built_in">break</span> <span class="keyword">function</span></span><br><span class="line"><span class="comment">#在gdb调试器所在的当前文件第num行处添加一个断点</span></span><br><span class="line">(gdb) <span class="built_in">break</span> num</span><br><span class="line"><span class="comment">#在filename文件第num行处添加一个断点</span></span><br><span class="line">(gdb) <span class="built_in">break</span> filename:num</span><br></pre></td></tr></table></figure>
+<p>break命令是添加一个永久的断点，tbreak命令是添加一个临时断点，触发一次后自动删除。</p>
+<h4 id="backtraceframe">backtrace、frame</h4>
+<p>backtrace命令可以简写为bt，用来查看当前所在线程的调用堆栈。堆栈编号以#number表示。</p>
+<p>如果在主线程，那么最顶层堆栈是main()函数。</p>
+<p>切换到某堆栈，可以使用frame命令（可简写为f）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ frame number <span class="comment">#堆栈编号不用加“#”</span></span><br></pre></td></tr></table></figure>
+<h4 id="info-breakenabledisabledelete">info
+break、enable、disable、delete</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看所有断点</span></span><br><span class="line">(gdb) info <span class="built_in">break</span> <span class="comment"># 或 info b</span></span><br><span class="line">Num     Type           Disp Enb Address            What</span><br><span class="line">1       breakpoint     keep y   0x000000000004d93a <span class="keyword">in</span> main at server.c:6147</span><br><span class="line">2       breakpoint     keep y   0x0000000000041593 <span class="keyword">in</span> dictSdsKeyCaseCompare at server.c:1269</span><br><span class="line">3       breakpoint     keep y   0x0000000000043589 <span class="keyword">in</span> beforeSleep at server.c:2364</span><br><span class="line"><span class="comment">#可见示例中一共存在3个断点，分别在6147、1269、2364行</span></span><br><span class="line"><span class="comment">#如果想禁用某个断点，使用 disable 断点编号 就可以禁用这个断点；同理，被禁用的断点也可以使用 enable 断点编号 重新开启</span></span><br><span class="line">(gdb) <span class="built_in">disable</span> 2</span><br><span class="line">(gdb) info b</span><br><span class="line">Num     Type           Disp Enb Address            What</span><br><span class="line">1       breakpoint     keep n   0x000000000004d93a <span class="keyword">in</span> main at server.c:6147</span><br><span class="line">2       breakpoint     keep y   0x0000000000041593 <span class="keyword">in</span> dictSdsKeyCaseCompare at server.c:1269</span><br><span class="line">3       breakpoint     keep y   0x0000000000043589 <span class="keyword">in</span> beforeSleep at server.c:2364</span><br><span class="line"><span class="comment">#可见，禁用断点2后，Enb下方的标志由y变为n. 同理，使用enable 2命令重启后，该标志又会回到y</span></span><br><span class="line"><span class="comment">#enable、disable命令后不加断点编号，即表示开启、禁用所有断点</span></span><br><span class="line"><span class="comment">#delete 断点编号，即表示删除某断点。同理，不加断点编号，即表示删除所有断点</span></span><br></pre></td></tr></table></figure>
+<h4 id="list">list</h4>
+<p>该命令可以查看当前断点前后的代码（默认范围为10行），可以简写为l.
+再次输入命令继续向后显示10行代码。</p>
+<p>list +和list -分别表示向后和向前显示代码。</p>
+<p>list 也可以显示其他文件某一行前后的代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list FILE:LINENUM  <span class="comment">#to list around that line in that file,</span></span><br></pre></td></tr></table></figure>
+<p>更多用法输入help list</p>
+<h4 id="printptype">print、ptype</h4>
+<p>print
+命令可以在调试过程中查看变量的值，也可以修改当前内存中的变量值，可以简写成
+p</p>
+<p>print
+命令不仅可以输出变量值，也可以输出特定表达式计算结果值，甚至可以输出一些函数的执行结
+果值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打印server.port变量的值 (gdb) print variable</span></span><br><span class="line">(gdb) p server.port</span><br><span class="line"><span class="variable">$1</span> = 6379</span><br><span class="line"><span class="comment">#打印server.port变量的类型</span></span><br><span class="line">(gdb) ptype server.port</span><br><span class="line"><span class="built_in">type</span> = int</span><br><span class="line"><span class="comment">#列出当前对象的各个成员变量值</span></span><br><span class="line">(gdb) p *this</span><br><span class="line"><span class="comment">#打印三个变量的和</span></span><br><span class="line">(gdb) p a+b+c</span><br><span class="line"><span class="comment">#打印函数执行结果</span></span><br><span class="line">(gdb) p <span class="keyword">function</span>()</span><br><span class="line"><span class="comment">#某个时刻，某个系统函数执行失败了，通过系统变量 errno 得到一个错误码，可以使用</span></span><br><span class="line">(gdb) p strerror(errno) </span><br><span class="line"><span class="comment">#将这个错误码对应的文字信息打印出来，这样就不用去 man 手册上查找这个错误码对应的错误含义</span></span><br><span class="line"><span class="comment">#修改变量的值</span></span><br><span class="line">(gdb) p server.port=6400</span><br><span class="line"><span class="variable">$4</span> = 6400</span><br><span class="line"><span class="comment">#打印变量时可以指定输出格式 (gdb) print /format variable</span></span><br><span class="line">(gdb) p /x server.port</span><br><span class="line"><span class="variable">$6</span> = 0x1900</span><br><span class="line"><span class="comment">#format常见取值</span></span><br><span class="line">o octal 八进制显示</span><br><span class="line">x hex 十六进制显示</span><br><span class="line">d decimal 十进制显示</span><br><span class="line">u unsigned decimal 无符号十进制显示</span><br><span class="line">t binary 二进制显示</span><br><span class="line">f <span class="built_in">float</span> 浮点值显示</span><br><span class="line">a address 内存地址格式显示(与十六进制相似)</span><br><span class="line">i instruction 指令格式显示</span><br><span class="line">s string 字符串形式显示</span><br><span class="line">z hex, zero padded on the left 十六进制左侧补0显示</span><br></pre></td></tr></table></figure>
+<h4 id="infothread">info、thread</h4>
+<ul>
+<li>可以使用 info threads 来查看进程当前所有线程信息</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">(gdb) info threads </span><br><span class="line">  Id   Target Id                                           Frame </span><br><span class="line">* 1    Thread 0x7ffff79d57c0 (LWP 230901) <span class="string">&quot;redis-server&quot;</span>   0x00007ffff7c9046e <span class="keyword">in</span> epoll_wait (</span><br><span class="line">    epfd=5, events=0x5555557a1db0, maxevents=10128, <span class="built_in">timeout</span>=100)</span><br><span class="line">    at ../sysdeps/unix/sysv/linux/epoll_wait.c:30</span><br><span class="line">  2    Thread 0x7ffff6ba6700 (LWP 230905) <span class="string">&quot;bio_close_file&quot;</span> futex_wait_cancelable (</span><br><span class="line">    private=&lt;optimized out&gt;, expected=0, futex_word=0x5555557073e8 &lt;bio_newjob_cond+40&gt;)</span><br><span class="line">    at ../sysdeps/nptl/futex-internal.h:183</span><br><span class="line">  3    Thread 0x7ffff63a5700 (LWP 230906) <span class="string">&quot;bio_aof_fsync&quot;</span>  futex_wait_cancelable (</span><br><span class="line">    private=&lt;optimized out&gt;, expected=0, futex_word=0x555555707418 &lt;bio_newjob_cond+88&gt;)</span><br><span class="line">    at ../sysdeps/nptl/futex-internal.h:183</span><br><span class="line">  4    Thread 0x7ffff5ba4700 (LWP 230907) <span class="string">&quot;bio_lazy_free&quot;</span>  futex_wait_cancelable (</span><br><span class="line">    private=&lt;optimized out&gt;, expected=0, futex_word=0x555555707448 &lt;bio_newjob_cond+136&gt;)</span><br><span class="line">    at ../sysdeps/nptl/futex-internal.h:183</span><br><span class="line"><span class="comment">#一共有4个线程，当前gdb附加在1号线程（带星号）。</span></span><br><span class="line"><span class="comment">#【所有的线程ID在第三栏(LWP number)中。在早期的 Linux 系统的内核里面，不存在真正的线程实现</span></span><br><span class="line"><span class="comment"># 当时所有的线程都是用进程来实现，称之为LWP，即Light Weight Process（轻量级进程）】</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#切换到其他线程，使用thread 线程编号</span></span><br><span class="line">(gdb) thread 3</span><br><span class="line">[Switching to thread 3 (Thread 0x7ffff63a5700 (LWP 231546))]</span><br><span class="line"><span class="comment">#0  futex_wait_cancelable (private=&lt;optimized out&gt;, expected=0, </span></span><br><span class="line">    futex_word=0x555555707418 &lt;bio_newjob_cond+88&gt;) at ../sysdeps/nptl/futex-internal.h:183</span><br><span class="line">183	../sysdeps/nptl/futex-internal.h: No such file or directory.</span><br><span class="line">(gdb) info threads </span><br><span class="line">  Id   Target Id                                           Frame </span><br><span class="line">  1    Thread 0x7ffff79d57c0 (LWP 231538) <span class="string">&quot;redis-server&quot;</span>   0x00007ffff7c9046e <span class="keyword">in</span> epoll_wait (epfd=5, </span><br><span class="line">    events=0x5555557a1db0, maxevents=10128, <span class="built_in">timeout</span>=100) at ../sysdeps/unix/sysv/linux/epoll_wait.c:30</span><br><span class="line">  2    Thread 0x7ffff6ba6700 (LWP 231545) <span class="string">&quot;bio_close_file&quot;</span> futex_wait_cancelable (private=&lt;optimized out&gt;, </span><br><span class="line">    expected=0, futex_word=0x5555557073e8 &lt;bio_newjob_cond+40&gt;) at ../sysdeps/nptl/futex-internal.h:183</span><br><span class="line">* 3    Thread 0x7ffff63a5700 (LWP 231546) <span class="string">&quot;bio_aof_fsync&quot;</span>  futex_wait_cancelable (private=&lt;optimized out&gt;, </span><br><span class="line">    expected=0, futex_word=0x555555707418 &lt;bio_newjob_cond+88&gt;) at ../sysdeps/nptl/futex-internal.h:183</span><br><span class="line">  4    Thread 0x7ffff5ba4700 (LWP 231547) <span class="string">&quot;bio_lazy_free&quot;</span>  futex_wait_cancelable (private=&lt;optimized out&gt;, </span><br><span class="line">    expected=0, futex_word=0x555555707448 &lt;bio_newjob_cond+136&gt;) at ../sysdeps/nptl/futex-internal.h:183</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如何找到main函数所在的主线程，并切换过去？</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#_start 是C程序的入口函数，可以设置断点在入口函数内，然后运行程序，查看当前线程：</span></span><br><span class="line">(gdb) <span class="built_in">break</span> _start</span><br><span class="line">Breakpoint 1 at 0x55555558bb80</span><br><span class="line">(gdb) run</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">Starting program: /home/changhe/gdb/redis-6.2.4/src/redis-server </span><br><span class="line">[Thread debugging using libthread_db enabled]</span><br><span class="line">Using host libthread_db library <span class="string">&quot;/lib/x86_64-linux-gnu/libthread_db.so.1&quot;</span>.</span><br><span class="line"></span><br><span class="line">Breakpoint 1, 0x000055555558bb80 <span class="keyword">in</span> _start ()</span><br><span class="line">(gdb) info threads </span><br><span class="line">  Id   Target Id                                         Frame </span><br><span class="line">* 1    Thread 0x7ffff79d57c0 (LWP 231538) <span class="string">&quot;redis-server&quot;</span> 0x000055555558bb80 <span class="keyword">in</span> _start ()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>info 命令还可以用来查看当前堆栈处函数的参数值：info args</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(gdb) bt</span><br><span class="line"><span class="comment">#0 0x00007ffff71e2603 in epoll_wait () from /usr/lib64/libc.so.6</span></span><br><span class="line"><span class="comment">#1 0x0000000000428a9e in aeApiPoll (eventLoop=0x5e5770, tvp=0x7fffffffe140) at ae_epoll.c:112</span></span><br><span class="line"><span class="comment">#2 0x00000000004297e2 in aeProcessEvents (eventLoop=0x5e5770, flags=27) at ae.c:447</span></span><br><span class="line"><span class="comment">#3 0x0000000000429ab6 in aeMain (eventLoop=0x5e5770) at ae.c:539</span></span><br><span class="line"><span class="comment">#4 0x00000000004372bb in main (argc=1, argv=0x7fffffffe308) at server.c:5175</span></span><br><span class="line">(gdb) f 2 <span class="comment">#切换到堆栈 #2,堆栈 #2 调用处的函数是 aeProcessEvents(),一共有两个参数</span></span><br><span class="line"><span class="comment">#2 0x00000000004297e2 in aeProcessEvents (eventLoop=0x5e5770, flags=27) at ae.c:447</span></span><br><span class="line">447 numevents = aeApiPoll(eventLoop, tvp);</span><br><span class="line">(gdb) info args <span class="comment">#使用该命令输出当前函数的两个参数值，指针类型的参数，gdb 默认会输出该变量的指针地址值</span></span><br><span class="line">eventLoop = 0x5e5770</span><br><span class="line">flags = 27</span><br><span class="line">(gdb) p *eventLoop <span class="comment">#要想输出指针指向的对象的值，可以使用print命令，</span></span><br><span class="line"><span class="comment">#如果还要查看其成员值，继续使用 变量名-&gt;字段名 即可（如 p eventLoop-&gt;maxfd ）</span></span><br></pre></td></tr></table></figure>
+<h4 id="nextstepuntilfinishreturnjump">next、step、until、finish、return、jump</h4>
+<table>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 85%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">命令</th>
+<th style="text-align: center;">缩写</th>
+<th style="text-align: center;">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">next</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: center;">step
+over，单步步过，不进入函数体内部</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">step</td>
+<td style="text-align: center;">s</td>
+<td style="text-align: center;">step into，单步步入，进入函数体内部</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">until</td>
+<td style="text-align: center;">u</td>
+<td style="text-align: center;">until
+程序行号，指定程序运行到某一行代码处停下</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">finish</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">立即执行当前函数剩余代码并正常返回</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">return</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">立即结束执行当前函数并返回（如果当前函数还有剩余的代码未执行，也不会执行）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">jump</td>
+<td style="text-align: center;">j</td>
+<td style="text-align: center;">jump location，location
+可以是程序行号或者函数地址，jump 会让程序执行流跳转到指定位置执行</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>until 注意</p>
+<p>与 <code>break</code> 命令不同，<code>until</code> 命令中的行号是 GDB
+中显示的行号，而不是源代码文件中的行号。这里的行号以 gdb
+调试器中的行号为准（可以通过list查看），不是源码文件中的行号，由于存在条件编译，部分代码可能不会被编译进可执行文件中，所以实际的调试符号文件中的行号与源码文件中的行号可能会不完全一致。</p></li>
+<li><p>jump 注意：</p></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">somefunc</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="comment">//代码A</span></span><br><span class="line"> <span class="comment">//代码B</span></span><br><span class="line"> <span class="comment">//代码C</span></span><br><span class="line"> <span class="comment">//代码D</span></span><br><span class="line"> <span class="comment">//代码E</span></span><br><span class="line"> <span class="comment">//代码F</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//假设断点初始位置在行号 3 处（代码 A），这个时候使用 jump 6，那么程序会跳过代码 B</span></span><br><span class="line"><span class="comment">//和 C 的执行，执行完代码 D（ 跳转点），程序并不会停在代码 6 处，而是继续执行后续代码，因此如</span></span><br><span class="line"><span class="comment">//果想查看执行跳转处的代码后的结果，需要在行号 6、7 或 8 处设置断点。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//jump命令有一个妙用就是可以执行一些想要执行的代码，而这些代码在正常的逻辑下可能并不会执行</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="type">int</span> a = <span class="number">0</span>;</span><br><span class="line"> <span class="keyword">if</span> (a != <span class="number">0</span>)</span><br><span class="line"> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;if condition\n&quot;</span>);</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line"> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;else condition\n&quot;</span>);</span><br><span class="line"> &#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//在行号 4 、14 处设置一个断点，当触发行号 4 处的断点后，正常情况下程序执行流会走 else 分</span></span><br><span class="line"><span class="comment">//支，可以使用 jump 7 强行让程序执行 if 分支，接着 gdb 会因触发行号 14 处的断点而停下来，此</span></span><br><span class="line"><span class="comment">//时接着执行 jump 11，程序会将 else 分支中的代码重新执行一遍</span></span><br></pre></td></tr></table></figure>
+<h4 id="disassemble">disassemble</h4>
+<p>在一些高级调试时，我们可能要查看某段代码的汇编指令去排查问题，或者是在调试一些没有调试信息的发布版程序时，也只能通过反汇编代码去定位问题。</p>
+<p>disassemble 会输出当前所在函数的汇编指令，假设我们现在在 redis 的
+initServer() 中执行该命令会输出 initServer() 函数的汇编指令.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b initServer</span><br><span class="line">Breakpoint 2 at 0x555555599666: file server.c, line 3137.</span><br><span class="line">(gdb) r</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">Starting program: /home/changhe/gdb/redis-6.2.4/src/redis-server </span><br><span class="line">[Thread debugging using libthread_db enabled]</span><br><span class="line">Using host libthread_db library <span class="string">&quot;/lib/x86_64-linux-gnu/libthread_db.so.1&quot;</span>.</span><br><span class="line">235674:C 12 Oct 2023 16:00:36.542 <span class="comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span></span><br><span class="line">235674:C 12 Oct 2023 16:00:36.542 <span class="comment"># Redis version=6.2.4, bits=64, commit=00000000, modified=0, pid=235674, just started</span></span><br><span class="line">235674:C 12 Oct 2023 16:00:36.542 <span class="comment"># Warning: no config file specified, using the default config. In order to specify a config file use /home/changhe/gdb/redis-6.2.4/src/redis-server /path/to/redis.conf</span></span><br><span class="line"></span><br><span class="line">Breakpoint 2, initServer () at server.c:3137</span><br><span class="line">3137	void initServer(void) &#123;</span><br><span class="line">(gdb) disassemble </span><br><span class="line">Dump of assembler code <span class="keyword">for</span> <span class="keyword">function</span> initServer:</span><br><span class="line">=&gt; 0x0000555555599666 &lt;+0&gt;:	endbr64 </span><br><span class="line">   0x000055555559966a &lt;+4&gt;:	push   %rbp</span><br><span class="line">   0x000055555559966b &lt;+5&gt;:	mov    %rsp,%rbp</span><br><span class="line">   0x000055555559966e &lt;+8&gt;:	push   %rbx</span><br><span class="line">   0x000055555559966f &lt;+9&gt;:	sub    <span class="variable">$0x18</span>,%rsp</span><br><span class="line">   ……</span><br></pre></td></tr></table></figure>
+<p>gdb 默认反汇编为 AT&amp;T 格式的指令，可以通过 show disassembly-ﬂavor
+查看。如果习惯 intel 汇编 格式的，用命令 set disassembly-flavor intel
+来设置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) show disassembly-ﬂavor</span><br><span class="line">The disassembly flavor is <span class="string">&quot;att&quot;</span>.</span><br><span class="line">(gdb) <span class="built_in">set</span> disassembly-flavor intel</span><br><span class="line">(gdb) disassemble </span><br><span class="line">Dump of assembler code <span class="keyword">for</span> <span class="keyword">function</span> initServer:</span><br><span class="line">=&gt; 0x0000555555599666 &lt;+0&gt;:	endbr64 </span><br><span class="line">   0x000055555559966a &lt;+4&gt;:	push   rbp</span><br><span class="line">   0x000055555559966b &lt;+5&gt;:	mov    rbp,rsp</span><br><span class="line">   0x000055555559966e &lt;+8&gt;:	push   rbx</span><br><span class="line">   0x000055555559966f &lt;+9&gt;:	sub    rsp,0x18</span><br><span class="line">   ……</span><br></pre></td></tr></table></figure>
+<p>这个命令在我们只有程序崩溃后产生 core
+文件，且无对应的调试符号时非常有用，我们可以通过分析
+汇编代码定位一些错误。</p>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/robot/note/kalibr_note/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    kalibr_note
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/cs/compile&debug/perf/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">性能分析工具之perf</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>ORB-SLAM2提升算法速度的优化手段列举 | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="ORB-SLAM2提升算法速度的优化手段列举">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Author: [矩阵的秩] Link: [https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;618562057] 1. 跟踪初始化求本质矩阵和单应矩阵时，开双线程进行并行加速 12345678910&#x2F;&#x2F; 构造线程来计算H矩阵及其得分&#x2F;&#x2F; thread方法比较特殊，在传递引用的时候，外层需要用ref来进行引用传递，否则就是浅拷贝thread threadH(&amp;Initializer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ORB-SLAM2提升算法速度的优化手段列举">
+<meta property="og:url" content="https://silencht.github.io/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="Author: [矩阵的秩] Link: [https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;618562057] 1. 跟踪初始化求本质矩阵和单应矩阵时，开双线程进行并行加速 12345678910&#x2F;&#x2F; 构造线程来计算H矩阵及其得分&#x2F;&#x2F; thread方法比较特殊，在传递引用的时候，外层需要用ref来进行引用传递，否则就是浅拷贝thread threadH(&amp;Initializer">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.537Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file active"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-robot/code/ORB-SLAM/ORB-SLAM2提升算法速度的优化手段列举" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/robot/">robot</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/code/">code</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/robot/code/ORB-SLAM/">ORB-SLAM</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">
+            <time datetime="2023-11-29T02:08:16.537Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/robot/code/ORB-SLAM/ORB-SLAM2提升算法速度的优化手段列举.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/robot/code/ORB-SLAM/ORB-SLAM2提升算法速度的优化手段列举.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/robot/code/ORB-SLAM/ORB-SLAM2提升算法速度的优化手段列举.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            ORB-SLAM2提升算法速度的优化手段列举
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AA%E5%88%9D%E5%A7%8B%E5%8C%96%E6%B1%82%E6%9C%AC%E8%B4%A8%E7%9F%A9%E9%98%B5%E5%92%8C%E5%8D%95%E5%BA%94%E7%9F%A9%E9%98%B5%E6%97%B6%E5%BC%80%E5%8F%8C%E7%BA%BF%E7%A8%8B%E8%BF%9B%E8%A1%8C%E5%B9%B6%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="toc-number">1.</span> <span class="toc-text">1.
+跟踪初始化求本质矩阵和单应矩阵时，开双线程进行并行加速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%B3%E9%94%AE%E7%82%B9%E7%81%B0%E5%BA%A6%E8%B4%A8%E5%BF%83%E6%96%B9%E5%90%91%E6%97%B6%E5%88%A9%E7%94%A8%E5%9C%86%E7%9A%84%E5%AF%B9%E7%A7%B0%E6%80%A7%E6%AF%8F%E6%AC%A1%E5%BE%AA%E7%8E%AF%E6%B1%82%E8%A7%A3%E5%AF%B9%E7%A7%B0%E7%9A%84%E4%B8%A4%E7%BB%84%E5%80%BC%E6%9C%80%E5%90%8E%E4%BD%BF%E7%94%A8fastatan2%E5%87%BD%E6%95%B0%E5%8A%A0%E9%80%9F%E8%AE%A1%E7%AE%97%E8%A7%92%E5%BA%A6"><span class="toc-number">2.</span> <span class="toc-text">2.
+计算关键点灰度质心方向时，利用圆的对称性每次循环求解对称的两组值。最后使用FastAtan2函数加速计算角度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E8%BF%91%E9%82%BB%E7%AA%97%E5%8F%A3%E5%8D%8A%E5%BE%84%E6%8F%90%E5%8F%96%E7%89%B9%E5%BE%81%E6%97%B6%E9%A2%84%E5%85%88%E5%88%86%E9%85%8D%E8%87%B3%E7%BD%91%E6%A0%BC%E6%8A%95%E5%BD%B1%E5%90%8E%E5%9D%90%E6%A0%87%E7%AA%97%E5%8F%A3%E9%99%84%E8%BF%91bow%E8%AF%8D%E8%A2%8B%E7%AD%89%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95%E5%8A%A0%E9%80%9F%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D"><span class="toc-number">3.</span> <span class="toc-text">3.
+通过近邻窗口半径（提取特征时预先分配至网格）、投影后坐标窗口附近、Bow词袋等几种方法加速特征匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E6%AC%A1%E5%85%88%E5%B0%86%E6%9F%90%E4%BA%9B%E5%8F%98%E9%87%8F%E7%9A%84%E5%80%92%E6%95%B0%E5%80%BC%E8%AE%A1%E7%AE%97%E5%87%BA%E6%9D%A5%E5%AD%98%E6%94%BE%E8%87%B3inverse%E5%8F%98%E9%87%8F%E5%87%8F%E5%B0%91%E8%AE%A1%E7%AE%97%E6%97%B6%E9%99%A4%E6%B3%95%E7%9A%84%E8%AE%A1%E7%AE%97%E9%87%8F"><span class="toc-number">4.</span> <span class="toc-text">4.
+每次先将某些变量的倒数值计算出来存放至inverse变量，减少计算时除法的计算量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E6%88%96%E5%87%BD%E6%95%B0%E5%BC%80%E5%A7%8B%E5%89%8D%E5%85%88%E6%8A%8Avector%E7%AD%89%E5%8F%98%E9%87%8Freserve%E6%89%A9%E5%AE%B9%E8%87%B3%E8%B6%B3%E5%A4%9F%E5%A4%A7%E9%98%B2%E6%AD%A2%E5%BE%AA%E7%8E%AF%E6%97%B6%E5%9B%A0%E5%AE%B9%E9%87%8F%E4%B8%8D%E5%A4%9F%E5%8F%91%E7%94%9F%E4%B8%B4%E6%97%B6%E6%89%A9%E5%AE%B9"><span class="toc-number">5.</span> <span class="toc-text">5.
+循环或函数开始前先把vector等变量reserve扩容至足够大，防止循环时因容量不够发生临时扩容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%8F%8C%E7%9B%AE%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D%E6%97%B6%E5%8F%AA%E5%9C%A8%E6%9F%90%E8%BF%91%E9%82%BB%E5%83%8F%E7%B4%A0%E8%A1%8C%E8%8C%83%E5%9B%B4%E5%86%85%E6%9F%A5%E6%89%BE%E4%B8%8D%E5%85%A8%E5%B1%80%E6%9A%B4%E5%8A%9B%E5%8C%B9%E9%85%8D"><span class="toc-number">6.</span> <span class="toc-text">6.
+计算双目特征匹配时，只在某近邻像素行范围内查找，不全局暴力匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8A%A0%E9%94%81%E6%95%B0%E6%8D%AE%E6%97%B6%E5%BF%AB%E9%80%9F%E8%A7%A3%E9%94%81%E9%81%BF%E5%85%8D%E9%95%BF%E6%97%B6%E9%97%B4%E7%8B%AC%E5%8D%A0%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE"><span class="toc-number">7.</span> <span class="toc-text">7.
+访问多线程加锁数据时，快速解锁，避免长时间独占共享数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%B8%8D%E5%90%8C%E4%BD%9C%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8F%98%E9%87%8F%E9%80%89%E7%94%A8%E5%90%88%E9%80%82%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="toc-number">8.</span> <span class="toc-text">8.
+为不同作用的数据变量选用合适的容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%85%E8%A1%A5%E5%85%85"><span class="toc-number">9.</span> <span class="toc-text">9. 待补充</span></a></li></ol>
+                </div>
+            
+        
+        
+            <p><strong>Author:</strong> [矩阵的秩]</p>
+<p><strong>Link:</strong> [https://zhuanlan.zhihu.com/p/618562057]</p>
+<h3 id="跟踪初始化求本质矩阵和单应矩阵时开双线程进行并行加速">1.
+跟踪初始化求本质矩阵和单应矩阵时，开双线程进行并行加速</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构造线程来计算H矩阵及其得分</span></span><br><span class="line"><span class="comment">// thread方法比较特殊，在传递引用的时候，外层需要用ref来进行引用传递，否则就是浅拷贝</span></span><br><span class="line"><span class="function">thread <span class="title">threadH</span><span class="params">(&amp;Initializer::FindHomography,	<span class="comment">//该线程的主函数</span></span></span></span><br><span class="line"><span class="params"><span class="function">				   <span class="keyword">this</span>,					</span></span></span><br><span class="line"><span class="params"><span class="function">				   ref(vbMatchesInliersH), 			</span></span></span><br><span class="line"><span class="params"><span class="function">				   ref(SH), 				</span></span></span><br><span class="line"><span class="params"><span class="function">				   ref(H))</span></span>;</span><br><span class="line"><span class="comment">// 计算fundamental matrix并打分</span></span><br><span class="line"><span class="function">thread <span class="title">threadF</span><span class="params">(&amp;Initializer::FindFundamental,<span class="keyword">this</span>,ref(vbMatchesInliersF), ref(SF), ref(F))</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="计算关键点灰度质心方向时利用圆的对称性每次循环求解对称的两组值最后使用fastatan2函数加速计算角度">2.
+计算关键点灰度质心方向时，利用圆的对称性每次循环求解对称的两组值。最后使用FastAtan2函数加速计算角度</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">float</span> <span class="title">IC_Angle</span><span class="params">(<span class="type">const</span> Mat&amp; image, Point2f pt,  <span class="type">const</span> vector&lt;<span class="type">int</span>&gt; &amp; u_max)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="comment">//……部分代码略</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> v = <span class="number">1</span>; v &lt;= HALF_PATCH_SIZE; ++v)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> v_sum = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> d = u_max[v];</span><br><span class="line">	<span class="comment">// 在坐标范围内挨个像素遍历，实际是一次遍历2个</span></span><br><span class="line">        <span class="comment">// 假设每次处理的两个点坐标，中心线下方为(x,y),中心线上方为(x,-y) </span></span><br><span class="line">        <span class="comment">// 对于某次待处理的两个点：m_10 = Σ x*I(x,y) =  x*I(x,y) + x*I(x,-y) = x*(I(x,y) + I(x,-y))</span></span><br><span class="line">        <span class="comment">// 对于某次待处理的两个点：m_01 = Σ y*I(x,y) =  y*I(x,y) - y*I(x,-y) = y*(I(x,y) - I(x,-y))</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> u = -d; u &lt;= d; ++u)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">int</span> val_plus = center[u + v*step], val_minus = center[u - v*step];</span><br><span class="line">	    <span class="comment">//在v（y轴）上，2行所有像素灰度值之差</span></span><br><span class="line">            v_sum += (val_plus - val_minus);</span><br><span class="line">	    <span class="comment">//u轴（也就是x轴）方向上用u坐标加权和（u坐标也有正负符号），相当于同时计算两行</span></span><br><span class="line">            m_10 += u * (val_plus + val_minus);</span><br><span class="line">        &#125;</span><br><span class="line">        m_01 += v * v_sum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//为了加快速度还使用了fastAtan2()函数，输出为[0,360)角度，精度为0.3°</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">fastAtan2</span>((<span class="type">float</span>)m_01, (<span class="type">float</span>)m_10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="通过近邻窗口半径提取特征时预先分配至网格投影后坐标窗口附近bow词袋等几种方法加速特征匹配">3.
+通过近邻窗口半径（提取特征时预先分配至网格）、投影后坐标窗口附近、Bow词袋等几种方法加速特征匹配</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void Frame::AssignFeaturesToGrid()</span><br><span class="line">int SearchByBoW()</span><br><span class="line">//……</span><br><span class="line">//等等</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="每次先将某些变量的倒数值计算出来存放至inverse变量减少计算时除法的计算量">4.
+每次先将某些变量的倒数值计算出来存放至inverse变量，减少计算时除法的计算量</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//例如：1</span></span><br><span class="line">mvInvScaleFactors = mpORBextractorLeft-&gt;<span class="built_in">GetInverseScaleFactors</span>();</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line">Frame::<span class="built_in">Frame</span>(<span class="type">const</span> cv::Mat &amp;imLeft, <span class="type">const</span> cv::Mat &amp;imRight,……)</span><br><span class="line">&#123;</span><br><span class="line">……</span><br><span class="line"><span class="comment">// 猜测是因为这种除法计算需要的时间略长，所以这里直接存储了这个中间计算结果</span></span><br><span class="line">    invfx = <span class="number">1.0f</span>/fx;</span><br><span class="line">    invfy = <span class="number">1.0f</span>/fy;</span><br><span class="line">……</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//3</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ORBmatcher::SearchByProjection</span><span class="params">(KeyFrame* pKF, cv::Mat Scw, <span class="type">const</span> vector&lt;MapPoint*&gt; &amp;vpPoints, vector&lt;MapPoint*&gt; &amp;vpMatched, <span class="type">int</span> th)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">……</span><br><span class="line">     <span class="type">const</span> <span class="type">float</span> invz = <span class="number">1</span>/p3Dc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">2</span>);</span><br><span class="line">     <span class="type">const</span> <span class="type">float</span> x = p3Dc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>)*invz;</span><br><span class="line">     <span class="type">const</span> <span class="type">float</span> y = p3Dc.<span class="built_in">at</span>&lt;<span class="type">float</span>&gt;(<span class="number">1</span>)*invz;</span><br><span class="line">……</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//等等</span></span><br></pre></td></tr></table></figure>
+<h3 id="循环或函数开始前先把vector等变量reserve扩容至足够大防止循环时因容量不够发生临时扩容">5.
+循环或函数开始前先把vector等变量reserve扩容至足够大，防止循环时因容量不够发生临时扩容</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//例如：1</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ORBmatcher::SearchByBoW</span><span class="params">(KeyFrame* pKF,Frame &amp;F, vector&lt;MapPoint*&gt; &amp;vpMapPointMatches)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">……</span><br><span class="line">    <span class="comment">// 特征点角度旋转差统计用的直方图</span></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; rotHist[HISTO_LENGTH];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;HISTO_LENGTH;i++)</span><br><span class="line">        rotHist[i].<span class="built_in">reserve</span>(<span class="number">500</span>);</span><br><span class="line">……</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Frame::AssignFeaturesToGrid</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">……</span><br><span class="line">    <span class="comment">// 给存储特征点的网格数组 Frame::mGrid 预分配空间</span></span><br><span class="line">    <span class="type">int</span> nReserve = <span class="number">0.5f</span>*N/(FRAME_GRID_COLS*FRAME_GRID_ROWS);</span><br><span class="line">    <span class="comment">// 开始对mGrid这个二维数组中的每一个vector元素遍历并预分配空间</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">unsigned</span> <span class="type">int</span> i=<span class="number">0</span>; i&lt;FRAME_GRID_COLS;i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">unsigned</span> <span class="type">int</span> j=<span class="number">0</span>; j&lt;FRAME_GRID_ROWS;j++)</span><br><span class="line">            mGrid[i][j].<span class="built_in">reserve</span>(nReserve);</span><br><span class="line">……</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//等等</span></span><br></pre></td></tr></table></figure>
+<h3 id="计算双目特征匹配时只在某近邻像素行范围内查找不全局暴力匹配">6.
+计算双目特征匹配时，只在某近邻像素行范围内查找，不全局暴力匹配</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Frame::ComputeStereoMatches</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*两帧图像稀疏立体匹配（即：ORB特征点匹配，非逐像素的密集匹配，但依然满足行对齐）</span></span><br><span class="line"><span class="comment">     * 输入：两帧立体矫正后的图像img_left 和 img_right 对应的orb特征点集</span></span><br><span class="line"><span class="comment">     * 过程：</span></span><br><span class="line"><span class="comment">          1. 行特征点统计. 统计img_right每一行上的ORB特征点集，便于使用立体匹配思路(行搜索/极线搜索）进行同名点搜索, 避免逐像素的判断.</span></span><br><span class="line"><span class="comment">          2. 粗匹配. 根据步骤1的结果，对img_left第i行的orb特征点pi，在img_right的第i行上的orb特征点集中搜索相似orb特征点, 得到qi</span></span><br><span class="line"><span class="comment">          3. 精确匹配. 以点qi为中心，半径为r的范围内，进行块匹配（归一化SAD），进一步优化匹配结果</span></span><br><span class="line"><span class="comment">          4. 亚像素精度优化. 步骤3得到的视差为uchar/int类型精度，并不一定是真实视差，通过亚像素差值（抛物线插值)获取float精度的真实视差</span></span><br><span class="line"><span class="comment">          5. 最优视差值/深度选择. 通过胜者为王算法（WTA）获取最佳匹配点。</span></span><br><span class="line"><span class="comment">          6. 删除离群点(outliers). 块匹配相似度阈值判断，归一化sad最小，并不代表就一定是正确匹配，比如光照变化、弱纹理等会造成误匹配</span></span><br><span class="line"><span class="comment">     * 输出：稀疏特征点视差图/深度图（亚像素精度）mvDepth 匹配结果 mvuRight</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">……</span><br><span class="line">    <span class="comment">// 右图特征点数量，N表示数量 r表示右图，且不能被修改</span></span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> Nr = mvKeysRight.<span class="built_in">size</span>();</span><br><span class="line">    <span class="comment">// Step 1. 行特征点统计. 考虑到尺度金字塔特征，一个特征点可能存在于多行，而非唯一的一行</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> iR = <span class="number">0</span>; iR &lt; Nr; iR++) &#123;</span><br><span class="line">        <span class="comment">// 获取特征点ir的y坐标，即行号</span></span><br><span class="line">        <span class="type">const</span> cv::KeyPoint &amp;kp = mvKeysRight[iR];</span><br><span class="line">        <span class="type">const</span> <span class="type">float</span> &amp;kpY = kp.pt.y;</span><br><span class="line">        <span class="comment">// 计算特征点ir在行方向上，可能的偏移范围r，即可能的行号为[kpY + r, kpY -r]</span></span><br><span class="line">        <span class="comment">// 2 表示在全尺寸(scale = 1)的情况下，假设有2个像素的偏移，随着尺度变化，r也跟着变化</span></span><br><span class="line">        <span class="type">const</span> <span class="type">float</span> r = <span class="number">2.0f</span> * mvScaleFactors[mvKeysRight[iR].octave];</span><br><span class="line">        <span class="type">const</span> <span class="type">int</span> maxr = <span class="built_in">ceil</span>(kpY + r);</span><br><span class="line">        <span class="type">const</span> <span class="type">int</span> minr = <span class="built_in">floor</span>(kpY - r);</span><br><span class="line">        <span class="comment">// 将特征点ir保证在可能的行号中</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> yi=minr;yi&lt;=maxr;yi++)</span><br><span class="line">            vRowIndices[yi].<span class="built_in">push_back</span>(iR);</span><br><span class="line">    &#125;</span><br><span class="line">……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="访问多线程加锁数据时快速解锁避免长时间独占共享数据">7.
+访问多线程加锁数据时，快速解锁，避免长时间独占共享数据</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//多线程编程注意，例如</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">LocalMapping::ProcessNewKeyFrame</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">unique_lock&lt;mutex&gt; <span class="title">lock</span><span class="params">(mMutexNewKFs)</span></span>;</span><br><span class="line">        mpCurrentKeyFrame = mlNewKeyFrames.<span class="built_in">front</span>();</span><br><span class="line">        mlNewKeyFrames.<span class="built_in">pop_front</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//上锁处理数据后，迅速解锁</span></span><br><span class="line">……<span class="comment">//do anotherthing</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="为不同作用的数据变量选用合适的容器">8.
+为不同作用的数据变量选用合适的容器</h3>
+<p>例如：</p>
+<ol type="1">
+<li><p>存储特征点的<strong>vector容器</strong>（频繁随机访问，变化较小：提取完成后很少再进行插入和删除）</p></li>
+<li><p>存储共视关键帧mConnectedKeyFrameWeights的<strong>map容器。</strong>
+mConnectedKeyFrameWeights是一个用于保存当前关键帧与其连接的其他关键帧之间权重信息的数据结构，其中键是连接的关键帧
+ID，值是权重。此变量在 ORB-SLAM2
+中被频繁地使用，因此它需要支持高效的查找和插入操作。</p></li>
+</ol>
+<p>个人猜测，由于该变量的大小通常比较小，因此使用 <code>std::map</code>
+。</p>
+<p><code>std::map</code>
+是一种有序关联容器，它使用红黑树实现。由于它是一个有序容器，因此它提供了按键排序的功能，这使得它在查找和插入操作方面具有较高的效率。另外，由于红黑树的高效性能和可预测的内存占用，<code>std::map</code>
+通常比 <code>std::unordered_map</code> 在处理小规模数据时表现更好。</p>
+<ol start="3" type="1">
+<li><p>四叉树均匀化分配特征点以及记录连接关键帧、局部地图点（如<em>lLocalMapPoints</em>）时使用<strong>list链表容器</strong>（不经常随机访问，而是遍历迭代访问，经常需要插入，list插入效率高）</p></li>
+<li><p>Map中的地图点和关键帧用<strong>set容器</strong>，因为经常需要做插入删除动作（印象中orbslam2这里地图点的删除没实现，可能会造成内存泄漏）set容器有序，无重复元素，方便转vector（返回关键帧集合转化的vector给可视化和BA优化程序用）</p></li>
+</ol>
+<h3 id="待补充">9. 待补充</h3>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/robot/code/Ceres/A_Simple_Example/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Ceres使用：A Simple Example
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">MapPoint::PredictScale()小记</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>

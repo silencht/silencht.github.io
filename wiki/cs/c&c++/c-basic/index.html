@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    
+    <title>c-basic | silencht&#39;s blog</title>
+    
+    
+        <meta name="keywords" content="c-basic">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="备注： C语言读书摘录笔记，笔记内容绝大部分摘录整理自李春葆、李筏驰老师编著的《直击招聘——程序员面试笔试C语言深度解析》一书，少部分来自于网络博客及网上资源（尽量保留了资源原始链接）.  第一章 程序设计基础——变量 1.1 变量定义和声明 1.1.1定义变量就是使用内存 1.如果一个变量占用内存空间的多个内存字节，其第一个字节地址就是它的存储地址 2.简单理解为变量就是内存的一个箱子，箱子的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c-basic">
+<meta property="og:url" content="https://silencht.github.io/wiki/cs/c&c++/c-basic/index.html">
+<meta property="og:site_name" content="silencht&#39;s blog">
+<meta property="og:description" content="备注： C语言读书摘录笔记，笔记内容绝大部分摘录整理自李春葆、李筏驰老师编著的《直击招聘——程序员面试笔试C语言深度解析》一书，少部分来自于网络博客及网上资源（尽量保留了资源原始链接）.  第一章 程序设计基础——变量 1.1 变量定义和声明 1.1.1定义变量就是使用内存 1.如果一个变量占用内存空间的多个内存字节，其第一个字节地址就是它的存储地址 2.简单理解为变量就是内存的一个箱子，箱子的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-29T02:08:16.533Z">
+<meta property="article:modified_time" content="2023-11-29T02:08:16.533Z">
+<meta property="article:author" content="silencht">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+<script src="/libs/jquery/plugins/cookie/1.4.1/jquery.cookie.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">silencht&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">时间轴</a>
+                
+                    <a class="main-nav-link" href="/categories">目录</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '目录',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">时间轴</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">目录</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        
+        <div class="outer">
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap" id="categories">
+        <h3 class="widget-title">
+            <span>目录</span>
+            &nbsp;
+            <a id="allExpand" href="#">
+                <i class="fa fa-angle-double-down fa-2x"></i>
+            </a>
+        </h3>
+        
+        
+        
+         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            cs
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory open">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder-open"></i>
+                            &nbsp;
+                            c&c++
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/c&c++/cpp-basic/">cpp-basic</a></li>  <li class="file active"><a href="/wiki/cs/c&c++/c-basic/">c-basic</a></li>  <li class="file"><a href="/wiki/cs/c&c++/cpp-thread_local/">cpp-thread_local</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            compile&debug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/compile&debug/an-introductionto-gcc-Brian-Gough/">an-introductionto-gcc-Brian-Gough</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gcc/">gcc</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/gdb/">gdb</a></li>  <li class="file"><a href="/wiki/cs/compile&debug/perf/">性能分析工具之perf</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            database
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/database/MySQL/">MySQL</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            python
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            conda
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/python/conda/conda/">conda</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            system
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Unix&Linux
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/Unix&Linux/init-ubuntu/">init-ubuntu</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            bug
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/cs/system/bug/gtk2-symbols-debug/">gtk2-symbols-debug</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ee
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            数字电子技术
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E7%BB%84%E5%90%88%E7%94%B5%E8%B7%AF/">组合电路</a></li>  <li class="file"><a href="/wiki/ee/%E6%95%B0%E5%AD%97%E7%94%B5%E5%AD%90%E6%8A%80%E6%9C%AF/%E8%A7%A6%E5%8F%91%E5%99%A8/">触发器</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            电路
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86/">电路原理脉络</a></li>  <li class="file"><a href="/wiki/ee/%E7%94%B5%E8%B7%AF/%E7%9B%B8%E9%87%8F%E6%B3%95/">相量法</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            robot
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            code
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            Ceres
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/Ceres/A_Simple_Example/">Ceres使用：A Simple Example</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ORB-SLAM
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/ORB-SLAM2%E6%8F%90%E5%8D%87%E7%AE%97%E6%B3%95%E9%80%9F%E5%BA%A6%E7%9A%84%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5%E5%88%97%E4%B8%BE/">ORB-SLAM2提升算法速度的优化手段列举</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/orb-slam2-MapPointPredictScale/">MapPoint::PredictScale()小记</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E4%BD%BF%E7%94%A8ORB-SLAM%E6%9E%84%E5%BB%BAoctomap%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">使用ORB-SLAM构建octomap要注意的一些问题</a></li>  <li class="file"><a href="/wiki/robot/code/ORB-SLAM/%E7%89%B9%E5%BE%81%E7%82%B9%E6%95%B0%E9%87%8F%E5%88%86%E9%85%8D%E8%AE%A1%E7%AE%97%E6%97%B6%E7%BC%A9%E6%94%BE%E5%9B%A0%E5%AD%90%E5%BC%80%E6%96%B9%E5%8E%9F%E5%9B%A0/">特征点数量分配计算时缩放因子开方原因</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            note
+                        </a>
+                         <ul class="unstyled" id="tree"> 
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            slambook14
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/slambook14/Eigen%E4%BB%A3%E7%A0%81%E7%AC%AC90%E8%A1%8C%E4%BF%9D%E8%AF%81%E5%8D%8A%E6%AD%A3%E5%AE%9A%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%81%E6%98%8E/">Eigen代码第90行保证半正定的简单证明</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/book-note/">SLAMBOOK14-NOTE</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E4%BA%92%E4%B8%BA%E5%8F%8D%E5%90%91%E7%9A%84%E5%B9%B3%E7%A7%BB%E5%90%91%E9%87%8F%E5%9D%90%E6%A0%87%E5%80%BC%E7%9A%84%E5%85%B3%E7%B3%BB/">互为反向的平移向量坐标值的关系</a></li>  <li class="file"><a href="/wiki/robot/note/slambook14/%E5%9B%9B%E5%85%83%E6%95%B0%E5%88%B0%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E5%85%AC%E5%BC%8F%E7%9A%84%E8%A1%A5%E5%85%85/">四元数到旋转向量公式的补充</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            视觉惯性SLAM理论与源码解析
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/">两点的叉乘为过两点直线的系数</a></li>  </ul> 
+                    </li> 
+                     <li class="file"><a href="/wiki/robot/note/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%B1%82%E5%AF%BC%E5%87%BA%E7%8E%B0%E8%A7%92%E9%80%9F%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3/">旋转矩阵求导出现角速度的理解</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%A7%86%E8%A7%89SLAM%E6%90%9E%E5%AE%9A%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%89%E8%A7%92%E6%B5%8B%E9%87%8FPnP_%E8%A1%8C%E7%9F%A5SLAM/">视觉SLAM:搞定坐标系、三角测量、PnP</a></li>  <li class="file"><a href="/wiki/robot/note/%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2%E6%8E%A8%E5%AF%BC/">贝叶斯滤波（Bayes Filter）推导</a></li>  <li class="file"><a href="/wiki/robot/note/kalibr_note/">kalibr_note</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            paper
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/paper/2006-slam-review/">2006-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/2016-slam-review/">2016-slam-review</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam1-translation/">orbslam1-translation</a></li>  <li class="file"><a href="/wiki/robot/paper/orbslam2-translation/">orbslam2-translation</a></li>  </ul> 
+                    </li> 
+                    
+                    <li class="directory">
+                        <a href="#" data-role="directory">
+                            <i class="fa fa-folder"></i>
+                            &nbsp;
+                            ros
+                        </a>
+                         <ul class="unstyled" id="tree">  <li class="file"><a href="/wiki/robot/ros/ros-error-solve/">ros error solve</a></li>  <li class="file"><a href="/wiki/robot/ros/ros1/">ros1</a></li>  <li class="file"><a href="/wiki/robot/ros/rosdep-update/">rosdep-update</a></li>  </ul> 
+                    </li> 
+                     </ul> 
+                    </li> 
+                     </ul> 
+    </div>
+    <script>
+        $(document).ready(function() {
+            var iconFolderOpenClass  = 'fa-folder-open';
+            var iconFolderCloseClass = 'fa-folder';
+            var iconAllExpandClass = 'fa-angle-double-down';
+            var iconAllPackClass = 'fa-angle-double-up';
+            // Handle directory-tree expansion:
+            // 左键单独展开目录
+            $(document).on('click', '#categories a[data-role="directory"]', function (event) {
+                event.preventDefault();
+
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var subtree = $(this).siblings('ul');
+                icon.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if (expanded) {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideUp({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderCloseClass);
+                } else {
+                    if (typeof subtree != 'undefined') {
+                        subtree.slideDown({ duration: 100 });
+                    }
+                    icon.addClass(iconFolderOpenClass);
+                }
+            });
+            // 右键展开下属所有目录
+            $('#categories a[data-role="directory"]').bind("contextmenu", function(event){
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconFolderOpenClass);
+                var listNode = $(this).siblings('ul');
+                var subtrees = $.merge(listNode.find('li ul'), listNode);
+                var icons = $.merge(listNode.find('.fa'), icon);
+                icons.removeClass(iconFolderOpenClass).removeClass(iconFolderCloseClass);
+                if(expanded) {
+                    subtrees.slideUp({ duration: 100 });
+                    icons.addClass(iconFolderCloseClass);
+                } else {
+                    subtrees.slideDown({ duration: 100 });
+                    icons.addClass(iconFolderOpenClass);
+                }
+            })
+            // 展开关闭所有目录按钮
+            $(document).on('click', '#allExpand', function (event) {
+                event.preventDefault();
+                
+                var icon = $(this).children('.fa');
+                var expanded = icon.hasClass(iconAllExpandClass);
+                icon.removeClass(iconAllExpandClass).removeClass(iconAllPackClass);
+                if(expanded) {
+                    $('#sidebar .fa.fa-folder').removeClass('fa-folder').addClass('fa-folder-open')
+                    $('#categories li ul').slideDown({ duration: 100 });
+                    icon.addClass(iconAllPackClass);
+                } else {
+                    $('#sidebar .fa.fa-folder-open').removeClass('fa-folder-open').addClass('fa-folder')
+                    $('#categories li ul').slideUp({ duration: 100 });
+                    icon.addClass(iconAllExpandClass);
+                }
+            }); 
+        });
+    </script>    
+
+    
+</aside>
+                <section id="main"><article id="post-cs/c&amp;c++/c-basic" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+                    <div class="article-meta">
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/cs/">cs</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/cs/c-c/">c&c++</a>
+    </div>
+
+                        
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/wiki/cs/c&c++/c-basic/">
+            <time datetime="2023-11-29T02:08:16.533Z" itemprop="datePublished">2023-11-29</time>
+        </a>
+    </div>
+
+
+                        
+                            <i class="fa fa-bar-chart"></i>
+                            <span id="busuanzi_container_site_pv"><span id="busuanzi_value_page_pv"></span></span>    
+                        
+                        
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/raw/write/source/_posts/cs/c&amp;c++/c-basic.md"> Source </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/edit/write/source/_posts/cs/c&amp;c++/c-basic.md"> Edit </a>
+                            </div>
+                            <div class="article-meta-button">
+                                <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/silencht/silencht.github.io/commits/write/source/_posts/cs/c&amp;c++/c-basic.md"> History </a>
+                            </div>
+                        
+                    </div>
+                
+                
+    
+        <h1 class="article-title" itemprop="name">
+            c-basic
+        </h1>
+    
+
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E5%9F%BA%E7%A1%80%E5%8F%98%E9%87%8F"><span class="toc-number">1.</span> <span class="toc-text">第一章 程序设计基础——变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89%E5%92%8C%E5%A3%B0%E6%98%8E"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 变量定义和声明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F%E5%B0%B1%E6%98%AF%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1.1定义变量就是使用内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.1.2变量的作用域和在内存中的存储方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E5%92%8C%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 运算符和表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#c%E4%B8%AD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1 C中的运算符</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">第二章 数据处理——控制结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 选择控制结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#if-%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 If 语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#switch%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 Switch语句</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 循环控制结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#for%E8%AF%AD%E5%8F%A5-for%E8%A1%A8%E8%BE%BE%E5%BC%8F1%E8%A1%A8%E8%BE%BE%E5%BC%8F2%E8%A1%A8%E8%BE%BE%E5%BC%8F3-%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 for语句
+for(表达式1；表达式2；表达式3) 语句；</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#break%E5%92%8Ccontinue%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 break和continue语句</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%86%85%E5%AD%98%E6%93%8D%E4%BD%9C%E6%8C%87%E9%92%88"><span class="toc-number">3.</span> <span class="toc-text">第三章 内存操作——指针</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E5%9F%BA%E7%A1%80"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 指针基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E5%8F%98%E9%87%8F%E4%B8%8E%E8%BF%90%E7%AE%97"><span class="toc-number">3.1.1.</span> <span class="toc-text">3.1.1 指针变量与运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8E%E6%8C%87%E9%92%88"><span class="toc-number">3.1.2.</span> <span class="toc-text">3.1.2 野指针</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 常量和常量指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E9%87%8F"><span class="toc-number">3.2.1.</span> <span class="toc-text">3.2.1 常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#const%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88"><span class="toc-number">3.2.2.</span> <span class="toc-text">3.2.2 const指针常量、常量指针</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E7%BA%A7%E6%8C%87%E9%92%88"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 多级指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#void-%E5%92%8Cvoid"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.3.1
+void *和void **</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E8%A7%A3%E6%9E%90"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 实例解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#inta"><span class="toc-number">3.4.1.</span> <span class="toc-text">3.4.1 （int&amp;)a</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC4%E7%AB%A0-%E6%95%B0%E6%8D%AE%E7%BB%84%E7%BB%87%E6%95%B0%E7%BB%84"><span class="toc-number">4.</span> <span class="toc-text">第4章 数据组织——数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 一维数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.1.</span> <span class="toc-text">4.1.1 一维数组定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">4.1.2.</span> <span class="toc-text">4.1.2 一维数组初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">4.1.3.</span> <span class="toc-text">4.1.3 一维数组和指针的差异</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6sizeof"><span class="toc-number">4.1.4.</span> <span class="toc-text">4.1.4 运算符sizeof</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 二维数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">4.2.1.</span> <span class="toc-text">4.2.1 二维数组的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%BB%B4%E6%95%B0%E7%BB%84%E7%9A%84%E5%90%84%E7%BA%A7%E5%9C%B0%E5%9D%80"><span class="toc-number">4.2.2.</span> <span class="toc-text">4.2.2 多维数组的各级地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E6%95%B0%E7%BB%84%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%95%B0%E7%BB%84"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 字符数组和字符串数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E6%95%B0%E7%BB%84"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1 字符数组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%95%B0%E7%BB%84"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2 字符串数组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 指针数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88"><span class="toc-number">4.5.</span> <span class="toc-text">4.5 数组指针</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC5%E7%AB%A0-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84ii%E7%BB%93%E6%9E%84%E4%BD%93%E4%B8%8E%E8%81%94%E5%90%88%E4%BD%93"><span class="toc-number">5.</span> <span class="toc-text">第5章
+数据结构II——结构体与联合体</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 结构体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%A3%B0%E6%98%8E"><span class="toc-number">5.1.1.</span> <span class="toc-text">5.1.1 结构体类型的声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">5.1.2.</span> <span class="toc-text">5.1.2 结构体变量的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%8F%98%E9%87%8F%E7%9A%84%E5%BC%95%E7%94%A8"><span class="toc-number">5.1.3.</span> <span class="toc-text">5.1.3 结构体变量的引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">5.1.4.</span> <span class="toc-text">5.1.4 结构体变量的初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%8F%98%E9%87%8F%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D"><span class="toc-number">5.1.5.</span> <span class="toc-text">5.1.5 结构体变量的内存分配</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%94%E5%90%88%E4%BD%93"><span class="toc-number">5.2.</span> <span class="toc-text">5.2 联合体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E8%81%94%E5%90%88%E4%BD%93%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">5.2.1.</span> <span class="toc-text">5.2.1 定义联合体的注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%81%94%E5%90%88%E4%BD%93%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">5.2.2.</span> <span class="toc-text">5.2.2 初始化联合体的注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 枚举类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.4.</span> <span class="toc-text">5.4 用户定义类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%85%B3typedef%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="toc-number">5.4.1.</span> <span class="toc-text">5.4.1 有关typedef的说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC6%E7%AB%A0-%E6%A8%A1%E5%9D%97%E5%8C%96%E5%87%BD%E6%95%B0"><span class="toc-number">6.</span> <span class="toc-text">第6章 模块化——函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 函数基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E8%B0%83%E7%94%A8"><span class="toc-number">6.1.1.</span> <span class="toc-text">6.1.1函数的定义与调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%8Ereturn%E8%AF%AD%E5%8F%A5"><span class="toc-number">6.1.2.</span> <span class="toc-text">6.1.2 函数的返回值与return语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E5%A3%B0%E6%98%8E"><span class="toc-number">6.1.3.</span> <span class="toc-text">6.1.3 函数的声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E9%83%A8%E5%87%BD%E6%95%B0%E4%B8%8E%E5%86%85%E9%83%A8%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.4.</span> <span class="toc-text">6.1.4 外部函数与内部函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E9%97%B4%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92"><span class="toc-number">6.1.5.</span> <span class="toc-text">6.1.5 函数间的参数传递</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">6.1.6.</span> <span class="toc-text">6.1.5 函数调用的实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%97%B6%E5%8F%82%E6%95%B0%E7%9A%84%E6%B1%82%E5%80%BC%E9%A1%BA%E5%BA%8F"><span class="toc-number">6.1.7.</span> <span class="toc-text">6.1.7 函数调用时参数的求值顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#atexit%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.8.</span> <span class="toc-text">6.1.8 atexit()函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E4%BD%9C%E4%B8%BA%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 数组作为函数参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E4%BD%9C%E4%B8%BA%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="toc-number">6.3.</span> <span class="toc-text">6.3 指针数组作为函数参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E5%87%BD%E6%95%B0%E5%92%8C%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="toc-number">6.4.</span> <span class="toc-text">6.4 指针函数和函数指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E5%87%BD%E6%95%B0"><span class="toc-number">6.4.1.</span> <span class="toc-text">6.4.1 指针函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="toc-number">6.4.2.</span> <span class="toc-text">6.4.2 函数指针</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E5%AE%9E%E4%BE%8B"><span class="toc-number">6.4.3.</span> <span class="toc-text">6.2.3 两个函数指针实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%92%E5%BD%92%E5%87%BD%E6%95%B0"><span class="toc-number">6.5.</span> <span class="toc-text">6.5 递归函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC7%E7%AB%A0-%E4%BD%8D%E6%93%8D%E4%BD%9C%E4%BD%8D%E8%BF%90%E7%AE%97%E5%92%8C%E4%BD%8D%E5%9F%9F"><span class="toc-number">7.</span> <span class="toc-text">第7章 位操作——位运算和位域</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">7.1.</span> <span class="toc-text">7.1 位运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E6%B1%82%E5%8F%8D"><span class="toc-number">7.1.1.</span> <span class="toc-text">7.1.1 按位求反~</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A6%E7%A7%BB%E8%BF%90%E7%AE%97"><span class="toc-number">7.1.2.</span> <span class="toc-text">7.1.2
+左移运算&lt;&lt;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B3%E7%A7%BB%E8%BF%90%E7%AE%97"><span class="toc-number">7.1.3.</span> <span class="toc-text">7.1.3
+右移运算&gt;&gt;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E4%B8%8E"><span class="toc-number">7.1.4.</span> <span class="toc-text">7.1.4 按位与&amp;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E5%BC%82%E6%88%96"><span class="toc-number">7.1.5.</span> <span class="toc-text">7.1.5 按位异或^</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E4%BD%8D%E6%88%96"><span class="toc-number">7.1.6.</span> <span class="toc-text">7.1.6 按位或|</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E9%95%BF%E5%BA%A6%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="toc-number">7.1.7.</span> <span class="toc-text">7.1.7 不同长度的数据进行位运算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E5%9B%BE"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 位图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E4%BD%8D%E5%9B%BE-a-%E4%B8%AD%E8%AE%BE%E7%BD%AE%E4%BD%8D%E5%BA%8F%E5%8F%B7%E4%B8%BA-i-%E7%9A%84%E4%BD%8D%E4%B8%BA1"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 在位图 a 中设置位序号为
+i 的位为1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BD%8D%E5%BA%8F%E5%8F%B7%E4%B8%BAi%E7%9A%84%E4%BD%8D%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%80%BC%E4%B8%BA0"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2
+初始化位序号为i的位的设置值为0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E4%BD%8D%E5%9B%BEa%E4%B8%AD%E4%BD%8D%E5%BA%8F%E5%8F%B7%E4%B8%BAi%E7%9A%84%E4%BD%8D%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%80%BC"><span class="toc-number">7.2.3.</span> <span class="toc-text">7.2.3
+获取位图a中位序号为i的位的设置值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E6%AE%B5%E4%BD%8D%E5%9F%9F"><span class="toc-number">7.3.</span> <span class="toc-text">7.3 位段（位域）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E6%AE%B5%E5%AE%9A%E4%B9%89%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="toc-number">7.3.1.</span> <span class="toc-text">7.3.1 位段定义的说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E6%AE%B5%E7%9A%84%E5%BC%95%E7%94%A8%E5%92%8C%E8%B5%8B%E5%80%BC"><span class="toc-number">7.3.2.</span> <span class="toc-text">7.3.2 位段的引用和赋值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8F%E5%AE%9A%E4%B9%89"><span class="toc-number">7.4.</span> <span class="toc-text">8.1 宏定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%8F%82%E5%AE%8F%E5%AE%9A%E4%B9%89"><span class="toc-number">7.4.1.</span> <span class="toc-text">8.1.1 无参宏定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E5%8F%82%E5%AE%8F%E5%AE%9A%E4%B9%89"><span class="toc-number">7.4.2.</span> <span class="toc-text">8.1.2 带参宏定义</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91"><span class="toc-number">7.5.</span> <span class="toc-text">8.2 条件编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">7.6.</span> <span class="toc-text">8.3 文件包含</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%93%8D%E4%BD%9C%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%A0%BC%E5%BC%8F"><span class="toc-number">7.6.1.</span> <span class="toc-text">8.3.1 文件包含操作的两种格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%93%8D%E4%BD%9C%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">7.6.2.</span> <span class="toc-text">8.3.2 文件包含操作的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="toc-number">7.6.3.</span> <span class="toc-text">8.3.3 文件包含的说明</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+        
+        
+            <blockquote>
+<p>备注：
+C语言读书摘录笔记，笔记内容绝大部分摘录整理自李春葆、李筏驰老师编著的《直击招聘——程序员面试笔试C语言深度解析》一书，少部分来自于网络博客及网上资源（尽量保留了资源原始链接）.</p>
+</blockquote>
+<h1 id="第一章-程序设计基础变量">第一章 程序设计基础——变量</h1>
+<h2 id="变量定义和声明">1.1 变量定义和声明</h2>
+<h3 id="定义变量就是使用内存">1.1.1定义变量就是使用内存</h3>
+<p>1.如果一个变量占用内存空间的多个内存字节，其第一个字节地址就是它的存储地址</p>
+<p>2.简单理解为变量就是内存的一个箱子，箱子的名称就是变量名，用户可以向其中放入数据，也可以取出其中的数据。</p>
+<h3 id="变量的作用域和在内存中的存储方式">1.1.2变量的作用域和在内存中的存储方式</h3>
+<p>1.变量的作用域：确定变量的作用范围</p>
+<ul>
+<li><p>局部变量：在函数内部定义的变量为内部变量，只在本函数范围内有效，在该函数外不能使用这些变量。</p></li>
+<li><p>全局变量：在函数之外定义的变量为外部变量，作用域从定义变量的位置开始到本源程序文件结束，全局变量保存在静态存储区。</p></li>
+<li><p>C程序中局部变量和全局变量重名时，局部变量会屏蔽全局变量</p></li>
+</ul>
+<p>2.变量的存储类别：确定变量存放在内存的位置</p>
+<ul>
+<li><p>auto：自动变量，缺省情况下，编译器默认所有局部变量为自动变量，它的存储空间由系统自动分配和释放，系统不会自动初始化。【影响】若定义局部变量时不初始化值，那么此时该局部变量为无意义的辣鸡值，因为自动变量不会初始化。</p></li>
+<li><p>register：寄存器变量，变量值存放在CPU内部寄存器中，存取速度最快，这类变量不能进行取变量地址操作。只有局部自动变量和函数形参才可以定义为寄存器变量。</p></li>
+<li><p>extern：外部变量，全局变量是从作用域角度提出，而外部变量是从存储类别提出。该关键字告诉编译器存在着一个变量或函数，即使在当前源程序文件中没有看到它，也不是错误的，它可能在另外一个源程序文件中或者在当前文件的后面定义。extern的作用有两个：</p></li>
+<li><p>在函数中提前使用全局变量（提前声明），即在定义之前使用</p></li>
+<li><p>使用其他源文件中的全局变量</p></li>
+<li><p>static：静态变量，在函数内部用该关键字定义的变量称为静态局部变量，在函数外部用static关键字定义的变量称为静态全局变量。</p></li>
+<li><p>静态局部变量，程序执行期间，在内存的静态存储区中占据这永久性的存储单元，即便退出函数后，该变量的生命期也不终止，下次再次进入函数时，仍使用原来的存储单元。定义时初始化的静态局部变量，初始化仅仅执行一次；对于初始化的静态局部变量，C编译系统自动给它幅值0.</p></li>
+<li><p>静态全局变量，作用域只限于本源程序文件。静态全局变量和普通全局变量的区别是静态全局变量只能初始化一次，由于静态全局变量的作用域限于本源程序文件内，只能为该源文件内的函数公用，因此可以避免在其他源文件中引用而引起错误。</p></li>
+</ul>
+<p>3.内存组织结构</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/19653046.png"></p>
+<ul>
+<li><p>代码段：该内存区域属于只读，区域大小在程序执行前就已经确定</p></li>
+<li><p>数据段：执行程序时，BSS段会预先清空，所以存放在BSS段的变量均默认初始化为0</p></li>
+<li><p>堆空间：存放进程（可简单理解为程序的一次执行）执行中被动态分配的内存段，大小不固定，可动态扩张或缩减。从堆分配的内存仅能通过指针访问。速度一般较慢，容易产生内存碎片。</p></li>
+<li><p>栈空间：方便用来保存/恢复调用现场，可以看作一个存放、交换临时数据的内存区。由系统自动分配，速度较快，程序员无法控制栈空间。</p></li>
+</ul>
+<p>4.变量静态分配和动态分配方式</p>
+<ul>
+<li><p>变量静态分配：程序编译期间分配固定的存储空间的方式。该存储分配方式在变量定义时就分配存储单元并一直保持不变，直到整个程序结束。所有变量都是采用静态分配方式。静、动态分配方式主要是针对指针变量（或者数组）指向的空间而言的。</p></li>
+<li><p>变量动态分配：程序执行期间根据需要动态申请堆空间的方式。C语言提供了一套机制可以在程序执行时动态分配存储空间。如malloc(),calloc()等函数。</p></li>
+</ul>
+<p>如果程序员在程序中采用动态分配方式分配大量内存空间，用完后不及时释放，可能会消耗完应用程序的内存空间，称之为<strong>内存泄漏</strong>。</p>
+<h2 id="运算符和表达式">1.2 运算符和表达式</h2>
+<h3 id="c中的运算符">1.2.1 C中的运算符</h3>
+<p>1.++n、n++、--n、n--的区别</p>
+<ul>
+<li><p>虽然对于int数据类型的变量进行++、--运算完全可以用n=n±1完成，但是用++、--运算符可以提高程序的执行效率，因为++、--只需要一条机器指令就可以完成，而n=n±1需要对应三条机器指令</p></li>
+<li><p>自增、自减运算符的运算对象只能是简单变量，不能是常数或是带有运算符的表达式</p></li>
+<li><p>编译器实现n++、n--是先创建n的一个副本，然后n自增、自减1，最后返回这个副本的值，所以n++、n--不能作为左值（因为作为左值时改变的是副本的值）；而实现++n、--n是先n自增、自减1，最后返回n的值（不是副本的值），所以++n、--n可以作为左值。故for循环递增量表达式建议采用++i，而非i++，因为++i占用空间小。</p></li>
+</ul>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/6d9e2fb7-72aa-43f5-be9d-e54f8265daea.png"></p>
+<p>2.表达式中符号的求值</p>
+<p>符号指的是程序的一个基本组成单元，其作用相当于一个句子中的单词。在C编译器解释表达式符号时，它在移动到下一个符号之前在单个符号中包括尽可能多的字符，即为贪心法。</p>
+<ul>
+<li><p><code>i+++j</code>解释为<code>（i++）+j</code></p></li>
+<li><p><code>a+++++b</code>本应解释为<code>（a++）++ +b</code>，而<code>a++</code>不能作为左值，所以应解释为<code>（a++）+（++b）</code></p></li>
+<li><p><code>y=x/*p</code>按照贪心法，会把p当作注释语句，导致编译错误，所以应该书写为<code>y=x/（*p）</code></p></li>
+</ul>
+<p>3.表达式中求值中的类型转换</p>
+<ul>
+<li><p>自动转换的原则</p></li>
+<li><p>若参与运算类型不同，则先转换为同一类型</p></li>
+<li><p>转换按数据长度增加的方向进行，以保证精度不降低</p></li>
+<li><p>所有的浮点运算都是以双精度进行的，即使仅含float单精度运算表达式，也要先转换为double型</p></li>
+<li><p>char和short型参与运算时必须先转换为int型</p></li>
+<li><p>幅值运算中，幅值号右边量的类型先转换为左边量的类型。如果右边的数据类型长度比左边长，将丢失一部分数据，降低精度，丢失的部分按照四舍五入向前舍入。</p></li>
+<li><p>隐式转换见书25页-27页</p></li>
+</ul>
+<p>4.表达式求值的副作用</p>
+<p>一个表达式在求值的过程中对使用的变量不但引用，还对它们的值加以修改，这样的表达式称为有副作用的表达式，例如：x=x++，有两个副作用，因为x值发生了两次修改.</p>
+<blockquote>
+<p>a[i]=i++;</p>
+</blockquote>
+<blockquote>
+
+</blockquote>
+<blockquote>
+<p>问题是：数组下标i是引用旧值还是引用新值？对这种情况编译器的解释可能不同，并因此产生不同的结果。C语言标准对大多数这类问题有意未做具体规定。表达式何时会产生这种副作用（对变量赋值），将由编译器决定，因为最佳的求值顺序同机器结构有很大关系。（ANSI
+C标准明确规定了所有对参数的副作用都必须在函数调用之前生效，但这对前面介绍的printf函数调用并没有什么帮助）。</p>
+</blockquote>
+<blockquote>
+
+</blockquote>
+<blockquote>
+<p>在任何一种编程语言中，如果代码的执行结果与求值顺序相关，则都是不好的程序设计风格。很自然，有必要了解哪些问题需要避免。但是，如果不知道这些问题在各种机器上是如何解决的，就最好不要常识运用某种特殊的实现方式。</p>
+</blockquote>
+<blockquote>
+
+</blockquote>
+<blockquote>
+<p>K&amp;R.The C Programming Language.43页</p>
+</blockquote>
+<h1 id="第二章-数据处理控制结构">第二章 数据处理——控制结构</h1>
+<h2 id="选择控制结构">2.1 选择控制结构</h2>
+<h3 id="if-语句">2.1.1 If 语句</h3>
+<ol type="1">
+<li>计算if后面的表达式，结果为0或者空字符时表示假，为非0或者非空字符时表示真。当实数变量与0值进行比较时，由于实数有精度限制，不能写成<code>if(f==0.0)</code>的形式，而应该写为<code>if(f＞=EPSINON &amp;&amp; f＜=EPSINON)</code>，其中EPSINON是允许的误差（精度），如取值为0.000001.</li>
+<li>在if的表达式中不能将“==”写为“=”，后者为幅值表达式，总是为真。好的习惯应是写为<code>if(2==n)</code>，这样可以避免类似的错误出现。</li>
+</ol>
+<h3 id="switch语句">2.1.2 Switch语句</h3>
+<ol type="1">
+<li>switch后面圆括号内的“表达式”的值只能是整数或字符值，不允许是实数和布尔值，例如<code>switch(n==1)</code>是错误的</li>
+<li>case后面的值必须是整形或字符型值，不允许是实数，也不允许含有运算符，例如<code>case 1.2：</code>和<code>case 1+2：</code>都是错误的</li>
+<li>同一switch语句的所有case的值必须互不相同，多个case可以共用一组执行语句</li>
+</ol>
+<h2 id="循环控制结构">2.2 循环控制结构</h2>
+<h3 id="for语句-for表达式1表达式2表达式3-语句">2.2.1 for语句
+<code>for(表达式1；表达式2；表达式3) 语句；</code></h3>
+<ol type="1">
+<li>表达式1可以省略，此时应该在for语句之前给循环变量赋初值，其后的分号不能省略</li>
+<li>表达式2可以省略，即不继续判断条件，循环无终止的进行下去，需要在循环体中用break等语句退出循环，其后的分号不能省略</li>
+<li>表达式3可以省略，这样需要在循环体中让循环变量变化，以保证循环能正常的结束</li>
+</ol>
+<h3 id="break和continue语句">2.2.2 break和continue语句</h3>
+<ol type="1">
+<li>break只能用于循环语句和switch语句中，它跳出所在的那一层循环语句或者switch语句</li>
+<li>continue只能用于循环语句中，它跳出所在的那一轮循环，继续下一轮循环</li>
+</ol>
+<h1 id="第三章-内存操作指针">第三章 内存操作——指针</h1>
+<h2 id="指针基础">3.1 指针基础</h2>
+<h3 id="指针变量与运算">3.1.1 指针变量与运算</h3>
+<p>指针变量中存放的是地址值，无论指针变量的基类型是何种数据类型，占用的内存大小都是相同的。</p>
+<h3 id="野指针">3.1.2 野指针</h3>
+<p>一个指针变量的值（地址值）为垃圾值的指针变量称为野指针。产生野指针的原因和解决方法：</p>
+<ul>
+<li><p>指针变量定义时没有被初始化。解决办法是定义指针时初始化，可以是具体的地址值，也可以是NULL</p></li>
+<li><p>指针p被free或者delete之后没有被置为NULL，后面还使用它。解决办法是指针指向的内存空间被释放后指针应该指向NULL</p></li>
+<li><p>指针操作超越了所指变量的作用域。解决办法是在所指变量的作用域结束前释放掉变量的地址空间，并让指针指向NULL</p></li>
+</ul>
+<h2 id="常量和常量指针">3.2 常量和常量指针</h2>
+<h3 id="常量">3.2.1 常量</h3>
+<p>程序执行期间其值<strong>不能被改变的量</strong>称为<strong>常量</strong>，常量分为<strong>字面常量</strong>和<strong>符号常量</strong></p>
+<ol type="1">
+<li><strong>字面常量</strong></li>
+</ol>
+<p>字面常量只能引用不能修改，如123等，通常保存在程序符号表中，程序无法读取字面常量的地址，只有一个例外，即字符串常量。例如：<code>char *p="abc";</code>，字符串常量放在静态数据区，由p指针指向它，<strong>不能通过p指针来修改该常量</strong>。</p>
+<p>程序员最好采用<code>const char *p="abc";</code>定义，这样在执行<code>*p='x'</code>时会发生编译错误，以便避免bug。</p>
+<p><code>int *p=123；</code>也是不允许的，尽管123是常量，但这里编译器认为是将123作为地址存放在指针变量p中，而123是整数，正确的做法是<code>int *p=（int *）123；</code>即将123转换为地址值赋给p，但这种做法是有危险的。</p>
+<p>又由于p指向的常量字符串不是通过malloc函数分配的，所以执行free（p）会导致程序崩溃。</p>
+<ol type="1">
+<li><strong>符号常量</strong></li>
+</ol>
+<p>符号常量主要又两种定义方法：</p>
+<ul>
+<li><p>第一种是用宏定义实现（即宏常量），例如<code>#define PI 3.14</code></p></li>
+<li><p>第二种是用const定义（即const常量），const的意思是“一个不能被改变的变量”，例如<code>const int n=123；</code></p></li>
+<li><p>const修饰的常量的值不能修改，所以必须在定义时初始化</p></li>
+</ul>
+<p>两种定义方法的区别：</p>
+<ul>
+<li><p>前者是宏替换命令，不是语句，所以不以“；”结尾，后者是定义，以“；”结尾。</p></li>
+<li><p>前者在预处理时进行替换，后者定义的常量像变量一样（称为常变量），只是其值不能改变</p></li>
+<li><p>const常量有数据类型，而宏常量没有数据类型。编译器对前者进行类型安全检查，对后者不进行类型安全检查。</p></li>
+</ul>
+<h3 id="const指针常量常量指针">3.2.2 const指针常量、常量指针</h3>
+<p>在定义指针时用const关键字进行修饰，称为const指针常量，有三种情况：</p>
+<p>1.<strong>常量指针</strong></p>
+<p>用const修饰<code>*</code>时称为常量指针，表示<strong>不能修改p指向的内容</strong>
+[注意此时p指向的内容仅仅是不能通过指针p修改，其自身如果不是常量的话，可以通过其他方式修改]。例如：</p>
+<p><code>const char *p;</code>，此时不能通过p指针修改指向的内容，否则会出现编译错误。</p>
+<ul>
+<li><p>也可以写作<code>char const *p;</code>，但习惯上常用第一种</p></li>
+<li><p>它的本质还是一个指针，是一个指向常量的指针（变量）</p></li>
+<li><p>指针本身的指向可以改变，但是指向的内容不可修改</p></li>
+<li><p>通常用于<strong>参数传递</strong>过程中，如果被传入的参数的值在函数执行期间不希望被修改可以使用<code>const</code>
+修饰已达到安全的目的。</p></li>
+</ul>
+<p>2.<strong>指针常量</strong></p>
+<p><code>char * const p；</code>const修饰p，<strong>表示不能修改变量p</strong>。指针p是一个指针常量，p的值不能再发生改变，所以必须初始化。一旦初始化，p不能指向其他数据，但可以通过指针p修改所指的内容。</p>
+<ul>
+<li>一般指针常量用于不会发生指向变化的指针，但是用法并不常见。</li>
+</ul>
+<p>3.<strong>指向常量的常指针</strong></p>
+<p>相当于常量指针和指针常量的结合，格式
+<code>const char * const p = &amp;num</code>,相当于有一个<strong>指向不可修改的指针指向了一个不可修改的常量</strong>，在实际coding中很少使用。</p>
+<p>4.<strong>总结</strong></p>
+<ul>
+<li><strong>const 修饰谁，谁就不变</strong></li>
+</ul>
+<h2 id="多级指针">3.3 多级指针</h2>
+<h3 id="void-和void">3.3.1
+<code>void *</code>和<code>void **</code></h3>
+<ul>
+<li><p><code>void</code>：字面意思是<strong>无类型</strong>，真正发挥作用的地方在于对函数返回值的限定和对函数参数的限定；</p></li>
+<li><p><code>void *</code>：<strong>无类型指针</strong>，可以指向任何类型的数据。</p></li>
+<li><p>既然是无类型指针，那么就不能做<strong>解引用</strong>与<strong>指针算数运算</strong>.</p></li>
+<li><p>任何类型的指针都可以直接幅值给它，无需进行强制类型转换，但这并不意味这<code>void *</code>也可以无须强制类型转换地赋给其他类型的指针。因为“无类型”可以包容“有类型”，但是“有类型”不能包容“无类型”，例如：</p></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *p1;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> *p2;</span><br><span class="line"></span><br><span class="line"><span class="type">double</span>  *p3;</span><br><span class="line"></span><br><span class="line">p3=p2;<span class="comment">//错误，必须改为第5行，强制转换后才可编译通过</span></span><br><span class="line"></span><br><span class="line">p3=(<span class="type">double</span> *)p2;<span class="comment">//正确</span></span><br><span class="line"></span><br><span class="line">p1=p2;<span class="comment">//正确，可以将任何有类型地址赋给无类型指针变量</span></span><br><span class="line"></span><br><span class="line">p2=p1;<span class="comment">//错误，不能将任何无类型地址赋给有类型指针变量</span></span><br><span class="line"></span><br><span class="line">p2=(<span class="type">int</span> *)p1;<span class="comment">//正确，将无类型地址强制转换为有类型地址，这就是malloc等函数原型的返回值为void *的原因</span></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>void *</code><strong>的用处</strong>：因为对于函数的通用型接口，你不知道用户的数据类型是什么，但是你必须能够处理用户的各种类型数据，因而会使用<code>void*</code>。<code>void*</code>能包容地接受各种类型的指针。也就是说，如果你期望接口能够接受任何类型的参数，你可以使用<code>void*</code>类型。但是在具体使用的时候，你必须转换为具体的指针类型。例如，你传入接口的是<code>int*</code>，那么你在使用的时候就应该按照<code>int*</code>使用。</p></li>
+<li><p><code>void **</code>：本质上是标识一个二级指针,即<strong>无类型指针的指针</strong>，它指向一个放
+<code>void*</code>型的地方.</p></li>
+</ul>
+<p><code>(void**)&amp;data</code>：把变量的地址强制转换为无类型指针的指针，即<code>(void**)</code>本质表示将<code>&amp;data</code>强制转换类型为一个指向无类型的二级指针。举例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//为了使函数更加的通用，使用void**作为函数参数类型</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">void</span> **a, <span class="type">void</span> **b)</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">void</span> *t;</span><br><span class="line"></span><br><span class="line">    t =*a;</span><br><span class="line"></span><br><span class="line">    *a =*b;</span><br><span class="line"></span><br><span class="line">    *b=t;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> i = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> j = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> *p = &amp;i;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> *q = &amp;j;</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> *s1=<span class="string">&quot;abc&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> *s2=<span class="string">&quot;def&quot;</span>;</span><br><span class="line"></span><br><span class="line">    swap((<span class="type">void</span>**)&amp;p, (<span class="type">void</span>**)&amp;q);</span><br><span class="line"></span><br><span class="line">    swap((<span class="type">void</span>**)&amp;s1, (<span class="type">void</span>**)&amp;s2);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注意char*是字符串指针，需要改变其对应的变量必须用地址，s1就是&quot;abc&quot;的起始地址，是不能被改变，要想改变s1必须用他的地址也就是&amp;s1，所以需要void**</span></span><br><span class="line"></span><br><span class="line">————————————————</span><br><span class="line"></span><br><span class="line">版权声明：本文为CSDN博主「unix21」的原创文章，遵循 CC <span class="number">4.0</span> BY-SA 版权协议，转载请附上原文出处链接及本声明。</span><br><span class="line"></span><br><span class="line">[原文链接](https:<span class="comment">//blog.csdn.net/unix21/article/details/8923752)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>*(void**)&amp;data</code>：data是指针变量，&amp;data取指针变量的地址，
+<code>(void **)</code>将这个data这个指针变量的地址类型强制转换为
+指向无类型的二级指针类型，最后“翻译”最前面的<code>*</code>，作用是解引用，将
+<code>(void **)</code>类型的&amp;data变量解引用一次，即指向了data本身，但此时data本身的数据类型实际上已经是无类型的一级指针了。</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/b1388529-d6b4-4ed3-aa38-7ec0cf449bff.jpg"></p>
+<h2 id="实例解析">3.4 实例解析</h2>
+<h3 id="inta">3.4.1 （int&amp;)a</h3>
+<p>代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> a = <span class="number">01f</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,(<span class="type">int</span>&amp;)a);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>解释：（存疑）</p>
+<p>​ 等价于<code>*(int*)(&amp;a)</code>，</p>
+<ol type="1">
+<li><p>首先对float型变量取地址</p></li>
+<li><p>强制类型转换为整型变量的地址（地址的值并没有变）</p></li>
+<li><p>将该地址指向的变量输出（但是由于整型和浮点型数据存储方式的不同，输出结果是不同的）</p></li>
+</ol>
+<h1 id="第4章-数据组织数组">第4章 数据组织——数组</h1>
+<h2 id="一维数组">4.1 一维数组</h2>
+<h3 id="一维数组定义">4.1.1 一维数组定义</h3>
+<p>由于const定义的常量具有变量的性质，因此这类常量不能作为定义数组的“长度表达式”。</p>
+<h3 id="一维数组初始化">4.1.2 一维数组初始化</h3>
+<ul>
+<li><p>对于局部数组，若没有进行初始化，其所有元素值为垃圾值；若初始化时仅对部分元素赋了初值，其余元素取默认值（数值型为0，字符型为空字符）</p></li>
+<li><p>除了初始化外，数组名不能作为左值，因为它是一个表示首元素地址的常量</p></li>
+<li><p>数组名具有地址概念，是代表<strong>数组</strong>
+<strong>首元素</strong>的<strong>地址常量</strong>，因此可以将数组名赋给指针，例如<code>int a[10]</code>中<code>a</code>与<code>&amp;a[0]</code>含义相同，“<code>a==&amp;a[0]</code>”返回真</p></li>
+<li><p><code>&amp;a</code>表示<strong>整个数组</strong>的首地址，其与<code>a</code>的区别主要是<strong>步长的不同</strong>。<code>a+i=a+i*sizeof(int)</code>，其步长为<code>sizeof(int)</code>；而<code>&amp;a+i=&amp;a+i*(a数组的大小)</code>（这里为<code>10*sizeof(int)</code>）.因此尽管二者值相同，但表示不同的含义。因此<code>&amp;a==a</code>是错误的比较，因为它们的数据类型并不相同（一个是<code>int *[10]</code>，一个是<code>int *</code>）</p></li>
+<li><p>归纳起来，<code>int a[10],*p=a;</code>情况下：</p>
+<ul>
+<li><p><code>p+i</code>和<code>a+i</code>就是<code>a[i]</code>的地址，地址值都要进行<code>a+i*d</code>（d为步长）的运算</p></li>
+<li><p><code>*(p+i)</code>或<code>*(a+i)</code>就是<code>p+i</code>或<code>a+i</code>所指向的数组元素<code>a[i]</code>。数组元素中的“[]”是变址运算符，相当于<code>*(+)</code>，<code>a[i]</code>相当于<code>*(a+i)</code></p></li>
+<li><p>指向数组元素的指针变量也可以带下标，所以<code>a[i]</code>、<code>*(a+i)</code>、<code>p[i]</code>、<code>*(p+i)</code>全部等价</p></li>
+<li><p>注意p和a的差别，p是指针变量，a是符号常量，a不能作为左值</p></li>
+</ul></li>
+<li><p><code>*p++</code> 、<code>*++p</code>、
+<code>(*p)++</code>、<code>++(*p)</code>区别</p>
+<ul>
+<li><p><code>*p++</code></p>
+<p>解析：等同于<code>*p;  p += 1;</code>由于<code>*</code>和<code>++</code>的运算优先级一样，且是右结合。故<code>*p++</code>相当于<code>*(p++)</code>，p先与++结合，然后p++整体再与<code>*</code>结合。<strong>前面陈述是一种最常见的错误</strong>。因为++后置的时候，本身含义就是先运算后增加1（运算指的是p++作为一个整体与前面的<code>*</code>进行运算；增加1指的是p+1），所以<strong>实际上<code>\*p++</code>符号整体对外表现的值是<code>\*p</code>的值，运算完成后p再加</strong>1.</p>
+<p>【注意】是运算后p再加1，而不是p所指向的变量<code>*p</code>再加1</p></li>
+<li><p><code>*++p</code></p>
+<p>解析：等同于
+<code>p += 1; *p;</code>由于++在p的前面，++前置的含义是，先加1，得到一个新的p（它的值是原来p的值加1）。然后这个新的p再与前面的<code>*</code>结合.</p></li>
+</ul>
+<p>【总结】无论是<code>*p++</code>还是<code>*++p</code>，都是指针<code>p += 1</code>，即p的值+1，而不是p所指向的变量<code>*p</code>的值+1。++前置与++后置，只是决定了到底是先<code>p+=1</code>，还是先<code>*p</code>。++前置表示先<code>p+= 1</code>，再<code>*p</code>。++后置表示先<code>*p</code>，在<code>p+= 1</code></p>
+<ul>
+<li><p><code>(*p)++</code></p>
+<p>解析：使用()强制将<code>*</code>与p结合，只能先计算<code>*p</code>，然后复制创建<code>*p</code>副本，再对原始<code>*p</code>整体的值++，最后结果返回复制创建的<code>*p</code>副本值，因此其结果不能作为左值。</p></li>
+<li><p><code>++(*p)</code></p>
+<p>解析：先<code>*p</code>取值，再前置++，该值+1后作为整个表达式的值。</p></li>
+</ul></li>
+</ul>
+<h3 id="一维数组和指针的差异">4.1.3 一维数组和指针的差异</h3>
+<p>例如：<code>char *p="abc"; char s[]="abc";</code></p>
+<ul>
+<li><p>对于字符串"abc"，编译器存储的是常量"abc\0"</p></li>
+<li><p>对于<code>char *p="abc";</code></p>
+<ul>
+<li><p>定义的是一个字符指针p，没有动态分配空间来存放字符串，所以编译器把"abc"当作常量存放在静态数据区，p作为指针指向这个常量的地址。因此，最好采用<code>const char *p="abc";</code>的定义方式；</p></li>
+<li><p>该定义中，因为字符串是常量，因此不能通过指针p来修改"abc".</p></li>
+<li><p>如果希望p为<strong>指针变量</strong>，又要初始化"abc"，定义方式应为：</p>
+<p><code>char *p=(char*)malloc(4sizeof(char));strcpy(p;"abc");</code></p></li>
+<li><p><code>sizeof(p)</code>值为4，含义表示一个地址空间的大小</p></li>
+</ul></li>
+<li><p>对于<code>char s[]="abc";</code></p>
+<ul>
+<li><p>定义的是一个字符数组，编译器把它解析为
+<code>char s[4]=&#123;'a','b','c','\0'&#125;;</code></p></li>
+<li><p>如果数组s是已初始化的全局数组或者静态局部数组，则存放在静态数据区，如果是在函数内部定义的局部数组则存放到栈空间</p></li>
+<li><p><code>sizeof(s)</code>值为4，含义表示数组s含有4个字符元素（含结尾符）</p></li>
+</ul></li>
+</ul>
+<h3 id="运算符sizeof">4.1.4 运算符sizeof</h3>
+<ul>
+<li><p>sizeof的三种语法格式</p>
+<ul>
+<li><p>sizeof (object)</p></li>
+<li><p>sizeof (type_name)</p></li>
+<li><p>sizeof object</p></li>
+</ul></li>
+<li><p>基本数据类型的sizeof：大小一般与系统相关</p></li>
+<li><p>指针变量的sizeof：等于计算机内部地址总线的宽度</p></li>
+<li><p>数组名的sizeof：等于其元素类型做sizeof的结果乘以数组元素的个数，即返回整个数组在内存中占用的内存字节数</p></li>
+<li><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/KangRoger/article/details/20653255">数组名在作为函数参数传递过程中，会退化成指针，因此在函数内部使用数组名的sizeof时，返回退化为指针变量的sizeof，而非返回原数组名的sizeof.</a></p></li>
+<li><p>sizeof的副作用</p>
+<blockquote>
+<p>sizeof(i++)之后，i的值会怎样？答案是不变。记得大一初学C语言时想研究一下sizeof与函数有什么区别，得到的结果只是一些语法上的差别；学了汇编之后看看编译器生成的代码，才发现sizeof在编译时直接给定了一个常值，而非在运行时求值。进而又分析过sizeof(表达式)的结果，清楚了类型提升原理。但我之前没有注意过表达式中出现副作用的问题，于是在sizeof(i++)的问题上犹豫了。现在经过查阅资料和实验，结论是：sizeof在大多数情况下是编译时定值的，表达式中的任何副作用（包括有副作用的运算符、函数调用等）都不会发生。这里说“大多数情况”，排除了针对C99的新特性——不定长数组（variable
+length array）的特例。</p>
+</blockquote>
+<blockquote>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://linjian.org/blog/tech/programming/c/sizeof-problems">原文出处点击此处</a></p>
+</blockquote></li>
+</ul>
+<h2 id="二维数组">4.2 二维数组</h2>
+<h3 id="二维数组的定义">4.2.1 二维数组的定义</h3>
+<ul>
+<li><p><code>数据类型 数组名[长度表达式1][长度表达式2]；</code></p>
+<p>长度表达式1 指数组行大小，长度表达式2
+指数组列大小，都必须为正整数</p>
+<p>二维数组中的所有元素在内存中按行序优先存放，即先顺序存放第1行的元素，再存放第2行的元素，以此类推。</p></li>
+</ul>
+<h3 id="多维数组的各级地址">4.2.2 多维数组的各级地址</h3>
+<ul>
+<li><p>以二维数组为例， 设二维数组 a
+有3行4列，定义：<code>int a [3][4] = &#123;&#123;1,2,3,4&#125;,&#123;5,6,7,8&#125;,&#123;9,10,11,12&#125;&#125;;</code></p>
+<ul>
+<li><p>其中， a 是数组名，它的各元素是按行顺序存储的。a 数组有3
+行，将它们看成3 个一维数</p>
+<p>组元素，即<code>a=&#123;a[O],a[1],a[2]&#125;</code>，每个一维数组元素又含4
+个元素。这种降维的思路可以扩</p>
+<p>展到三维或三维以上的数组。</p></li>
+<li><p><strong>数组名 a 代表的是该二维数组首元素 a[0]
+的首地址</strong>，即a 与＆a[0] 的含义相同，</p>
+<p><code>a==&amp;a[0]</code>返回真，是正确的比较。因此，二维数组名是个二级地址（例如，<code>**a</code>
+的结果为</p>
+<p><code>a[0][0]</code> ），三维数组名是个三级地址，以此类推。</p></li>
+<li><p>二维数组 a
+的一维数组元素<code>a[i] (0≤i≤2)</code>又是一级地址，例如，
+<code>a[0]</code>与<code>&amp;a[0][0]</code>的含</p>
+<p>义相同(<code>&amp;a[0][0]</code>中的＆运算符将其提升为一级地址），
+<code>a[0]==&amp;a[0][0]</code> 返回真，是正确的</p>
+<p>比较。</p></li>
+<li><p>&amp;a
+是<strong>整个二维数组的首地址</strong>，为三级指针，所以<code>a==&amp;a</code>
+的比较是错误的，会出现</p>
+<p><code>'==': no conversion from 'int (＊)[3][4]' to 'int (*)[4]'</code>的编译错误。</p></li>
+</ul></li>
+<li><p><strong>总结</strong>：</p>
+<ul>
+<li><p>对于一维数组b,
+<code>b[j]</code>相当千<code>＊(b+j)</code></p></li>
+<li><p>对千二维数组元素<code>a[i][j]</code>
+，将一维数组元素<code>a[i]</code>当成 b
+代入<code>＊(b+j)</code>得到<code>＊(a[i]+j)</code>，再将</p>
+<p>其中的<code>a[i]</code>
+换成<code>＊(a+i)</code>又得到<code>＊(＊(a+i)+j)</code>，所以<code>a[i][j]</code>、
+<code>＊(a[i]+j)</code>、 <code>＊(＊(a+i)+j)</code>三者相同都表示第 i
+行第 j 列元素。</p></li>
+</ul></li>
+</ul>
+<div class="line-block">表达式 | 含义 |</div>
+<div class="line-block">:-------------------------------------- |
+:----------------------------------------------------------- |</div>
+<div class="line-block">a、&amp;a[0] |
+分别为二维数组名和首元素a[0]的地址，两者含义相同，均为<strong>二级地址</strong>。
+|</div>
+<div class="line-block">a[0] 、<code>＊(a+O)</code>、＊a
+、<code>&amp;a[0][0]</code> |
+均为<code>a[0][0]</code>元素的地址，四者含义相同，均为一级地址 |</div>
+<div class="line-block"><code>a[0]+1</code> 、<code>*a+1</code>
+、<code>&amp;a[0][1]</code> | 均为<code>a[0][1]</code>元素的地址，
+三者含义相同，均为一级地址 |</div>
+<div class="line-block">a+1、<code>&amp;a[1]</code> | 均为a[1]
+的地址，两者含义相同，均为二级地址 |</div>
+<div class="line-block">a[1] 、<code>*(a+1)</code>
+、<code>&amp;a[1][0]</code> | 均为<code>a[1][0]</code>元素的地址，
+三者含义相同，均为一级地址 |</div>
+<div class="line-block">a[1]+3
+、<code>*(a+1)+3</code>、<code>&amp;a[1][3]</code> |
+均为<code>a[1][3]</code>元素的地址， 三者含义相同，均为一级地址 |</div>
+<div class="line-block"><code>*(a[1]+3)</code>
+、<code>*(*(a+1)+3)</code> 、<code>a[1][3]</code> |
+均为<code>a[1][3]</code>元素， 三者含义相同 |</div>
+<p>（注意：二级地址与二级指针并非一个概念）</p>
+<h2 id="字符数组和字符串数组">4.3 字符数组和字符串数组</h2>
+<h3 id="字符数组">4.3.1 字符数组</h3>
+<ul>
+<li><p>定义及初始化</p>
+<ul>
+<li><p>字符数组中的元素是字符，因此在对字符数组中的元素赋值时必须使用单引号</p></li>
+<li><p>初始化表中的初值个数可以少于数组元素的个数，这时只为数组的前几个元素赋初值，其余的元素将自动被赋以<strong>空格符</strong>（空格符不同于空字符，空字符的ASCII
+码为0,
+空格符的ASCII码为32)。如果初始化表中的初值个数多于数组元素的个数，则被当成语法错误来处理</p></li>
+</ul></li>
+<li><p>sizeof 运算符与strlen函数的差别：</p>
+<ul>
+<li><p>strlen
+函数用于<strong>求一个字符串的实际长度</strong>，从开始字符到遇见第1个'\0'，如果只定义没有给它赋初值，这个结果是不定的，它会从首地址一直找下去，直到遇到
+'\0' 停止</p></li>
+<li><p>sizeof
+运算符<strong>返回变量定义后所占内存的字节数</strong>，不是实际长度。例如，定义char
+a[5],
+strlen(a)的结果是不定的，因为数组a没有赋初值，而sizeof(a)的结果为5</p></li>
+<li><p>sizeof 可以用类型作为参数，而strlen 只能用char
+＊作为参数，且必须是以“\0”结尾的</p></li>
+<li><p>数组在作为strlen 的参数时退化为指针，而作为sizeof
+的参数时不退化</p></li>
+<li><p>strlen
+的结果要在执行时才能计算出来，是用来计算字符串的长度，不是类型占内存的大小；而sizeof
+不能返回动态分配的空间大小</p></li>
+</ul></li>
+</ul>
+<h3 id="字符串数组">4.3.2 字符串数组</h3>
+<ul>
+<li><p>字符串数组的赋值操作</p>
+<ul>
+<li><p>初始化赋值，如：<code>char name[3][8]=&#123; "Mary","Smith","GoodBye" &#125;;</code></p></li>
+<li><p>使用scanf 或者gets 函数赋值，如：</p></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,name[<span class="number">0</span>]) ; ／／输入的字符串不能含空格</span><br><span class="line"></span><br><span class="line">gets(name[<span class="number">0</span>]) ;       ／／输入的字符串可以含空格</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>使用标准字符串函数strcpy等实现字符串的复制，如：<code>strcpy(name[0], "Smith");</code></p></li>
+<li><p>使用一般赋值语句赋值，如：<code>name [0][0]='M'; name [0][1] ='a';etc...</code>
+注：在这种情况下，编译器不会自动添加结尾符 '\0', 需要程序添加</p></li>
+</ul></li>
+</ul>
+<h2 id="指针数组">4.4 指针数组</h2>
+<ul>
+<li><p>当多个基类型相同的指针变量集合成数组时，就形成了指针数组。指针数组是<strong>指针的集合</strong>，它的每个元素都是一个指针变量。其定义形式为：<code>数据类型 ＊指针数组名［长度表达式］；</code></p></li>
+<li><p>实例解析：<code>int *p[3];</code></p>
+<p>由千<code>[]</code>比<code>*</code>优先级高，因此p先与[3]结合，形成p[3]
+的数组形式，它有3个元素。然后再与p前面的<code>*</code>结合，表示是<strong>指针类型的数组</strong>，该数组的每个元素都是整型数的指针，所以每个元素都具有指针的特性。</p></li>
+</ul>
+<h2 id="数组指针">4.5 数组指针</h2>
+<p>因为数组名是常量，不能像变量那样操作，为此可以设计指向数组的指针变量，以便于数组的操作。</p>
+<ul>
+<li><p>一维数组指针，例如<code>int a[]=&#123;l,2,3&#125;,*p=a;</code>，通过指针p
+访问数组a 的元素，其中a 为一级地址，p 为一级指针。</p></li>
+<li><p>二维数组指针，定义格式：<code>基类型 （＊指针变量）［长度表达式］</code>，“长度表达式”指出二维数组中列的大小.</p>
+<ul>
+<li><p>例如：<code>int a[2][3] , (*p)[3]=a;</code>
+解析（对比指针数组例子）：</p>
+<p>在<code>(*p)[3]</code>中，由于括号和［］的优先级相同，其结合性是从左到右的，所以“*“首先与p
+结合，表示p是一个指针变量，然后再与［］结合，表示指针变量p的基类型（即这个p指向的变量的类型）是一个包含有3
+个int型元素的数组，也就是说p为一个二维数组的指针变量，该数组中每列有3个元素。</p></li>
+</ul></li>
+<li><p>二维数组名不能直接幅给二维指针的原因</p>
+<ul>
+<li><p><strong>二维数组名</strong> 指向
+一个包含有已知列数量个基础类型元素的数组
+的<strong>二级地址常量</strong>，而<strong>二维指针</strong> 是指向
+基础类型的指针 的<strong>二维指针变量</strong>；例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> a[<span class="number">2</span>][<span class="number">3</span>];  <span class="type">int</span> **pa;     pa=a;<span class="comment">//p=a会报错</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> a[<span class="number">2</span>][<span class="number">3</span>];  <span class="type">int</span> (*pb)[<span class="number">3</span>]; pb=a;<span class="comment">//正确</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> a[<span class="number">2</span>][<span class="number">3</span>];  <span class="type">int</span> **pc;     pc=(<span class="type">int</span>**)a;<span class="comment">//正确</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>因为a指向包含3个int型元素的一维数组，a逻辑上等同于&amp;a[0]，此时a+1是a[1]的地址，所以步长为sizeof(a[0])=4×3=12
+；</p></li>
+<li><p>而pa是指向int
+*类型的二维指针，步长未知，因此两者指向对象的类型并不相同。而第二行代码中，说明了pb是一个指针变量，且pb这个指针变量指向的是一个包含有3个int型元素的数组，其步长也为12
+；这也解释了<strong>为什么定义二维数组指针时必须要指定列的大小</strong>：因为要“指定”你的二级地址/二维指针的步长。</p></li>
+<li><p>第三行代码强制转换后语法正确，但不能通过pc 来访问数组a
+的元素，因为强制转换之后已经丢失步长信息。</p></li>
+</ul></li>
+<li><p>一旦定义了二维数组指针变量，该数组指针变量就可以像数组名一样使用，且可以在数组元素中移动.</p></li>
+</ul></li>
+<li><p>三维数组指针</p>
+<ul>
+<li>定义：<code>基类型 ( (＊指针变批)[第二维长度] ) [第三维长度];</code></li>
+</ul></li>
+</ul>
+<h1 id="第5章-数据结构ii结构体与联合体">第5章
+数据结构II——结构体与联合体</h1>
+<h2 id="结构体">5.1 结构体</h2>
+<h3 id="结构体类型的声明">5.1.1 结构体类型的声明</h3>
+<ul>
+<li><p>结构体类型声明语句必须以分号结尾，可以放在函数内部，
+也可以放在函数外部，其作用域和变量的作用域类似</p></li>
+<li><p>不同于变量可以使用extern
+声明，必须先声明结构体类型，再定义其变量，如在a.c文件中定义了<code>struct Student</code>结构体之后，在b.c文件中
+<code>extern struct Student</code>的提取声明将被忽略，也就是不接受结构体类型的提取声明.因为此时b.c文件只知道结构体变量的性质，并不知道其定义。简单的办法就是把结构体定义放在公共头文件中，a.c和b.c都包含该头文件。</p></li>
+</ul>
+<h3 id="结构体变量的定义">5.1.2 结构体变量的定义</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Student</span> <span class="title">st</span>;</span><span class="comment">//传统C语言方式</span></span><br><span class="line"></span><br><span class="line">Student st;<span class="comment">//C++方式</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>注：从语法角度出发，结构体变虽可以和结构体成员同名，因为它们处于不同的＂层次“</p>
+<p>上，不会有二义性，但从软件工程角度出发建议不要这样做。</p>
+<h3 id="结构体变量的引用">5.1.3 结构体变量的引用</h3>
+<ul>
+<li><p>引用结构体变量中的一个成员</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">结构体变量．成员名     <span class="comment">// &quot;.&quot;为结构体变量成员访问运算符</span></span><br><span class="line"></span><br><span class="line">结构体指针变量-&gt;成员名<span class="comment">// &quot;-&gt;&quot;为结构体指针变量成员访问运算符</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>结构体类型变量的整体引用</p>
+<ul>
+<li><p>用户可以将一个结构体变量作为一个整体赋给另一个同结构体类型的结构体变量，其前提条件是两个结构体变量必须具有完全相同的结构体类型。</p></li>
+<li><p>当结构体内成员有指针变量类型时，单纯的整体幅值会造成“浅复制”，即a结构体变量幅值给b结构体变量后，b的指针变量成员同样指向了a结构体的对应成员指向的位置。因此以后对b的该成员的操作可能会直接影响到a结构体变量。</p></li>
+</ul></li>
+</ul>
+<h3 id="结构体变量的初始化">5.1.4 结构体变量的初始化</h3>
+<p>​ 在对结构体变量赋初值时， C
+编译程序按每个成员在结构体中的顺序一一对应赋初值，不允许跳过前面的成员给后面的成员赋初值；但可以只给前面的若干个成员赋初值，对于后面未赋初值的成员，对于数值型和字符型数据，系统自动赋初值零。</p>
+<h3 id="结构体变量的内存分配">5.1.5 结构体变量的内存分配</h3>
+<ul>
+<li><p>结构体的内存对齐</p>
+<ul>
+<li><p><strong>结构体变量的首地址是结构体中有效对齐值的整数倍</strong></p>
+<p>编译器在给结构体开辟空间时，首先找到结构体中<strong>有效对齐值</strong>。有效对齐值取得方法：</p>
+<ol type="1">
+<li><p>取结构体内所有成员数据类型中占字节空间<strong>最大</strong>的<strong>自身对齐值</strong>记为N1.【注：若有结构体类型成员，其对齐值为<strong>该结构体成员内的所有成员中自身对齐值最大的那个值</strong>。】</p></li>
+<li><p>寻找是否有<strong>自定义有效对齐值</strong>，若有则记为N2.【注1：<strong>自定义有效对齐值</strong>是用宏命令#pragma
+pack(n) 自定义的，对齐值为n ，用宏命令#pragma pack()
+取消自定义对齐。】【注2：自定义有效对齐值中n=1时，称为<strong>紧凑编译</strong>】</p></li>
+<li><p>若N2不存在，则<strong>有效对齐值</strong>就是N1；若N2存在，则<strong>有效对齐值</strong>便是：min｛N1,N2｝。</p></li>
+</ol>
+<p>然后寻找内存地址能是该基本数据类型的整倍的位置，作为结构体的首地址。</p></li>
+<li><p><strong>结构体每个成员相对于结构体首地址的偏移量（offset）都是当前成员大小的整数倍，如有需要编译器会在成员之间加上填充字节</strong></p>
+<p>为结构体的一个成员开辟空间之前，编译器首先检查预开辟空间的首地址相对于结构体首地址的偏移是否是本成员的整数倍，若是，则存放本成员，反之，则在本成员和上一个成员之间填充一定的字节，以达到整数倍的要求，也就是将预开辟空间的首地址后移几个字节。</p></li>
+<li><p><strong>结构体的总大小为结构体中最宽基本数据成员的整数倍。如有需要，编译器将会在结构体末尾</strong>（<a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/Thanksgining/article/details/42024977">存疑</a>）<strong>添加填充字符</strong></p></li>
+</ul></li>
+<li><p>柔性数组成员</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Struct Type</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="type">int</span> n;</span><br><span class="line"></span><br><span class="line">   <span class="type">int</span> a[];<span class="comment">//或者 “int a[0];”</span></span><br><span class="line"></span><br><span class="line">&#125;s;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>成员数组a 称为柔性数组，它的长度为0 , 所以sizeof(s) 的大小为4,
+以后可以分配变长度空间。柔性数组只能作为最后一个成员。<a target="_blank" rel="external nofollow noopener noreferrer" href="http://luodw.cc/2015/10/22/Cplus6/">柔性数组扩展阅读</a></p></li>
+</ul>
+<h2 id="联合体">5.2 联合体</h2>
+<h3 id="定义联合体的注意事项">5.2.1 定义联合体的注意事项</h3>
+<ul>
+<li><p>分配内存时，联合体变量所占内存的实际长度等千各成员中占内存最长的成员的</p>
+<p>长度。</p></li>
+<li><p>只有最后一个存放的成员值有效，其他成员将失去原值。</p></li>
+</ul>
+<h3 id="初始化联合体的注意事项">5.2.2 初始化联合体的注意事项</h3>
+<ul>
+<li><p>联合体变量在定义的同时只能用第1个成员的类型的值进行初始化，对联合体变量初始化时尽管只能给第1个成员赋值，但必须用大括号括起来。</p></li>
+<li><p>联合体变量和结构体变量的区别：</p>
+<ul>
+<li><p>联合体变量在定义的同时只能用第1个成员的类型的值进行初始化</p></li>
+<li><p>联合体变量中的所有成员共享一段公共存储区，所以联合体变量所占内存的字节数与其成员中占字节数最多的那个成员相等；而结构体变量中的每个成员分别占有独立的内存空间，所以结构体变量所占内存的字节数是其成员所占字节数的总和</p></li>
+<li><p>由于联合体变量中的所有成员共享内存空间，因此变量中的所有成员的首地址相同，而且变量的地址也就是该变量成员的地址</p></li>
+</ul></li>
+<li><p>字节序描述数据在内存中的排列格式。在存储和加载时， CPU
+必须采用硬件支待的字节序格式。字节序分为两类，即<strong>大端( BigEndian
+) </strong>和<strong>小端(LittleEndian ) </strong></p>
+<p>采用大端格式时，高位字节存储在第一个位置，次高位字节存储在次邻位置。采用小端格式时，低位字节存储在第一个位置，次低位字节存储在次邻位置。</p>
+<ul>
+<li><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://zhuanlan.zhihu.com/p/44625744">字节序扩展阅读1</a></p></li>
+<li><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://songlee24.github.io/2015/05/02/endianess/">字节序扩展阅读2</a></p></li>
+</ul></li>
+</ul>
+<h2 id="枚举类型">5.3 枚举类型</h2>
+<p>暂无</p>
+<h2 id="用户定义类型">5.4 用户定义类型</h2>
+<h3 id="有关typedef的说明">5.4.1 有关typedef的说明</h3>
+<ul>
+<li><p>使用typedef
+只能对已有的类型名重新命名，并不能产生新的数据类型，原有的类型也没有被取代，即用户定义类型只是原类型的一个别名</p></li>
+<li><p>typedef 并不是做简单的字符串替换。<strong>typedef与#define
+的区别</strong>:</p>
+<ul>
+<li><p><strong>语法格式不同</strong>：typedef定义是语句，句尾要加上分号；而#define不是语句，不能在句尾加分号</p></li>
+<li><p><strong>用法不同</strong>：
+typedef用来定义一种数据类型的别名，增强程序的可读性；而#define主要用来定义常量，以及书写复杂的使用频繁的宏</p></li>
+<li><p><strong>执行时间不同</strong>：typedef是编译过程的一部分，有类型检查的功能；#define
+是宏定义，是预编译的部分，其发生在编译之前，只是简单粗暴地进行字符串的替换，不进行类型的检查</p></li>
+<li><p><strong>作用域不同</strong>：typedef有作用域限定；#define不受作用域约束，只要是在define命令后的引用都正确</p></li>
+<li><p><strong>对指针的操作不同</strong>： typedef 和#define
+定义的指针有很大的区别，如此例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">char</span> * String_t;<span class="comment">//是语句，为char＊指定一个新类型别名String_t, 有类型检查，编译的时候处理；</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> String_d  char * <span class="comment">//是宏命令，只做简单的替换，无类型检查，预编译的时候处理，所以typedef 比＃define安全</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//而且定义多个变量时有区别，如：</span></span><br><span class="line"></span><br><span class="line">String_t a,b; <span class="comment">/*等同于*/</span> <span class="type">char</span> *a,*b;</span><br><span class="line"></span><br><span class="line">String_d c,d; <span class="comment">/*替换为*/</span> <span class="type">char</span> *c,d;  <span class="comment">//c为char＊类型，而d为char类型。</span></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.runoob.com/note/24230">typedef与#define区别的扩展阅读</a></p></li>
+</ul></li>
+<li><p>用typedef 定义类型名可嵌套进行</p></li>
+<li><p>用typedef
+定义类型名有利于程序的移植，并增加程序的可读性.</p></li>
+</ul>
+<h1 id="第6章-模块化函数">第6章 模块化——函数</h1>
+<h2 id="函数基础">6.1 函数基础</h2>
+<h3 id="函数的定义与调用">6.1.1函数的定义与调用</h3>
+<ol type="1">
+<li><p>函数的定义</p>
+<ul>
+<li><p>默认的函数类型为int</p></li>
+<li><p>void型函数无返回值，不能包含带返回值的return语句；其他类型的函数至少包含一个return语句</p></li>
+<li><p>函数的定义不能嵌套，即不能在一个函数体内又包含另一个函数的定义。这就保证了<strong>每一个函数是一个独立的、功能单一的程序单元</strong></p></li>
+<li><p><strong>复合语句</strong>（用花括号{}括起来的语句）申明的变量的作用域只在复合语句中,出了复合语句就不起作用。复合语句中的变量名和复合语句外面的变量即使同名也不是同一变量。</p></li>
+</ul></li>
+<li><p>函数的调用</p>
+<ul>
+<li><p><strong>实参(argument)</strong>：</p>
+<p>全称为"实际参数"，是在调用时传递给函数的参数。实参可以是常量、变量、表达式、函数等，
+无论实参是何种类型的量，在进行函数调用时，它们都<strong>必须具有确定的值</strong>，
+以便把这些值传送给形参。
+因此应预先用赋值，输入等办法使实参获得确定值</p></li>
+<li><p><strong>形参(parameter)</strong>：</p>
+<p>全称为"形式参数"
+，由于它不是实际存在变量，所以又称虚拟变量。是在定义函数名和函数体的时候使用的参数，目的是<strong>用来接收调用该函数时传入的参数</strong>。在调用函数时，实参将赋值给形参。因而，必须注意实参的个数，类型应与形参一一对应，并且实参必须要有确定的值。没有形参时，圆括号也不可省；多个参数之间应用逗号分隔。参数包括参数名和参数类型</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.nowcoder.com/questionTerminal/d36b0c45b4694e279490ecbfe81221d3">来源：牛客网</a></p></li>
+</ul></li>
+</ol>
+<h3 id="函数的返回值与return语句">6.1.2 函数的返回值与return语句</h3>
+<ol type="1">
+<li><p>return的语句功能：返回调用函数（终止该函数的执行），并将return语句中表达式的值带给调用函数</p></li>
+<li><p>return语句中表达式的类型与函数的类型不一致时则<strong>以函数类型定义为准</strong>，系统自动进行类型转换</p></li>
+<li><p>C语言中可以使用不带表达式的语句直接返回，C++必须使用带表达式的return语句返回</p></li>
+<li><p>return
+语句不能返回局部变量的地址，因为该地址中存放的局部变量在函数执行完毕后被释放，但可以返回静态局部变量的地址，因为静态局部变量的空间不是在栈帧中，而是在静态数据区，即使栈帧退栈了，它仍然存在</p></li>
+</ol>
+<h3 id="函数的声明">6.1.3 函数的声明</h3>
+<ol type="1">
+<li><p>函数声明语句也称为<strong>函数原型</strong></p></li>
+<li><p>如果调用一个函数出现在该函数的定义之前，则在调用前必须对该函数进行声明</p></li>
+<li><p>如果函数原型放在调用函数定义的内部，则该声明仅对该调用函数有效</p></li>
+<li><p>fun()与fun(void)声明的区别：对于前者，编译器编译时不检查该函数调用的参数传递情况；对于后者，括号中有void，编译器编译时会严格检查该函数调用时的参数传递情况，如果带参数调用，则会编译错误或者警告</p></li>
+</ol>
+<h3 id="外部函数与内部函数">6.1.4 外部函数与内部函数</h3>
+<ol type="1">
+<li><p>函数默认类型是<strong>外部函数</strong>，其作用域是整个源程序，即：除了可被本源文件中的其他函数调用外，还可被其他源文件中的函数调用（其他源文件调用时，需要对被调用的外部函数用extern语句进行声明）</p></li>
+<li><p><strong>内部函数</strong>，也称为<strong>静态函数</strong>，使用static关键字定义，其作用域局限于定义它的源文件内部，即：只能被本源文件中的函数调用，不能被统一程序的其他源文件中的函数调用，其有以下优点：</p>
+<ul>
+<li><p>其他源文件中可以定义相同名字的函数，不会发生冲突</p></li>
+<li><p>静态函数不能被其他源文件所用，达到“隐藏”目的</p></li>
+</ul></li>
+</ol>
+<h3 id="函数间的参数传递">6.1.5 函数间的参数传递</h3>
+<p>参数传递有两种方式：<strong>传值</strong>，<strong>传地址</strong></p>
+<ol type="1">
+<li><p><strong>传值方式</strong></p>
+<p>一个函数调用另一个函数时直接将实参的值传递给对应的形参，这称为<strong>传值方式</strong>，对应的形参称为值参数。传值方式实现了把数据由调用函数传递给被调用函数。由于数据在传递方（实参方）和被传递方（形参方）占用不同的内存空间（函数的形参属于自动变量，函数执行完毕后自动释放），所以形参在被调用函数中无论如何变化都不会影响调用函数中相应实参的值，也就是说调用函数时实参和形参之间是单向的从实参到形参的值传递。</p></li>
+<li><p><strong>传地址方式</strong></p>
+<p>如果要通过一个函数fun改变某个实参y （对应形参为x, 数据类型为Type
+）的值，需要在fun 形参表定义为<code>Type *x</code>,
+在调用函数的语句中指定为＆y (取y
+的地址）。这样此时形参变量指向的内存地址与实参的地址相同，所以通过<strong>解引用</strong>形参变量指针进行的操作等同于对实参进行操作。</p></li>
+</ol>
+<h3 id="函数调用的实现原理">6.1.5 函数调用的实现原理</h3>
+<p>大多数CPU上的程序使用<strong>栈空间</strong>来支持函数调用操作。单个函数调用操作所使用的函数调用栈被称为<strong>栈帧(stack
+frame)
+结构</strong>。每次函数调用时都会相应地创建一帧，保存返问地址、函数形参和局部变量值等，并将该帧压入调用栈。若在该函数返回之前又发生新的调用，则同样要将与新函数对应的一帧进栈，成为栈顶。函数一旦执行完毕，对应的帧便出栈（此时局部变量的生命周期结束），控制权交还给该函数的上层调用函数，并按照该帧中保存的返回地址确定程序中继续执行的位置。</p>
+<ul>
+<li><p>函数调用要点</p>
+<ul>
+<li><p>栈空间中每个栈帧的大小是有限的，所以在—个函数中不要定义很大空间的数组，否则可能会导致<strong>栈溢出</strong>，程序崩溃。</p></li>
+<li><p>每个栈帧对应着一个未运行完的函数。栈帧中保存了该函数的返回地址和局部变量，每个函数的每次调用，都有它自己独立的一个栈帧，这个栈帧维护着函数调用所需要的各种信息。函数的返回地址和参数，保存当前函数调用前的“断点”信息，也就是函数调用前的指令位置，以便在函数返回时能够恢复到函数被调用前的代码区中继续执行指令。函数栈帧的大小并不固定，一般与其对应函数的局部变量多少有关。函数运行过程中，其栈帧大小也是在不停变化的！</p>
+<p>————————————————</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.csdn.net/yaotengjian/article/details/72629735">版权声明：本文为CSDN博主「YYtengjian」的原创文章，遵循
+CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。</a></p></li>
+<li><p>当—个函数多次调用时，每次调用都会创建一个栈帧，为同名的局部变量分配空间，但它们的地址是不同的，它们之间也没有关系。</p></li>
+</ul></li>
+</ul>
+<h3 id="函数调用时参数的求值顺序">6.1.7 函数调用时参数的求值顺序</h3>
+<p>如果所有实参表达式的求值没有二义性，那么从右往左求值和从左往右求值结果是相同的。人们一般认为是从右往左顺序求值的。但，如果出现二义性，输出结果便是不确定的。例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> a=l;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d,%d,%d\n&quot;</span>,a++,++a,a++);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>此程序在VC++中输出“2,2,1”，但在Dev
+C++中输出“3,4,1”，这是因为printf函数的实参存在二义性，因为在函数的所有参数赋值之后且在函数的第一条语句执行之前有一个顺序点，而参数间的逗号处没有顺序点，任意两个顺序点之间的副作用的求值次序都是不确定的，这里有3
+个副作用，所以输出结果不确定。</p>
+<ul>
+<li><p><a href="(wiz://open_document?guid=5e9705cd-02ce-4f54-90f4-737d935ad1d9&amp;kbguid=&amp;private_kbguid=c07167b7-b007-4f38-b466-ea613199e5ae)">见笔记第1章1.2.1中第4点表达式求值的副作用</a></p></li>
+<li><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://zh.cppreference.com/w/c/language/eval_order">C语言参考手册：求值顺序</a></p></li>
+</ul>
+<h3 id="atexit函数">6.1.8 atexit()函数</h3>
+<p>​ 即使main()函数终止以后仍然可以执行一些代码，这需要使用stdlib.h
+头文件中的atexit()函数。一般来说，如果在main()中调用某个函数，程序的执行会跳转到该函数并执行它。在执行该函数后控制权又交还给main()函数。</p>
+<p>​ 当使用了atexit()
+函数以后，进程的执行可以简单地理解为<strong>当main()函数终止后跳转到atexit()函数，然后再也不会返回到main()函数</strong>。atexit()函数的使用格式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">atexit(函数名)；</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>​
+<strong>由于atexit()函数是按后进先出的方式注册这些函数的，因此最后注册的函数先调用</strong>。</p>
+<h2 id="数组作为函数参数">6.2 数组作为函数参数</h2>
+<p>以二维数组为例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a[M][N]; <span class="type">int</span> (*pa)[n] = a ;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">(<span class="type">int</span> a[][N])</span>; <span class="type">void</span> <span class="title function_">func</span><span class="params">(<span class="type">int</span> a[M][N])</span>;<span class="comment">//函数声明</span></span><br><span class="line"></span><br><span class="line">func(a); func(pa);<span class="comment">//调用</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="指针数组作为函数参数">6.3 指针数组作为函数参数</h2>
+<p>当指针数组作为实参时，对应的形参应当是一个指向指针的指针变量.例如以下三种形式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">(<span class="type">int</span> *a[])</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">(<span class="type">int</span> *a[N])</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">(<span class="type">int</span> **a)</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="指针函数和函数指针">6.4 指针函数和函数指针</h2>
+<h3 id="指针函数">6.4.1 <strong>指针函数</strong></h3>
+<p>例如：<code>int *func(int a,float x);</code></p>
+<p><strong>解释</strong>：</p>
+<ul>
+<li><p>定义指针型函数时前面的<code>*</code>号与“数据类型”相结合，表示此函数是指针型函数。上例，定义func()函数时首部中的<code>int*</code>
+是一个整体，表示该函数返回的是整型变量的地址</p></li>
+<li><p>在程序中不要使用数组名接收指针型函数的返回值，因为数组名为地址常量，不能向它赋值</p></li>
+</ul>
+<h3 id="函数指针">6.4.2 <strong>函数指针</strong></h3>
+<p>函数的存储首地址又称为函数的执行入口地址， C
+规定函数的首地址就是函数名。当指针变量保存函数的入口地址时它就指向了该函数，所以称这种指针变量为指向函数的指针变量，简称为<strong>函数指针</strong>.</p>
+<p>定义函数指针的一般格式：<code>函数类型（＊函数指针名）（形参表）;</code></p>
+<p><strong>解释</strong>：</p>
+<ul>
+<li><p>在定义函数指针变量时，“函数指针名“两边的圆括号不能省略，它表示函数指针名先与<code>*</code>结合，即为指针变量，然后再与后面的”(形参表)”相结合，表示该指针变量指向函数。如果少了前面的一组括号，则变为<code>函数类型 ＊函数名（形参表）</code>它表示返回值为地址值（指针）的函数</p></li>
+<li><p>函数指针变量的类型是被指向的函数类型</p></li>
+</ul>
+<ol type="1">
+<li><p>给函数指针赋值格式：<code>函数指针名＝函数名;</code></p></li>
+<li><p>通过函数指针调用函数格式：<code>(＊函数指针)(实参表);</code></p></li>
+<li><p>函数指针的作用主要体现于在函数间传递函数，这种传递不是传递任何数据，而是传递函数的执行地址，或者说是传递函数的调用控制。<strong>当函数在两个函数间传递时，调用函数的实参应该是被传递函数的函数名，而被调用函数的形参应该是接收函数地址的函数指针</strong>。</p></li>
+<li><p>函数指针的用处：</p>
+<ul>
+<li>使用函数指针的目的是为了增加执行函数的通用性，特别是在可能调用的函数可变的情况下，可以动态设置内容，有灵活性。如：排序的qsort函数需要传入比较的函数指针，来确定排序是从大到小还是从小到大，如下：</li>
+</ul></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">qsort</span><span class="params">(<span class="type">void</span> *base, <span class="type">size_t</span> nitems, <span class="type">size_t</span> size, <span class="type">int</span> (*compar)(<span class="type">const</span> <span class="type">void</span> *, <span class="type">const</span> <span class="type">void</span>*))</span>;<span class="comment">//其中参数compar——用来比较两个元素的函数，即函数指针（回调函数）</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="两个函数指针实例">6.2.3 两个函数指针实例</h3>
+<p>1.实例一：<img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/函数指针定义实例20200326010002.png"></p>
+<ol start="2" type="1">
+<li>实例二：</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> ( *func(<span class="type">void</span> (*p)(<span class="type">void</span> *),<span class="type">void</span> *x) ) (<span class="type">void</span> *);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>​ <strong>解释</strong>：</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/函数指针实例20200326203843.jpg"></p>
+<h2 id="递归函数">6.5 递归函数</h2>
+<ul>
+<li><p>递归函数又称自调用函数，其特点是在函数内部调用自己。C
+规定不允许函数递归定义，即不允许在一个函数体中定义另一个函数，但可以递归调用。在执行递归函数时将反复调用其自身，每调用一次就进入新的一层。</p></li>
+<li><p>一般地，
+一个递归函数定义由两个部分组成，即递归结束情况和递推关系情况。递推关系就是把一个不能或不好直接求解的“大问题“转化成一个或儿个“小问题”来解决，再把这些“小问题”进一步分解成更小的“小问题”来解决（即递推），如此分解，直到每个“小问题”都可以直接解决（此时分解到递归结束情况）。</p></li>
+</ul>
+<h1 id="第7章-位操作位运算和位域">第7章 位操作——位运算和位域</h1>
+<h2 id="位运算符">7.1 位运算符</h2>
+<p>在C
+中只能对<strong>整型或字符型</strong>数据进行位运算，不能对其他类型的数据进行位运算。</p>
+<h3 id="按位求反">7.1.1 <strong>按位求反<code>~</code></strong></h3>
+<ul>
+<li>所有的位运算都是以<strong>补码</strong>形式进行的</li>
+<li>位运算适合于任何类型的整数，包括各种带符号整数，对于带符号整数，符号位也参与按位求反</li>
+<li><code>~</code>运算符的优先级比算术运算符、关系运算符、逻辑运算符和其他位运算符都高</li>
+</ul>
+<h3 id="左移运算">7.1.2
+<strong>左移运算<code>&lt;&lt;</code></strong></h3>
+<ul>
+<li>在VC++环境下，当左移位数n大于等于整数的位数m时，实际左移位数为n%m
+，例如a&lt;&lt;36 等同于<code>a&lt;&lt;(36%32)</code>（这里n=36 、m=32)
+，如a=1时其结果为16</li>
+</ul>
+<h3 id="右移运算">7.1.3
+<strong>右移运算<code>&gt;&gt;</code></strong></h3>
+<ul>
+<li>在VC++环境下，对于带符号整数，右移时高位正数补0 、负数补1， 例如int
+a=-2, a&gt;&gt;2的结果为-1。有的编译器全部补0</li>
+</ul>
+<h3 id="按位与">7.1.4 <strong>按位与<code>&amp;</code></strong></h3>
+<p>与运算可以实现的功能如下：</p>
+<ul>
+<li><p><strong>清零</strong></p>
+<p>如果想将一个单元清零，也就是使其全部二进位为0,
+只需与0进行按位与运算即可达到清零的目的</p></li>
+<li><p><strong>保留/取 一个数中的某些位</strong></p>
+<p>要想将哪一位（或哪些位）保留下来，就与一个数进行＆运算，此数在这些位取1。例如有一个整数a
+(16 位），想取a中两个字节中的高字节，只需将a 与八进制数177400 (1111 1111
+0000 0000) 按位与即可。</p></li>
+</ul>
+<h3 id="按位异或">7.1.5 按位异或<code>^</code></h3>
+<p>异或运算可以实现的功能如下：</p>
+<ul>
+<li><p><strong>使特定位翻转</strong></p>
+<p>要使哪几位翻转，就将与其进行按位异或运算的那几位置为1
+即可。（注：任何数与0按位异或保留原值。）</p></li>
+<li><p><strong>编码解码</strong></p>
+<p>任何数与它自己做按位异或结果为0 。例如，设k为密码，a为原始数据， a＾k
+为加密结果，再做a<sup>k</sup>k结果即为a,
+称为<strong>解码</strong>。</p></li>
+</ul>
+<h3 id="按位或">7.1.6 按位或<code>|</code></h3>
+<ul>
+<li>任何位上的二进制数，只要和1进行按位或运算，该位即为1；和0进行按位或运算，该位保留原值不变。</li>
+</ul>
+<h3 id="不同长度的数据进行位运算">7.1.7 不同长度的数据进行位运算</h3>
+<ul>
+<li>两个运算数位数不同时系统自动处理如下：
+<ol type="1">
+<li>将两个运算数右端对齐</li>
+<li>将位数较短的运算数往高位扩充，即无符号数和正整数左侧用0补全，负数左侧用1补全；然后对位数相等的这两个运算数按位进行位运算</li>
+</ol></li>
+</ul>
+<h2 id="位图">7.2 位图</h2>
+<p>位图( bit-map )
+就是用一个位来标记某个元素对应的值。由于采用了位为单位来存储数据，因此可以大大节省存储空间。</p>
+<h3 id="在位图-a-中设置位序号为-i-的位为1">7.2.1 在位图 a 中设置位序号为
+i 的位为1</h3>
+<p>int的长度为4个字节，设SHIFT为5（2的5次方=32）, MASK 为0x1f（
+二进制数为11111) 。对于位序号为 i
+的位，在位图a中设置对应位为1的过程如下：</p>
+<ol type="1">
+<li><strong>求a所在的元素</strong>：位序号为 i
+的位应该在<code>a[i&gt;&gt;SHIFT]</code>（即<code>a[i/32]</code>)
+元素中</li>
+<li><strong>求32位基准向量</strong>：位序号为 i
+的位在<code>a[i&gt;&gt;SHIFT]</code>元素中从右数第<code>（ i &amp; MASK）</code>位，这里<code>i &amp; MASK</code>表示取出
+i 末尾的5个二进制位，相当于 i%32; 将0x00000001（或者1)
+左移<code>（i &amp; MASK）</code>位，即<code>1&lt;&lt;( i &amp; MASK)</code>得到对应的32
+位基准向量</li>
+<li>将<code>a[i&gt;&gt;SHIFT]</code>元素与求得的32位基准向量进行按位或运算，就在位图
+a 中将位序号为 i 的位设置为1
+，即<code>a[i &gt;&gt; SHIFT] |= (1 &lt;&lt;(i &amp; MASK)）</code></li>
+</ol>
+<ul>
+<li>函数代码</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">clr</span><span class="params">(<span class="type">int</span> i)</span></span><br><span class="line">&#123;</span><br><span class="line">    a[i&gt;&gt;SHIFT]|=(<span class="number">1</span>&lt;&lt;(i&amp;MASK));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="初始化位序号为i的位的设置值为0">7.2.2
+初始化位序号为i的位的设置值为0</h3>
+<p>求出位序号为i的位在<code>a[i&gt;&gt;SHIFT]</code>元素中，对应的32位基准向量是<code>1&lt;&lt;(i&amp;MASK)</code>，通过<code>a[i&gt;&gt;SHIFT]&amp; = ~(1&lt;&lt;(i&amp;MASK))</code>便位序号为i的设置值设为0.</p>
+<ul>
+<li>函数代码</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">set</span><span class="params">(<span class="type">int</span> i)</span></span><br><span class="line">&#123;</span><br><span class="line">    a[i&gt;&gt;SHIFT]&amp; = ~(<span class="number">1</span>&lt;&lt;(i&amp;MASK));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="获取位图a中位序号为i的位的设置值">7.2.3
+获取位图a中位序号为i的位的设置值</h3>
+<p>求出位序号为i的位在<code>a[i&gt;&gt;SHIFT]</code>元素中，对应的32位基准向量是<code>1&lt;&lt;(i&amp;MASK)</code>，通过<code>a[i&gt;&gt;SHIFT]&amp;(1&lt;&lt;(i&amp;MASK))</code>取出对应的设置值，如果为0（假），表示对应位为0；如果为非0值（真），表示对应位为1.</p>
+<ul>
+<li>函数代码</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">getbit</span><span class="params">(<span class="type">int</span> i)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> a[i&gt;&gt;SHIFT]&amp;(<span class="number">1</span>&lt;&lt;(i&amp;MASK));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="位段位域">7.3 位段（位域）</h2>
+<h3 id="位段定义的说明">7.3.1 位段定义的说明</h3>
+<ol type="1">
+<li><p>位段名省略时称作<strong>匿名位段</strong>。匿名位段的存储空间通常闲置不用。</p>
+<p>当匿名位段的<strong>宽度被指定为0时</strong>有特殊作用：<strong>它使下一个位段跳过当前字节剩余空间，直接从一个新的地址开始存放</strong>。</p></li>
+<li><p>常规结构体成员和位段可以定义在一个结构体中</p></li>
+<li><p>不能定义元素为位段结构的数组</p></li>
+</ol>
+<h3 id="位段的引用和赋值">7.3.2 位段的引用和赋值</h3>
+<ol type="1">
+<li>位段的应用形式和结构体成员相同</li>
+<li>超出位段位数范围的赋值不会报错，而是<strong>自动截取所赋值的低位</strong>，例如一个位段定义为<code>struct &#123;……unsigned short a:1;……&#125;var;</code>，若给位段a赋值3，即<code>var.a=3;</code>，3的二进制码是11，取低一位是1，所以<code>var.a</code>的值是1</li>
+<li>由于每个位段都指定了长度，所以特别要注意位段中的<strong>位扩展</strong>。当一个位段转换为有符号类型时按位段的最高位进行为扩展，例如：</li>
+</ol>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/位域的位扩展20200401000617.png"></p>
+<ol start="4" type="1">
+<li><p>位段成员的类型必须为无符号或者带符号整形（含char）</p></li>
+<li><p>位段可以参与算数表达式的运算，系统自动将其转换成整型数</p></li>
+<li><p>位段可以利用整型格式描述符（%d,%u,%o,%x）进行输出</p></li>
+<li><p>由于位段没有地址，所以<strong>不能对位段求地址</strong>，也不能通过scanf(）语句读入位段值、不能用指针指向位段，但可以对一个含位段的结构体变量中的非位段成员求地址</p></li>
+<li><p>几个位段的分配空间不一定紧挨在一起，中间可能有空着不用的空间。例如几个位段均为char
+类型， 一个长度小于8 的位段不能跨两个字节。</p></li>
+</ol>
+<p># 第8章 编译前的处理——预处理</p>
+<h2 id="宏定义">8.1 宏定义</h2>
+<p>在C
+源程序被编译之前，首先对源程序中的预处理命令进行处理，然后才对程序进行编译。编译预处理命令都是以“#“开头的，它不是C
+语句，必须单独占一行，末尾不使用分号作为结束符。<strong>类似Word中的替换功能</strong>。常用的预处理命令包括宏定义、条件编译和文件包含等。</p>
+<h3 id="无参宏定义">8.1.1 无参宏定义</h3>
+<ul>
+<li><p><strong>格式</strong>：<code>#define  标识符 字符串</code></p></li>
+<li><p><strong>定义要点</strong>：</p></li>
+</ul>
+<ol type="1">
+<li>宏定义是用宏名来表示一个字符串，在宏展开时又以该字符串取代宏名，属于一种简单的代换。该字符串可含任意字符，预处理时对它不作任何检查。如有错误，只能在编译已被宏替换的源程序的过程中发现问题。</li>
+<li>当宏定义在一行中写不下，
+需要在下一行继续时，只需在最后一个字符后紧接着加一个反斜线”＂ 。
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://mp.weixin.qq.com/s/fxmheEE2fYbHAYcvFUwIWw">扩展阅读：反斜线可能引发的bug</a></li>
+</ul></li>
+<li>宏定义不是语句，在行末不必加分号，如加上分号则连分号一起被置换</li>
+<li>宏名在源程序中若用引号括起来，
+则预处理程序不对其作宏替换,例如printf函数的参数中，双引号内的宏名不会被替换</li>
+<li>宏定义允许嵌套，
+即在宏定义的字符串中可使用已经定义的宏名，并且在宏替换时由预处理程序层层代换</li>
+</ol>
+<h3 id="带参宏定义">8.1.2 带参宏定义</h3>
+<ul>
+<li><p><strong>格式</strong>：<code>#define 标识符(形参表) 字符串</code></p></li>
+<li><p><strong>调用</strong>：<code>宏名(实参表)</code></p></li>
+<li><p><strong>定义要点</strong>：</p></li>
+</ul>
+<ol type="1">
+<li><p>在带参宏的定义中宏名和形参表之间不能有空格出现，否则宏名后面的括号、形参表和字符串会被错误认为是无参宏</p></li>
+<li><p>在宏定义中形参是标识符，而宏调用中的实参可以是表达式</p></li>
+<li><p>在宏定义中字符串内的形参通常要用括号括起来，否则可能出错，这称为宏的副作用。例如，定义求正方形面积的宏如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  area(a) (a*a)</span></span><br></pre></td></tr></table></figure>
+<p>当调用<code>area(2+3)</code>时宏替换成(2+3*2+3) ，那么求出的面积是11,
+而不是正确的25 。所以应该改为如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  area(a) ((a)*(a))</span></span><br></pre></td></tr></table></figure></li>
+<li><p>宏定义可用来定义多个语句，在宏调用时把这些语句又代换到源程序内，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SET(a,b,c,d)  a=1;b=2;c=3;d=4;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li><strong>带参宏与函数的区别</strong>：</li>
+</ul>
+<ol type="1">
+<li>函数调用时<strong>先求出实参表达式的值</strong>，然后代入函数定义中的形参；而使用带参宏只是进行<strong>简单的字符串替换</strong>，不进行实参的计算</li>
+<li>函数调用是<strong>在程序执行时处理</strong>的，分配临时的内存单元；而宏替换是<strong>在编译之前进行</strong>的，在宏替换时并不分配内存单元，也不进行值的传递处理，也没有“返回值＂的概念</li>
+<li>对函数中的实参和形参都要定义类型，且两者的<strong>类型要求一致</strong>，如不一致应进行类型转换；而宏<strong>不存在类型</strong>问题，宏名无类型，它的参数也无类型，只是一个符号代表，宏替换时代入指定的字符即可</li>
+<li>当使用宏次数较多时，宏替换后<strong>使源程序变长</strong>，而函数调用<strong>不使源程序变长</strong>，因此一般用宏来替换小的、可重复的代码段，对于代码行较多的应使用函数方式</li>
+<li>宏替换<strong>不占执行时间</strong>，只占编译预处理时间，而函数调用<strong>占执行时间</strong>（分配内存、保留现场、值传递、返回等）。</li>
+</ol>
+<h2 id="条件编译">8.2 条件编译</h2>
+<p>一般情况下，C
+源程序中所有的行都参加编译过程。但有时出于对程序代码优化的考虑，希望对其中一部分内容只是在满足一定条件时才进行编译，形成目标代码。这种对程序的一部分内容指定编译的条件称为条件编译。</p>
+<ul>
+<li><strong>条件编译注意要点</strong>：</li>
+</ul>
+<p>头文件中的ifndef/define/endif 有什么作用？例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _STDIO_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _STDIO_H</span></span><br></pre></td></tr></table></figure>
+<p>“宏名“在理论上来说可以是自由命名的，但每个头文件的宏名都应该是唯一的，其命名规则一般是<strong>头文件名全大写，前、后加下划线，
+并把文件名中的“.”也变成下划线</strong>，例如stdio. h
+头文件的宏名是＿STDIO_H。上述条件编译命令表示若没有定义＿STDIO_H，就定义＿STDIO_H
+。</p>
+<p>其目的是<strong>为了防止同一头文件等被重复引用</strong>。<a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.nowcoder.com/questionTerminal/16f568295550480e8cf902864bfcbb86">牛客网题目参考连接</a></p>
+<h2 id="文件包含">8.3 文件包含</h2>
+<p>所谓文件包含预处理，是指在一个文件中将另一个文件的全部内容包含进来的处理过程，即将另外的文件包含到本文件中。C
+提供了＃include 编译预处理命令实现文件包含操作。</p>
+<h3 id="文件包含操作的两种格式">8.3.1 文件包含操作的两种格式</h3>
+<ol type="1">
+<li><code>#include ＜包含文件名＞</code></li>
+<li><code>#include “包含文件名”</code></li>
+</ol>
+<p><strong>两者区别</strong>：</p>
+<p>第一种：＜包含文件名＞表示直接到指定的C/C++编译系统标准包含文件目录去寻找文件</p>
+<p>第二种： “包含文件名”
+表示先在当前目录寻找，如找不到再到标准包含文件目录寻找</p>
+<p><strong>因此</strong>：</p>
+<p>一般来说，前者用来包含开发环境提供的库头文件，后者用来包含自己编写的头文件。</p>
+<h3 id="文件包含操作的过程">8.3.2 文件包含操作的过程</h3>
+<p>文件包含预处理的功能是在对源程序进行编译之前用包括文件的内容取代该文件包含预处理语句。例如，
+a.c 文件中有文件包含命令#include "b.c", 其预处理过程如下图：</p>
+<p><img src="https://silencht.oss-cn-beijing.aliyuncs.com/img/文件包含过程20200401134102.png"></p>
+<p>注：被包含的文件并不限于C系统所提供的头文件（如stdio.h 、string.h
+等），还可以是用户自己编写的命名文件（其中包括宏、结构体名、联合体名、全局变量的定义等）和其他的要求在本文件中引用的源程序文件。</p>
+<h3 id="文件包含的说明">8.3.3 文件包含的说明</h3>
+<ol type="1">
+<li><p>一个#include
+命令只能指定一个包含文件。如果要包含多个文件，则要使用多个#include
+命令</p></li>
+<li><p>如果文件file1.c 要使用文件file2.c 中的内容，而文件file2.c
+要用到文件file3.c 中的内容，则可以在文件file1.c 中用两个#include
+命令分别包含file2.c 和file3.c, 而且文件file3.c 应出现在文件file2.c
+之前，即file1.c中有：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;file3.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;file2.c&quot;</span></span></span><br></pre></td></tr></table></figure>
+<p>这样file1.c 和file2.c 均可以用file3.c 中的内容，而在file2.c
+中不必再用＃include "file3.c” 了</p></li>
+<li><p>在一个被包含文件中又可以包含另一个被包含文件，即文件包含是可以嵌套的</p></li>
+<li><p>被包含文件（如file2.c) 与其所在的文件(file1.c)
+在预编译后已成为同一个文件（而不是两个文件），因此，如果file2.c
+中有全局静态变量，它也在filel.c 文件中有效，不必再用extern
+声明。</p></li>
+<li><p>全局变量是否可以定义在可被多个 .c
+文件包含的头文件中？为什么？</p>
+<p>如果包含该头文件（其中定义有全局变量n) 的多个.c
+文件属于同一个工程，并且希望通过该全局变量n 在这些.c
+文件的函数中共享数据，这是不可以的。例如，一个工程包含三个文件：</p>
+<p>headfile.h 头文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n; ／／全局变量</span><br></pre></td></tr></table></figure>
+<p>file1.c 文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span>  <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;headfile.h&quot;</span></span></span><br><span class="line">……</span><br></pre></td></tr></table></figure>
+<p>file2.c 文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span>  <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;headfile.h&quot;</span></span></span><br><span class="line">……</span><br></pre></td></tr></table></figure>
+<p>在包含文件预处理之后，相当于一个程序中两次定义全局变量n，在编译时会出现变量重复定义的编译错误。</p>
+<p>如果将headfile.h
+头文件中全局变量n的定义改为<code>static int n;</code>，程序正确执行，即可以在不同c文件中定义同名的全局变量，但变量n为静态全局变量，不能在多个.c文件的函数中共享数据。即，虽然此时每个文件中都有静态全局变量n，但每个文件中的变量n的地址都是不相同的，只是变量名看似相同，并非真正的全局变量。</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.cnblogs.com/zplutor/archive/2011/08/06/2129401.html">头文件中的的static变量意味着什么？</a></p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.runoob.com/w3cnote/cpp-static-usage.html">菜鸟教程：C/C++
+中 static 的用法全局变量与局部变量</a></p></li>
+</ol>
+
+            </div>
+        
+        <footer class="article-footer">
+        </footer>
+    </div>
+</article>
+
+
+    
+<nav id="article-nav">
+    
+        <a href="/wiki/robot/note/%E8%A7%86%E8%A7%89%E6%83%AF%E6%80%A7SLAM%E7%90%86%E8%AE%BA%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/%E9%BD%90%E6%AC%A1%E5%BD%A2%E5%BC%8F%E4%B8%8B%E4%B8%A4%E7%82%B9%E7%9A%84%E5%8F%89%E4%B9%98%E4%B8%BA%E8%BF%87%E8%AF%A5%E4%B8%A4%E7%82%B9%E7%9A%84%E7%9B%B4%E7%BA%BF%E7%9A%84%E7%B3%BB%E6%95%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    两点的叉乘为过两点直线的系数
+                
+            </div>
+        </a>
+    
+    
+        <a href="/wiki/cs/c&c++/cpp-thread_local/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">cpp-thread_local</div>
+        </a>
+    
+</nav>
+
+
+
+
+
+    
+    
+
+
+
+
+<!-- baidu url auto push script -->
+<script type="text/javascript">
+    !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=window.location.href,o=document.referrer;if(!e.test(r)){var n="//api.share.baidu.com/s.gif";o?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var t=new Image;t.src=n}}(window);
+</script>     
+</section>
+            
+        </div>
+
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            silencht &copy; 2024 
+            <a rel="external nofollow noopener noreferrer" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png"></a>
+            <br> Powered by <a href="http://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a>. Theme - <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/zthxxx/hexo-theme-Wikitten">wikitten</a>
+            
+                <br>
+                <span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i> <span id="busuanzi_value_site_pv"></span></span>
+                &nbsp;|&nbsp;
+                <span id="busuanzi_container_site_pv"><i class="fa fa-user"></i> <span id="busuanzi_value_site_uv"></span></span>
+            
+        </div>
+    </div>
+</footer>
+
+        
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true,
+            TeX: {
+                equationNumbers: {
+                  autoNumber: 'AMS'
+                }
+            }
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+
+    <style>
+        #buttonContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    
+    <div id="hideCatalog" class="fa fa-bars"></div>
+    <div id="toTop" class="fa fa-angle-up"></div>
+
+    <script>
+        $(document).ready(function() {
+            var sidebar = $("#sidebar");
+            var main = $("#main");
+
+            updateSidebar(sidebar, main);
+
+            $(document).on('click', '#hideCatalog', function () {
+                sidebar.toggle(); // 切换元素的显示/隐藏状态
+                updateSidebar(sidebar, main);
+            });
+
+            $(window).on('resize', function() {
+                updateSidebar(sidebar, main);
+            });
+
+            function updateSidebar(sidebar, main) {
+                if (sidebar.is(":visible") && sidebar.width() != main.width()) {
+                    $("#main").css("width", "");
+                    $("#hideCatalog").css({"opacity": 1.0});
+                    $("#toTop").css({"opacity": 1.0});
+                    sidebar.css('position', '-webkit-sticky');
+                    sidebar.css('position', 'sticky');
+                } 
+                else if (sidebar.is(":visible") && sidebar.width() == main.width()) {
+                    sidebar.css("width", "100%"); // 更正此行
+                    sidebar.css('position', 'static'); // 更正此行
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                } 
+                else {
+                    $("#main").css("width", "100%");
+                    $("#hideCatalog").css({"opacity": 0.25});
+                    $("#toTop").css({"opacity": 0.25});
+                }
+            }
+        });
+    </script>
+    
+
+
+   
+    <script>
+        $(document).on('scroll', function () {
+            if(($(this).scrollTop() > 1000)) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        }).on('click', '#toTop', function () {
+            $('body, html').animate({ scrollTop: 0 }, 500);
+        });
+    </script>
+
+    <script>
+        var sidebar = $("#sidebar");
+        if (sidebar.is(":visible")) {
+            $(document).on('scroll', function () {
+                if(($(this).scrollTop() > 35)) {
+                    $("#sidebar").css("top", "5px");
+                } else {
+                    $("#sidebar").css("top", "");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @media (min-width: 768px){
+            #sidebar {
+                height: 88vh; /* 视窗高度 */
+                overflow: auto; /* 当内容溢出时显示滚动条 */
+            }
+            /* 自定义滚动条样式 */
+            #sidebar::-webkit-scrollbar {
+                width: 5px; /* 设置滚动条宽度 */
+            }
+
+            #sidebar::-webkit-scrollbar-track {
+                background: #d0d0d0; /* 设置滚动条轨道的背景色 */
+            }
+
+            #sidebar::-webkit-scrollbar-thumb {
+                background: #888; /* 设置滚动条的颜色 */
+            }
+        }
+    </style>
+
+    <style>
+        #hideCatalog {
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 30px;
+            line-height: 60px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 5px;
+            position: fixed;
+
+            @media mq-mobile {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style> 
+    <style>
+        #toTop {
+            display: none;
+            cursor: pointer;
+            text-align: center;
+            width: 60px;
+            height: 60px;
+            color: rgb(12, 12, 12);
+            font-size: 50px;
+            line-height: 55px;
+            background: rgb(169, 168, 168);
+            border-radius: 10px;
+            bottom: 10px;
+            margin: 20px;
+            left: 75px;
+            position: fixed;
+
+            @media mq-mobile {
+                bottom: 10px;
+                margin: 10px;
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+
+            @media mq-mini {
+                width: 15px;
+                height: 15px;
+                font-size: 7px;
+                line-height: 15px;
+            }
+        }
+    </style>  
+
+</body>
+</html>
